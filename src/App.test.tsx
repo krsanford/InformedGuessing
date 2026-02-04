@@ -9,15 +9,16 @@ describe('App - UI Integration Tests', () => {
     
     expect(screen.getByText('Informed Guessing')).toBeInTheDocument()
     expect(screen.getByText('Work Items')).toBeInTheDocument()
-    expect(screen.getByText('Advanced Variables')).toBeInTheDocument()
+    expect(screen.getByText('Advanced Settings')).toBeInTheDocument()
     expect(screen.getByText('Results')).toBeInTheDocument()
   })
 
-  it('shows empty state initially', () => {
+  it('starts with one empty work item', () => {
     render(<App />)
     
-    expect(screen.getByText(/no work items yet/i)).toBeInTheDocument()
-    expect(screen.getByText(/add work items above to see portfolio calculations/i)).toBeInTheDocument()
+    // Should have one work item by default
+    expect(screen.getByLabelText('Title for work item 1')).toBeInTheDocument()
+    expect(screen.getByLabelText('Best case hours for work item 1')).toBeInTheDocument()
   })
 
   it('adds a work item when button is clicked', async () => {
@@ -27,21 +28,17 @@ describe('App - UI Integration Tests', () => {
     const addButton = screen.getByText('+ Add Work Item')
     await user.click(addButton)
     
-    // Should show table with headers
-    expect(screen.getByText('Title')).toBeInTheDocument()
-    expect(screen.getByText('Best Case (hrs)')).toBeInTheDocument()
-    expect(screen.getByText('Worst Case (hrs)')).toBeInTheDocument()
-    expect(screen.getByText('Expected (hrs)')).toBeInTheDocument()
+    // Should now have 2 work items
+    expect(screen.getByLabelText('Title for work item 1')).toBeInTheDocument()
+    expect(screen.getByLabelText('Title for work item 2')).toBeInTheDocument()
   })
 
   it('allows editing text fields', async () => {
     const user = userEvent.setup()
     render(<App />)
     
-    await user.click(screen.getByText('+ Add Work Item'))
-    
-    // Find title input using aria-label
-    const titleInput = screen.getByLabelText('Title for work item 1') as HTMLInputElement
+    // Find title textarea using aria-label
+    const titleInput = screen.getByLabelText('Title for work item 1') as HTMLTextAreaElement
     await user.type(titleInput, 'Test Feature')
     
     expect(titleInput.value).toBe('Test Feature')
@@ -50,8 +47,6 @@ describe('App - UI Integration Tests', () => {
   it('allows editing best and worst case values', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
-    await user.click(screen.getByText('+ Add Work Item'))
     
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
@@ -67,8 +62,6 @@ describe('App - UI Integration Tests', () => {
   it('auto-adjusts worst case when best exceeds it', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
-    await user.click(screen.getByText('+ Add Work Item'))
     
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
@@ -89,8 +82,6 @@ describe('App - UI Integration Tests', () => {
     const user = userEvent.setup()
     render(<App />)
     
-    await user.click(screen.getByText('+ Add Work Item'))
-    
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
     
@@ -109,26 +100,24 @@ describe('App - UI Integration Tests', () => {
     const user = userEvent.setup()
     render(<App />)
     
-    // Add two items
+    // Add two more items (starts with 1)
     await user.click(screen.getByText('+ Add Work Item'))
     await user.click(screen.getByText('+ Add Work Item'))
     
-    // Should have 2 remove buttons
+    // Should have 3 remove buttons
     const removeButtons = screen.getAllByLabelText(/remove work item/i)
-    expect(removeButtons).toHaveLength(2)
+    expect(removeButtons).toHaveLength(3)
     
     // Remove first item
     await user.click(removeButtons[0])
     
-    // Should have 1 remove button left
-    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(1)
+    // Should have 2 remove buttons left
+    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(2)
   })
 
   it('calculates and displays portfolio results', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
-    await user.click(screen.getByText('+ Add Work Item'))
     
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
@@ -154,31 +143,28 @@ describe('App - UI Integration Tests', () => {
     const user = userEvent.setup()
     render(<App />)
     
-    // Add 3 work items
+    // Add 3 more work items (starts with 1)
     await user.click(screen.getByText('+ Add Work Item'))
     await user.click(screen.getByText('+ Add Work Item'))
     await user.click(screen.getByText('+ Add Work Item'))
     
-    // Should show 3 rows with proper IDs
+    // Should show 4 rows with proper IDs
     expect(screen.getByLabelText('Title for work item 1')).toBeInTheDocument()
     expect(screen.getByLabelText('Title for work item 2')).toBeInTheDocument()
     expect(screen.getByLabelText('Title for work item 3')).toBeInTheDocument()
+    expect(screen.getByLabelText('Title for work item 4')).toBeInTheDocument()
     
-    // Should show 3 remove buttons
-    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(3)
+    // Should show 4 remove buttons
+    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(4)
   })
 
   it('allows opening advanced variables section', async () => {
     const user = userEvent.setup()
     render(<App />)
     
-    // Advanced settings should be collapsed by default
+    // Advanced settings should be open by default
     const expectedPosInput = document.getElementById('expected_case_position')
     expect(expectedPosInput).not.toBeNull()
-    
-    // Click to expand
-    const summary = screen.getByText('⚙️ Show/Hide Advanced Settings')
-    await user.click(summary)
     
     // Should be visible and accessible
     expect(screen.getByDisplayValue('0.4')).toBeInTheDocument()  // Expected case position default
@@ -190,9 +176,6 @@ describe('App - UI Integration Tests', () => {
   it('allows editing advanced variables', async () => {
     const user = userEvent.setup()
     const { container } = render(<App />)
-    
-    const summary = screen.getByText('⚙️ Show/Hide Advanced Settings')
-    await user.click(summary)
     
     const expectedPosInput = container.querySelector('#expected_case_position') as HTMLInputElement
     
@@ -206,9 +189,6 @@ describe('App - UI Integration Tests', () => {
   it('resets advanced variables to defaults', async () => {
     const user = userEvent.setup()
     const { container } = render(<App />)
-    
-    const summary = screen.getByText('⚙️ Show/Hide Advanced Settings')
-    await user.click(summary)
     
     const billableHoursInput = container.querySelector('#billable_hours_per_week') as HTMLInputElement
     
@@ -229,8 +209,7 @@ describe('App - UI Integration Tests', () => {
     const user = userEvent.setup()
     const { container } = render(<App />)
     
-    // Add work item with values
-    await user.click(screen.getByText('+ Add Work Item'))
+    // Work item already exists - just set values
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
     
@@ -241,10 +220,7 @@ describe('App - UI Integration Tests', () => {
     // Get initial expected hours value (should be 140 with default 0.4 position)
     expect(screen.getByText('Total Expected Hours')).toBeInTheDocument()
     
-    // Open advanced and change expected_case_position from 0.4 to 0.5
-    const summary = screen.getByText('⚙️ Show/Hide Advanced Settings')
-    await user.click(summary)
-    
+    // Change expected_case_position from 0.4 to 0.5
     const expectedPosInput = container.querySelector('#expected_case_position') as HTMLInputElement
     fireEvent.change(expectedPosInput, { target: { value: '0.5' } })
     
@@ -258,8 +234,6 @@ describe('App - UI Integration Tests', () => {
     const user = userEvent.setup()
     render(<App />)
     
-    await user.click(screen.getByText('+ Add Work Item'))
-    
     const titleInput = screen.getByLabelText('Title for work item 1')
     const notesInput = screen.getByLabelText('Notes for work item 1')
     const bestInput = screen.getByLabelText('Best case hours for work item 1')
@@ -271,15 +245,5 @@ describe('App - UI Integration Tests', () => {
     
     await user.keyboard('{Tab}')
     expect(bestInput).toHaveFocus()
-  })
-
-  it('shows proper empty state messages', () => {
-    render(<App />)
-    
-    // Work items section
-    expect(screen.getByText('No work items yet. Click "+ Add Work Item" to get started.')).toBeInTheDocument()
-    
-    // Results section
-    expect(screen.getByText('Add work items above to see portfolio calculations')).toBeInTheDocument()
   })
 })

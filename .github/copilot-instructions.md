@@ -20,7 +20,7 @@ Hard constraints:
 - Support schema versioning for exported/imported sessions.
 - If any formula or constant is unclear, STOP and ask for clarification rather than guessing.
 - After any change, you must run all tests and check the console for any errors or warnings and fix them.
-- After any change, if there are material additions or changes, ensure the UI, unit, and any other tests are all still valid, or if anything should be added/changed you must do so.
+- After any change, if there are additions or changes, ensure the UI, unit, and any other tests are all still valid, or if anything should be added/changed you must do so.
 - For any file exceeding 200 lines, either refactor to reduce the size or split into multiple files.
 - Do not add explanation or summary documents in my solution unless I explicitly request them. Only provide them in the chat.
 
