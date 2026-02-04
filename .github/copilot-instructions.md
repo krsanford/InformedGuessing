@@ -5,6 +5,7 @@ Hard constraints:
 - Use React + TypeScript.
 - Do not use npm, you must use pnpm.
 - Prefer built-in browser capabilities over libraries (native <details>/<summary>, plain <table>, CSS).
+- Do not use inline styles or CSS-in-JS. Use plain CSS.
 - Do not add dependencies unless absolutely necessary. If you propose one, justify it in one sentence.
 - Use useReducer for app state. No Redux or other state libs.
 - All estimation math must live in src/domain/estimation.ts as pure functions.
@@ -14,6 +15,9 @@ Hard constraints:
 - Persistence: save/load the entire session to localStorage. Provide Export JSON and Import JSON.
 - Support schema versioning for exported/imported sessions.
 - If any formula or constant is unclear, STOP and ask for clarification rather than guessing.
+- After any change, you must run all tests and check the console for any errors or warnings and fix them.
+- After any change, if there are material additions or changes, ensure the tests are all still valid, or if anything should be added/changed.
+- For any file exceeding 200 lines, either refactor to reduce the size or split into multiple files.
 
 UI constraints:
 - Single page with three sections:

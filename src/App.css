@@ -1,0 +1,155 @@
+/* Main container */
+.app-container {
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  max-width: 1400px;
+}
+
+.app-title {
+  margin: 0 0 1rem 0;
+}
+
+/* Sections */
+.section {
+  margin-top: 2rem;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  margin: 0;
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn-primary:hover {
+  background-color: #0052a3;
+}
+
+.btn-danger {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.work-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.work-items-table thead tr {
+  background-color: #f5f5f5;
+}
+
+.work-items-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+}
+
+.work-items-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.work-items-table tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+/* ID column with warning */
+.id-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.warning-icon {
+  cursor: help;
+  color: #f39c12;
+  font-size: 1.2rem;
+}
+
+/* Input fields */
+.number-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+/* Empty state */
+.empty-state {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Advanced Variables */
+.advanced-summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.advanced-content {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.advanced-content p {
+  margin: 0.5rem 0;
+}
+
+/* Outputs grid */
+.outputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.output-metric strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.output-value {
+  font-size: 1.5rem;
+  color: #0066cc;
+}

@@ -93,6 +93,8 @@ Each work item requires two estimates that bound the range of possible effort:
 | **best_case_hours** | hours | **Optimistic but plausible estimate**. "If things go well, a single person of adequate and reasonable skill in the domain could complete this in X hours." Not the absolute minimum, but the lower bound of reasonable outcomes. |
 | **worst_case_hours** | hours | **Pessimistic but plausible estimate**. "If we encounter typical problems—some requirements clarification, a few technical obstacles, normal rework—a single person of adequate and reasonable skill in the domain could complete this in Y hours." Not the worst imaginable disaster, but the upper bound of reasonable outcomes. |
 
+These values are entered as whole hours. 1 hour increments are the lowest precision allowed.
+
 ### Calibrating Your Estimates
 
 **Mental model for the range:**
