@@ -111,6 +111,21 @@
   box-sizing: border-box;
 }
 
+.text-input {
+  width: 100%;
+  min-width: 150px;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.text-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
 /* Empty state */
 .empty-state {
   color: #666;
@@ -133,8 +148,38 @@
   border-radius: 4px;
 }
 
-.advanced-content p {
-  margin: 0.5rem 0;
+.advanced-field {
+  margin: 1rem 0;
+}
+
+.advanced-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.advanced-field .field-help {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: normal;
+}
+
+.advanced-field input {
+  width: 200px;
+}
+
+.btn-secondary {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
 }
 
 /* Outputs grid */

@@ -16,6 +16,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           ...state.workItems,
           {
             id: state.nextId,
+            title: '',
+            notes: '',
             best_case_hours: 0,
             worst_case_hours: 0,
           },

@@ -14,38 +14,38 @@ import {
 
 // Test data from docs/estimation-math-spec.md "Worksheet Example"
 const TEST_WORK_ITEMS: WorkItem[] = [
-  { id: 1, best_case_hours: 80, worst_case_hours: 120 },
-  { id: 2, best_case_hours: 70, worst_case_hours: 200 },
-  { id: 3, best_case_hours: 100, worst_case_hours: 320 },
-  { id: 4, best_case_hours: 40, worst_case_hours: 80 },
-  { id: 5, best_case_hours: 60, worst_case_hours: 90 },
-  { id: 6, best_case_hours: 80, worst_case_hours: 160 },
-  { id: 7, best_case_hours: 4, worst_case_hours: 16 },
-  { id: 8, best_case_hours: 80, worst_case_hours: 100 },
-  { id: 9, best_case_hours: 40, worst_case_hours: 100 },
-  { id: 10, best_case_hours: 16, worst_case_hours: 30 },
+  { id: 1, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 1.5 },
+  { id: 2, title: '', notes: '', best_case_hours: 1, worst_case_hours: 3 },
+  { id: 3, title: '', notes: '', best_case_hours: 2, worst_case_hours: 8 },
+  { id: 4, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 4 },
+  { id: 5, title: '', notes: '', best_case_hours: 1, worst_case_hours: 5 },
+  { id: 6, title: '', notes: '', best_case_hours: 4, worst_case_hours: 12 },
+  { id: 7, title: '', notes: '', best_case_hours: 2, worst_case_hours: 6 },
+  { id: 8, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 2 },
+  { id: 9, title: '', notes: '', best_case_hours: 1, worst_case_hours: 4 },
+  { id: 10, title: '', notes: '', best_case_hours: 3, worst_case_hours: 9 },
 ]
 
 describe('estimation - validation', () => {
   describe('validateWorkItem', () => {
     it('accepts valid work item', () => {
-      expect(validateWorkItem({ id: 1, best_case_hours: 10, worst_case_hours: 20 })).toBeNull()
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 20 })).toBeNull()
     })
 
     it('rejects negative best case', () => {
-      expect(validateWorkItem({ id: 1, best_case_hours: -5, worst_case_hours: 20 })).toBe(
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: -5, worst_case_hours: 20 })).toBe(
         'Best case hours cannot be negative'
       )
     })
 
     it('rejects worst case less than best case', () => {
-      expect(validateWorkItem({ id: 1, best_case_hours: 30, worst_case_hours: 20 })).toBe(
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20 })).toBe(
         'Worst case hours cannot be less than best case hours'
       )
     })
 
     it('accepts equal best and worst case (zero range)', () => {
-      expect(validateWorkItem({ id: 1, best_case_hours: 10, worst_case_hours: 10 })).toBeNull()
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 10 })).toBeNull()
     })
   })
 
@@ -135,7 +135,7 @@ describe('estimation - individual work item calculations', () => {
 
   describe('calculateWorkItem', () => {
     it('calculates all metrics for Page 1', () => {
-      const item = { id: 1, best_case_hours: 80, worst_case_hours: 120 }
+      const item = { id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
       expect(result.expected_hours).toBeCloseTo(96, 2)
@@ -144,7 +144,7 @@ describe('estimation - individual work item calculations', () => {
     })
 
     it('calculates all metrics for Page 3', () => {
-      const item = { id: 3, best_case_hours: 100, worst_case_hours: 320 }
+      const item = { id: 3, title: '', notes: '', best_case_hours: 100, worst_case_hours: 320 }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
       expect(result.expected_hours).toBeCloseTo(188, 2)
@@ -173,7 +173,7 @@ describe('estimation - portfolio calculations', () => {
   })
 
   it('handles single work item portfolio', () => {
-    const singleItem = [{ id: 1, best_case_hours: 80, worst_case_hours: 120 }]
+    const singleItem = [{ id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 }]
     const result = calculatePortfolio(singleItem, DEFAULT_CONSTANTS)
 
     expect(result.total_expected_hours).toBeCloseTo(96, 2)
@@ -192,8 +192,8 @@ describe('estimation - portfolio calculations', () => {
 
   it('handles zero range items (best = worst)', () => {
     const items = [
-      { id: 1, best_case_hours: 100, worst_case_hours: 100 },
-      { id: 2, best_case_hours: 50, worst_case_hours: 50 },
+      { id: 1, title: '', notes: '', best_case_hours: 100, worst_case_hours: 100 },
+      { id: 2, title: '', notes: '', best_case_hours: 50, worst_case_hours: 50 },
     ]
     const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
 
@@ -208,6 +208,8 @@ describe('estimation - root-sum-square effect', () => {
     // 10 items with same range (10-20)
     const items = Array.from({ length: 10 }, (_, i) => ({
       id: i + 1,
+      title: '',
+      notes: '',
       best_case_hours: 10,
       worst_case_hours: 20,
     }))
@@ -224,14 +226,14 @@ describe('estimation - root-sum-square effect', () => {
 
 describe('estimation - edge cases and errors', () => {
   it('throws error for invalid work item', () => {
-    const items = [{ id: 1, best_case_hours: -10, worst_case_hours: 20 }]
+    const items = [{ id: 1, title: '', notes: '', best_case_hours: -10, worst_case_hours: 20 }]
     expect(() => calculatePortfolio(items, DEFAULT_CONSTANTS)).toThrow(
       'Invalid work item 1: Best case hours cannot be negative'
     )
   })
 
   it('throws error for worst < best', () => {
-    const items = [{ id: 1, best_case_hours: 30, worst_case_hours: 20 }]
+    const items = [{ id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20 }]
     expect(() => calculatePortfolio(items, DEFAULT_CONSTANTS)).toThrow(
       'Invalid work item 1: Worst case hours cannot be less than best case hours'
     )

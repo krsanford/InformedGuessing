@@ -142,8 +142,8 @@ describe('App - UI Integration Tests', () => {
     // Should show 3 remove buttons (one per item)
     expect(screen.getAllByText('Remove')).toHaveLength(3)
     
-    // Should show 6 input fields (2 per item: best and worst)
-    expect(screen.getAllByRole('spinbutton')).toHaveLength(6)
+    // Should show 10 input fields (2 per work item + 4 advanced variables)
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(10)
   })
 
   it('does not crash when incrementing values', async () => {
@@ -165,5 +165,79 @@ describe('App - UI Integration Tests', () => {
     
     // App should still be rendered (not blank screen)
     expect(screen.getByText('Informed Guessing - Estimation Workbench')).toBeInTheDocument()
+  })
+
+  it('allows editing advanced variables', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    
+    // Open advanced variables section
+    const summary = screen.getByText('2. Advanced Variables')
+    await user.click(summary)
+    
+    // Find the expected case position input
+    const inputs = screen.getAllByRole('spinbutton') as HTMLInputElement[]
+    const expectedCaseInput = inputs.find(input => input.id === 'expected_case_position')
+    
+    expect(expectedCaseInput).toBeDefined()
+    
+    // Change value
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(expectedCaseInput!, { target: { value: '0.5' } })
+    
+    // Verify it updated
+    expect(expectedCaseInput!.value).toBe('0.5')
+  })
+
+  it('resets advanced variables to defaults', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    
+    // Open advanced variables section
+    const summary = screen.getByText('2. Advanced Variables')
+    await user.click(summary)
+    
+    // Change a value
+    const inputs = screen.getAllByRole('spinbutton') as HTMLInputElement[]
+    const billableHoursInput = inputs.find(input => input.id === 'billable_hours_per_week')
+    
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(billableHoursInput!, { target: { value: '40' } })
+    expect(billableHoursInput!.value).toBe('40')
+    
+    // Reset
+    const resetButton = screen.getByText('Reset to Defaults')
+    await user.click(resetButton)
+    
+    // Should be back to default (36)
+    expect(billableHoursInput!.value).toBe('36')
+  })
+
+  it('recalculates outputs when advanced variables change', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    
+    // Add a work item with values
+    await user.click(screen.getByText('+ Add Work Item'))
+    const { fireEvent } = await import('@testing-library/react')
+    const workItemInputs = screen.getAllByRole('spinbutton')
+    fireEvent.change(workItemInputs[0], { target: { value: '100' } })
+    fireEvent.change(workItemInputs[1], { target: { value: '200' } })
+    
+    // Get initial calculation
+    const expectedHoursDiv = screen.getByText('Total Expected Hours:').nextElementSibling
+    const initialValue = expectedHoursDiv?.textContent
+    
+    // Open advanced variables and change expected_case_position
+    const summary = screen.getByText('2. Advanced Variables')
+    await user.click(summary)
+    
+    const allInputs = screen.getAllByRole('spinbutton') as HTMLInputElement[]
+    const expectedCaseInput = allInputs.find(input => input.id === 'expected_case_position')
+    fireEvent.change(expectedCaseInput!, { target: { value: '0.5' } })
+    
+    // Calculation should have changed
+    const newValue = expectedHoursDiv?.textContent
+    expect(newValue).not.toBe(initialValue)
   })
 })
