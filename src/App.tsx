@@ -51,34 +51,67 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1 className="app-title">Informed Guessing - Estimation Workbench</h1>
+      <header className="app-header">
+        <h1 className="app-title">Informed Guessing</h1>
+        <p className="app-subtitle">Two-Point Estimation Workbench</p>
+      </header>
 
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">1. Inputs</h2>
-          <button onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })} className="btn-primary">
-            + Add Work Item
-          </button>
+      <div className="main-layout">
+        <div className="primary-content">
+          <section className="section">
+            <details open>
+              <summary className="section-summary">
+                <span className="section-title">
+                  <span className="section-number">1</span>
+                  Work Items
+                </span>
+                <span className="collapse-icon">▼</span>
+              </summary>
+              <div className="section-content">
+                {state.workItems.length === 0 ? (
+                  <p className="empty-state">No work items yet. Click "+ Add Work Item" to get started.</p>
+                ) : (
+                  <WorkItemsTable
+                    items={itemsWithCalculations}
+                    onUpdate={handleFieldUpdate}
+                    onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+                  />
+                )}
+                <div className="table-footer">
+                  <button onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })} className="btn-primary">
+                    + Add Work Item
+                  </button>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <section className="section">
+            <details open>
+              <summary className="section-summary">
+                <span className="section-title">
+                  <span className="section-number">2</span>
+                  Results
+                </span>
+                <span className="collapse-icon">▼</span>
+              </summary>
+              <div className="section-content">
+                <OutputsSection results={results} />
+              </div>
+            </details>
+          </section>
         </div>
 
-        {state.workItems.length === 0 ? (
-          <p className="empty-state">No work items yet. Click "+ Add Work Item" to get started.</p>
-        ) : (
-          <WorkItemsTable
-            items={itemsWithCalculations}
-            onUpdate={handleFieldUpdate}
-            onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
-          />
-        )}
-      </section>
-
-      <AdvancedVariables
-        constants={state.constants}
-        onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
-        onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
-      />
-
-      <OutputsSection results={results} />
+        <aside className="sidebar">
+          <div className="sidebar-section">
+            <AdvancedVariables
+              constants={state.constants}
+              onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
+              onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
+            />
+          </div>
+        </aside>
+      </div>
     </div>
   )
 }

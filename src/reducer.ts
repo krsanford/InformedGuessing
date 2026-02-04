@@ -2,9 +2,17 @@ import { DEFAULT_CONSTANTS } from './domain/estimation'
 import type { AppState, AppAction } from './types'
 
 export const initialState: AppState = {
-  workItems: [],
+  workItems: [
+    {
+      id: 1,
+      title: '',
+      notes: '',
+      best_case_hours: 0,
+      worst_case_hours: 0,
+    },
+  ],
   constants: DEFAULT_CONSTANTS,
-  nextId: 1,
+  nextId: 2,
 }
 
 export function appReducer(state: AppState, action: AppAction): AppState {

@@ -14,16 +14,16 @@ import {
 
 // Test data from docs/estimation-math-spec.md "Worksheet Example"
 const TEST_WORK_ITEMS: WorkItem[] = [
-  { id: 1, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 1.5 },
-  { id: 2, title: '', notes: '', best_case_hours: 1, worst_case_hours: 3 },
-  { id: 3, title: '', notes: '', best_case_hours: 2, worst_case_hours: 8 },
-  { id: 4, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 4 },
-  { id: 5, title: '', notes: '', best_case_hours: 1, worst_case_hours: 5 },
-  { id: 6, title: '', notes: '', best_case_hours: 4, worst_case_hours: 12 },
-  { id: 7, title: '', notes: '', best_case_hours: 2, worst_case_hours: 6 },
-  { id: 8, title: '', notes: '', best_case_hours: 0.5, worst_case_hours: 2 },
-  { id: 9, title: '', notes: '', best_case_hours: 1, worst_case_hours: 4 },
-  { id: 10, title: '', notes: '', best_case_hours: 3, worst_case_hours: 9 },
+  { id: 1, title: 'Page 1', notes: '', best_case_hours: 80, worst_case_hours: 120 },
+  { id: 2, title: 'Page 2', notes: '', best_case_hours: 70, worst_case_hours: 200 },
+  { id: 3, title: 'Page 3', notes: '', best_case_hours: 100, worst_case_hours: 320 },
+  { id: 4, title: 'Page 4', notes: '', best_case_hours: 40, worst_case_hours: 80 },
+  { id: 5, title: 'Page 5', notes: '', best_case_hours: 60, worst_case_hours: 90 },
+  { id: 6, title: 'Nav & Footer', notes: '', best_case_hours: 80, worst_case_hours: 160 },
+  { id: 7, title: 'Environment & Language Config', notes: '', best_case_hours: 4, worst_case_hours: 16 },
+  { id: 8, title: 'Translations', notes: '', best_case_hours: 80, worst_case_hours: 100 },
+  { id: 9, title: 'Q&A', notes: '', best_case_hours: 40, worst_case_hours: 100 },
+  { id: 10, title: 'Readme, docs', notes: '', best_case_hours: 16, worst_case_hours: 30 },
 ]
 
 describe('estimation - validation', () => {

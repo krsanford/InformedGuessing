@@ -18,19 +18,19 @@ export function WorkItemsTable({ items, onUpdate, onRemove }: WorkItemsTableProp
   }
 
   return (
-    <div className="table-container">
+    <div className="table-container" role="region" aria-label="Work Items Table">
       <table className="work-items-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Notes</th>
-            <th>Best Case (hrs)</th>
-            <th>Worst Case (hrs)</th>
-            <th>Expected (hrs)</th>
-            <th>Range Spread (hrs)</th>
-            <th>Variance</th>
-            <th>Actions</th>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Notes</th>
+            <th scope="col" title="Best Case Hours">Best</th>
+            <th scope="col" title="Worst Case Hours">Worst</th>
+            <th scope="col" title="Expected Hours">Expected</th>
+            <th scope="col" title="Range Spread Hours">Range</th>
+            <th scope="col" title="Variance">Var</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -40,59 +40,97 @@ export function WorkItemsTable({ items, onUpdate, onRemove }: WorkItemsTableProp
               <tr key={item.id}>
                 <td>
                   <div className="id-cell">
-                    {item.id}
+                    <span aria-label={`Work item ${item.id}`}>{item.id}</span>
                     {warning && (
-                      <span title={warning} className="warning-icon">
+                      <span 
+                        title={warning} 
+                        className="warning-icon" 
+                        role="img" 
+                        aria-label={`Warning: ${warning}`}
+                      >
                         ⚠️
                       </span>
                     )}
                   </div>
                 </td>
-                <td>
+                <td data-label="Title">
+                  <label htmlFor={`title-${item.id}`} className="sr-only">
+                    Title for item {item.id}
+                  </label>
                   <input
+                    id={`title-${item.id}`}
                     type="text"
                     value={item.title}
                     onChange={(e) => onUpdate(item.id, 'title', e.target.value)}
                     className="text-input"
                     placeholder="Feature or task name"
+                    aria-label={`Title for work item ${item.id}`}
                   />
                 </td>
-                <td>
+                <td data-label="Notes">
+                  <label htmlFor={`notes-${item.id}`} className="sr-only">
+                    Notes for item {item.id}
+                  </label>
                   <input
+                    id={`notes-${item.id}`}
                     type="text"
                     value={item.notes}
                     onChange={(e) => onUpdate(item.id, 'notes', e.target.value)}
                     className="text-input"
                     placeholder="Additional details"
+                    aria-label={`Notes for work item ${item.id}`}
                   />
                 </td>
-                <td>
+                <td data-label="Best Case (hrs)">
+                  <label htmlFor={`best-${item.id}`} className="sr-only">
+                    Best case hours for item {item.id}
+                  </label>
                   <input
+                    id={`best-${item.id}`}
                     type="number"
                     min="0"
                     step="1"
                     value={item.best_case_hours}
                     onChange={(e) => onUpdate(item.id, 'best_case_hours', e.target.value)}
                     className="number-input"
+                    aria-label={`Best case hours for work item ${item.id}`}
                   />
                 </td>
-                <td>
+                <td data-label="Worst Case (hrs)">
+                  <label htmlFor={`worst-${item.id}`} className="sr-only">
+                    Worst case hours for item {item.id}
+                  </label>
                   <input
+                    id={`worst-${item.id}`}
                     type="number"
                     min="0"
                     step="1"
                     value={item.worst_case_hours}
                     onChange={(e) => onUpdate(item.id, 'worst_case_hours', e.target.value)}
                     className="number-input"
+                    aria-label={`Worst case hours for work item ${item.id}`}
                   />
                 </td>
-                <td>{item.expected_hours.toFixed(2)}</td>
-                <td>{item.range_spread_hours.toFixed(2)}</td>
-                <td>{item.variance.toFixed(2)}</td>
-                <td>
+                <td data-label="Expected (hrs)">
+                  <span aria-label={`Expected hours: ${item.expected_hours.toFixed(2)}`}>
+                    {item.expected_hours.toFixed(2)}
+                  </span>
+                </td>
+                <td data-label="Range Spread (hrs)">
+                  <span aria-label={`Range spread: ${item.range_spread_hours.toFixed(2)} hours`}>
+                    {item.range_spread_hours.toFixed(2)}
+                  </span>
+                </td>
+                <td data-label="Variance">
+                  <span aria-label={`Variance: ${item.variance.toFixed(2)}`}>
+                    {item.variance.toFixed(2)}
+                  </span>
+                </td>
+                <td data-label="Actions">
                   <button
                     onClick={() => onRemove(item.id)}
                     className="btn-danger"
+                    aria-label={`Remove work item ${item.id}`}
                   >
                     Remove
                   </button>

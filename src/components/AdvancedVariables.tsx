@@ -15,13 +15,19 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
   }
 
   return (
-    <details style={{ marginTop: '2rem' }}>
-      <summary className="advanced-summary">2. Advanced Variables</summary>
+    <details open>
+      <summary className="advanced-summary">
+        <span className="section-title">
+          <span className="section-number">⚙</span>
+          Advanced Settings
+        </span>
+        <span className="collapse-icon">▼</span>
+      </summary>
       <div className="advanced-content">
         <div className="advanced-field">
           <label htmlFor="expected_case_position">
-            <strong>Expected case position:</strong>
-            <span className="field-help"> (0 = best case, 1 = worst case)</span>
+            Expected Case Position
+            <span className="field-help">Position between best (0) and worst (1) case for expected calculation</span>
           </label>
           <input
             id="expected_case_position"
@@ -37,8 +43,8 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
 
         <div className="advanced-field">
           <label htmlFor="range_spread_divisor">
-            <strong>Range spread divisor:</strong>
-            <span className="field-help"> (higher = tighter confidence interval)</span>
+            Range Spread Divisor
+            <span className="field-help">Controls confidence interval width (higher = tighter spread)</span>
           </label>
           <input
             id="range_spread_divisor"
@@ -53,8 +59,8 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
 
         <div className="advanced-field">
           <label htmlFor="billable_hours_per_week">
-            <strong>Billable hours/week:</strong>
-            <span className="field-help"> (actual productive coding hours)</span>
+            Billable Hours per Week
+            <span className="field-help">Actual productive development hours available per week</span>
           </label>
           <input
             id="billable_hours_per_week"
@@ -69,8 +75,8 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
 
         <div className="advanced-field">
           <label htmlFor="duration_scaling_power">
-            <strong>Duration scaling power:</strong>
-            <span className="field-help"> (coordination overhead factor)</span>
+            Duration Scaling Power
+            <span className="field-help">Coordination overhead factor (higher = more overhead impact)</span>
           </label>
           <input
             id="duration_scaling_power"
@@ -83,8 +89,8 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
           />
         </div>
 
-        <button onClick={onReset} className="btn-secondary">
-          Reset to Defaults
+        <button onClick={onReset} className="btn-secondary reset-button">
+          ↺ Reset to Defaults
         </button>
       </div>
     </details>
