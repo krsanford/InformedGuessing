@@ -9,9 +9,10 @@ interface AdvancedVariablesProps {
 export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVariablesProps) {
   const handleNumberChange = (field: keyof EstimationConstants, value: string) => {
     const numValue = parseFloat(value)
-    if (!isNaN(numValue) && numValue > 0) {
-      onUpdate({ [field]: numValue })
-    }
+    if (isNaN(numValue)) return
+    if (field === 'expected_case_position' && (numValue < 0 || numValue > 1)) return
+    if (field !== 'expected_case_position' && numValue <= 0) return
+    onUpdate({ [field]: numValue })
   }
 
   return (

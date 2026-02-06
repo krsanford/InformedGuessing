@@ -15,7 +15,7 @@ export interface EstimationConstants {
 }
 
 export interface WorkItem {
-  id: string | number;
+  id: number;
   title: string
   notes: string
   best_case_hours: number;

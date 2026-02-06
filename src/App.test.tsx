@@ -45,7 +45,6 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('allows editing best and worst case values', async () => {
-    const user = userEvent.setup()
     render(<App />)
     
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
@@ -79,7 +78,6 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('calculates zero range when best equals worst', async () => {
-    const user = userEvent.setup()
     render(<App />)
     
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
@@ -158,8 +156,7 @@ describe('App - UI Integration Tests', () => {
     expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(4)
   })
 
-  it('allows opening advanced variables section', async () => {
-    const user = userEvent.setup()
+  it('allows opening advanced variables section', () => {
     render(<App />)
     
     // Advanced settings should be open by default
@@ -174,7 +171,6 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('allows editing advanced variables', async () => {
-    const user = userEvent.setup()
     const { container } = render(<App />)
     
     const expectedPosInput = container.querySelector('#expected_case_position') as HTMLInputElement
@@ -206,7 +202,6 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('recalculates when advanced variables change', async () => {
-    const user = userEvent.setup()
     const { container } = render(<App />)
     
     // Work item already exists - just set values

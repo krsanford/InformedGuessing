@@ -15,9 +15,14 @@ function App() {
     ...calculateWorkItem(item, state.constants),
   }))
 
-  const results = state.workItems.length > 0
-    ? calculatePortfolio(state.workItems, state.constants)
-    : null
+  let results = null
+  try {
+    if (state.workItems.length > 0) {
+      results = calculatePortfolio(state.workItems, state.constants)
+    }
+  } catch {
+    // Invalid inputs — results stay null, outputs show empty state
+  }
 
   const handleNumberInput = (id: WorkItem['id'], field: 'best_case_hours' | 'worst_case_hours', value: string) => {
     const numValue = parseFloat(value)
