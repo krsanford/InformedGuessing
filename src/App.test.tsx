@@ -82,16 +82,14 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('displays zero values correctly when best equals worst', async () => {
-    const user = userEvent.setup()
     render(<App />)
 
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
 
-    await user.clear(bestInput)
-    await user.type(bestInput, '100')
-    await user.clear(worstInput)
-    await user.type(worstInput, '100')
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(bestInput, { target: { value: '100' } })
+    fireEvent.change(worstInput, { target: { value: '100' } })
 
     // Should show 0.00 for range spread and variance (zero range is valid)
     const rangeSpread = screen.getByLabelText('Range spread: 0.00 hours')
@@ -177,13 +175,12 @@ describe('App - UI Integration Tests', () => {
   })
 
   it('allows editing advanced variables', async () => {
-    const user = userEvent.setup()
     const { container } = render(<App />)
 
     const expectedPosInput = container.querySelector('#expected_case_position') as HTMLInputElement
 
-    await user.clear(expectedPosInput)
-    await user.type(expectedPosInput, '0.5')
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(expectedPosInput, { target: { value: '0.5' } })
 
     expect(expectedPosInput.value).toBe('0.5')
   })
@@ -195,8 +192,8 @@ describe('App - UI Integration Tests', () => {
     const billableHoursInput = container.querySelector('#billable_hours_per_week') as HTMLInputElement
 
     // Change from default 36 to 40
-    await user.clear(billableHoursInput)
-    await user.type(billableHoursInput, '40')
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(billableHoursInput, { target: { value: '40' } })
     expect(billableHoursInput.value).toBe('40')
 
     // Reset button
