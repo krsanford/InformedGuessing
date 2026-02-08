@@ -9,6 +9,53 @@ interface WorkItemRowProps {
   onRemove: () => void
 }
 
+function NumberStepper({
+  id,
+  value,
+  ariaLabel,
+  onChange,
+}: {
+  id: string
+  value: number
+  ariaLabel: string
+  onChange: (value: string) => void
+}) {
+  return (
+    <div className={styles.stepperWrap}>
+      <input
+        id={id}
+        type="number"
+        min="0"
+        step="1"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={styles.numberInput}
+        aria-label={ariaLabel}
+      />
+      <div className={styles.stepperButtons}>
+        <button
+          type="button"
+          className={styles.stepUp}
+          onClick={() => onChange(String(value + 1))}
+          aria-label={`Increase ${ariaLabel}`}
+          tabIndex={-1}
+        >
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="currentColor"><path d="M4 0L8 5H0z"/></svg>
+        </button>
+        <button
+          type="button"
+          className={styles.stepDown}
+          onClick={() => onChange(String(Math.max(0, value - 1)))}
+          aria-label={`Decrease ${ariaLabel}`}
+          tabIndex={-1}
+        >
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="currentColor"><path d="M4 5L0 0h8z"/></svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
 
@@ -61,29 +108,21 @@ export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
       <label htmlFor={`best-${item.id}`} className="sr-only">
         Best case hours for item {item.id}
       </label>
-      <input
+      <NumberStepper
         id={`best-${item.id}`}
-        type="number"
-        min="0"
-        step="1"
         value={item.best_case_hours}
-        onChange={(e) => onUpdate('best_case_hours', e.target.value)}
-        className={styles.numberInput}
-        aria-label={`Best case hours for work item ${item.id}`}
+        ariaLabel={`Best case hours for work item ${item.id}`}
+        onChange={(v) => onUpdate('best_case_hours', v)}
       />
 
       <label htmlFor={`worst-${item.id}`} className="sr-only">
         Worst case hours for item {item.id}
       </label>
-      <input
+      <NumberStepper
         id={`worst-${item.id}`}
-        type="number"
-        min="0"
-        step="1"
         value={item.worst_case_hours}
-        onChange={(e) => onUpdate('worst_case_hours', e.target.value)}
-        className={styles.numberInput}
-        aria-label={`Worst case hours for work item ${item.id}`}
+        ariaLabel={`Worst case hours for work item ${item.id}`}
+        onChange={(v) => onUpdate('worst_case_hours', v)}
       />
 
       <span className={styles.divider} aria-hidden="true" />

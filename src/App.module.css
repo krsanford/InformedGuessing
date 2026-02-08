@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding-bottom: 52px; /* space for sticky status bar */
+  padding-bottom: 68px; /* space for sticky status bar */
 }
 
 .main {
@@ -47,9 +47,9 @@
   padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-accent);
+  color: var(--text-hot);
   background: transparent;
-  border: 1px solid var(--surface-border-strong);
+  border: 1px solid rgba(244, 63, 94, 0.25);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
@@ -59,9 +59,10 @@
 }
 
 .addButton:hover {
-  background: var(--surface-raised);
-  border-color: var(--primary-400);
-  color: var(--primary-300);
+  background: rgba(244, 63, 94, 0.08);
+  border-color: var(--hot-400);
+  color: var(--hot-300);
+  box-shadow: var(--glow-hot);
 }
 
 .addButton:active {
@@ -71,11 +72,6 @@
 .addButton:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
-}
-
-.addButton svg {
-  width: 14px;
-  height: 14px;
 }
 
 /* Responsive */

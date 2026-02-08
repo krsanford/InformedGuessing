@@ -11,43 +11,61 @@
   --primary-800: #3730A3;
   --primary-900: #312E81;
 
-  /* Accent: Emerald (computed values) */
+  /* Hot Accent: Rose/Pink */
+  --hot-300: #FDA4AF;
+  --hot-400: #FB7185;
+  --hot-500: #F43F5E;
+  --hot-600: #E11D48;
+
+  /* Computed: Emerald */
   --accent-400: #34D399;
   --accent-500: #10B981;
-  --accent-600: #059669;
 
   /* Semantic */
   --success: #34D399;
   --warning: #FBBF24;
-  --error:   #F87171;
+  --error:   #FB7185;
 
   /* Dark Surfaces */
-  --surface-bg: #0C0C1D;
-  --surface-base: #111128;
-  --surface-raised: #161629;
-  --surface-overlay: #1E1E38;
-  --surface-input: #12122A;
-  --surface-border: rgba(129, 140, 248, 0.12);
-  --surface-border-strong: rgba(129, 140, 248, 0.25);
-  --surface-row-hover: rgba(129, 140, 248, 0.06);
+  --surface-bg: #0A0A1A;
+  --surface-base: #0F0F23;
+  --surface-raised: #14142B;
+  --surface-overlay: #1C1C3A;
+  --surface-input: #111128;
+  --surface-border: rgba(129, 140, 248, 0.1);
+  --surface-border-strong: rgba(129, 140, 248, 0.2);
+  --surface-row-hover: rgba(244, 63, 94, 0.06);
   --surface-row-alt: rgba(129, 140, 248, 0.03);
 
-  /* Text */
-  --text-primary: #E2E8F0;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-dim: #475569;
-  --text-accent: #818CF8;
+  /* Text — brighter for dark bg readability */
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  --text-accent: #A5B4FC;
+  --text-hot: #FB7185;
   --text-computed: #34D399;
 
+  /* Gradients */
+  --gradient-header: linear-gradient(135deg, #0F0F23 0%, #1a0a2e 50%, #0F0F23 100%);
+  --gradient-hot: linear-gradient(135deg, #F43F5E, #818CF8);
+  --gradient-glow-line: linear-gradient(90deg,
+    transparent 0%,
+    rgba(244, 63, 94, 0.4) 20%,
+    rgba(129, 140, 248, 0.5) 50%,
+    rgba(244, 63, 94, 0.4) 80%,
+    transparent 100%
+  );
+  --gradient-table-header: linear-gradient(180deg, #1C1C3A 0%, #14142B 100%);
+
   /* Shadows (dark glow) */
-  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg:  0 12px 32px rgba(0, 0, 0, 0.6);
-  --glow-sm:    0 0 8px rgba(129, 140, 248, 0.15);
-  --glow-md:    0 0 16px rgba(129, 140, 248, 0.2);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg:  0 12px 32px rgba(0, 0, 0, 0.7);
+  --glow-sm:    0 0 8px rgba(129, 140, 248, 0.2);
+  --glow-md:    0 0 16px rgba(129, 140, 248, 0.25);
+  --glow-hot:   0 0 12px rgba(244, 63, 94, 0.25);
   --glow-focus: 0 0 0 2px rgba(129, 140, 248, 0.4);
-  --glow-line:  0 -1px 12px rgba(129, 140, 248, 0.3);
 
   /* Radii */
   --radius-xs: 4px;
@@ -67,7 +85,7 @@
   --duration-slow: 350ms;
 
   /* Focus */
-  --focus-ring: 0 0 0 2px rgba(99, 102, 241, 0.5);
+  --focus-ring: 0 0 0 2px rgba(244, 63, 94, 0.5);
 
   /* Font */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;

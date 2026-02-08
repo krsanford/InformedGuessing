@@ -6,7 +6,6 @@ import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
 import { SettingsDrawer } from './components/SettingsDrawer'
-import { PlusIcon } from './components/icons'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
@@ -74,7 +73,6 @@ function App() {
             onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })}
             className={styles.addButton}
           >
-            <PlusIcon />
             + Add Work Item
           </button>
         </div>

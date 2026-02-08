@@ -1,6 +1,6 @@
 .row {
   display: grid;
-  grid-template-columns: 40px 1fr 0.5fr 72px 72px 1px 72px 72px 72px 36px;
+  grid-template-columns: 40px 1fr 0.5fr 88px 88px 1px 72px 72px 72px 36px;
   align-items: center;
   gap: 0;
   min-height: 44px;
@@ -21,11 +21,11 @@
 
 .row:focus-within {
   background: var(--surface-row-hover);
-  box-shadow: inset 2px 0 0 var(--primary-400);
+  box-shadow: inset 3px 0 0 var(--hot-500);
 }
 
 .rowWarning {
-  box-shadow: inset 2px 0 0 var(--warning);
+  box-shadow: inset 3px 0 0 var(--warning);
 }
 
 /* ID column */
@@ -80,8 +80,8 @@
 .notesInput:focus {
   outline: none;
   background: var(--surface-input);
-  border-color: var(--primary-400);
-  box-shadow: var(--glow-sm);
+  border-color: var(--hot-500);
+  box-shadow: var(--glow-hot);
   color: var(--text-primary);
 }
 
@@ -90,10 +90,17 @@
   color: var(--text-dim);
 }
 
+/* Number stepper wrapper */
+.stepperWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 /* Number inputs */
 .numberInput {
   width: 100%;
-  padding: calc(var(--space) * 0.5) calc(var(--space) * 0.75);
+  padding: calc(var(--space) * 0.5) calc(var(--space) * 2.5) calc(var(--space) * 0.5) calc(var(--space) * 0.75);
   font-size: 0.8125rem;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -121,8 +128,55 @@
 .numberInput:focus {
   outline: none;
   background: var(--surface-input);
-  border-color: var(--primary-400);
-  box-shadow: var(--glow-sm);
+  border-color: var(--hot-500);
+  box-shadow: var(--glow-hot);
+}
+
+/* Stepper buttons */
+.stepperButtons {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.stepperWrap:hover .stepperButtons,
+.stepperWrap:focus-within .stepperButtons {
+  opacity: 1;
+}
+
+.stepUp,
+.stepDown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 12px;
+  padding: 0;
+  background: var(--surface-overlay);
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.stepUp {
+  border-radius: 2px 2px 0 0;
+}
+
+.stepDown {
+  border-radius: 0 0 2px 2px;
+}
+
+.stepUp:hover,
+.stepDown:hover {
+  background: var(--hot-500);
+  color: white;
 }
 
 /* Divider between inputs and computed */
@@ -171,7 +225,7 @@
 
 .removeButton:hover {
   color: var(--error);
-  background: rgba(248, 113, 113, 0.1);
+  background: rgba(251, 113, 133, 0.1);
 }
 
 .removeButton:focus-visible {
@@ -188,14 +242,14 @@
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .row {
-    grid-template-columns: 32px 1fr 0.4fr 64px 64px 1px 64px 64px 64px 32px;
+    grid-template-columns: 32px 1fr 0.4fr 80px 80px 1px 64px 64px 64px 32px;
   }
 }
 
 /* Responsive: mobile */
 @media (max-width: 768px) {
   .row {
-    grid-template-columns: 28px 1fr 56px 56px 28px;
+    grid-template-columns: 28px 1fr 72px 72px 28px;
     padding: 0 calc(var(--space) * 1);
   }
 
@@ -206,6 +260,10 @@
   }
 
   .removeButton {
+    opacity: 1;
+  }
+
+  .stepperButtons {
     opacity: 1;
   }
 }
