@@ -1,17 +1,14 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { WorkItemCalculated, PortfolioResults, EstimationConstants } from '../../domain/estimation'
 import {
-  computeDistributionData,
   computeUncertaintyBars,
   computeDiversificationData,
   computeDurationCurveData,
 } from '../../domain/visualization'
-import { DistributionCurve } from './DistributionCurve'
 import { UncertaintyBars } from './UncertaintyBars'
 import { DiversificationBar } from './DiversificationBar'
 import { EffortBreakdown } from './EffortBreakdown'
 import { DurationCurve } from '../DurationCurve'
-import { ChartIcon } from '../icons'
 import styles from './InsightsPanel.module.css'
 
 interface InsightsPanelProps {
@@ -21,15 +18,8 @@ interface InsightsPanelProps {
 }
 
 export function InsightsPanel({ items, results, constants }: InsightsPanelProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
   const hasData = results !== null && items.length > 0
   const hasRanges = items.some((i) => i.worst_case_hours > i.best_case_hours)
-
-  const distributionData = useMemo(
-    () => (results ? computeDistributionData(results) : null),
-    [results]
-  )
 
   const uncertaintyBars = useMemo(
     () => (results ? computeUncertaintyBars(items, results.total_variance) : []),
@@ -46,74 +36,98 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
     [results, constants]
   )
 
+  if (!hasData || !hasRanges) return null
+
   return (
-    <div className={styles.container}>
-      <button
-        onClick={() => setIsOpen((o) => !o)}
-        className={`${styles.toggleButton} ${isOpen ? styles.toggleButtonActive : ''}`}
-        disabled={!hasData || !hasRanges}
-        aria-expanded={isOpen}
-        aria-controls="insights-panel"
-        title={hasData && hasRanges ? 'Toggle Insights' : 'Add items with ranges to see insights'}
-      >
-        <ChartIcon />
-        <span>Insights</span>
-      </button>
+    <details className={styles.container} open>
+      <summary className={styles.sectionLabel}>Insights</summary>
 
-      <div
-        id="insights-panel"
-        className={`${styles.panel} ${isOpen && hasData && hasRanges ? styles.panelOpen : ''}`}
-      >
-        <div className={styles.panelInner}>
-          {/* Row 1: Distribution curve + Effort breakdown */}
-          <div className={styles.topRow}>
-            <div className={styles.vizCard}>
-              <h3 className={styles.vizTitle}>Outcome Distribution</h3>
-              <p className={styles.vizSubtitle}>
-                Bell curve of likely total effort — shaded regions show confidence levels
-              </p>
-              <DistributionCurve data={distributionData} />
-            </div>
-
-            <div className={styles.vizCard}>
-              <h3 className={styles.vizTitle}>Effort Breakdown</h3>
-              <p className={styles.vizSubtitle}>
-                Expected work vs. risk buffer at each confidence level
-              </p>
-              {results && <EffortBreakdown results={results} />}
-            </div>
+      <div className={styles.grid}>
+        <div className={styles.vizCard}>
+          <h3 className={styles.vizTitle}>Effort Breakdown</h3>
+          <p className={styles.vizSubtitle}>
+            Expected work vs. risk buffer at each confidence level
+          </p>
+          <div className={styles.vizContent}>
+            {results && <EffortBreakdown results={results} />}
           </div>
+          <details className={styles.details}>
+            <summary className={styles.detailsSummary}>How to use this</summary>
+            <p className={styles.detailsBody}>
+              The darkest segment is the base expected effort — what you'd budget if everything
+              goes roughly as planned. The buffer layers show how much extra to plan for at
+              higher confidence levels. <strong>Staff to the 84% number</strong> (expected + 1
+              sigma) for most projects. Use the 97% number for high-stakes commitments where
+              overrun would be costly. If the buffer feels too large, that's a signal to reduce
+              uncertainty in your riskiest items.
+            </p>
+          </details>
+        </div>
 
-          {/* Row 2: Three-column grid */}
-          <div className={styles.secondRow}>
-            <div className={styles.vizCard}>
-              <h3 className={styles.vizTitle}>Uncertainty Ranges</h3>
-              <p className={styles.vizSubtitle}>
-                Per-item best → worst range, sorted by risk contribution
-              </p>
-              <UncertaintyBars items={uncertaintyBars} />
-            </div>
-
-            <div className={styles.vizCard}>
-              <h3 className={styles.vizTitle}>Diversification Effect</h3>
-              <p className={styles.vizSubtitle}>
-                Why portfolio risk is less than the sum of individual risks
-              </p>
-              {diversificationData && (
-                <DiversificationBar data={diversificationData} />
-              )}
-            </div>
-
-            <div className={styles.vizCard}>
-              <h3 className={styles.vizTitle}>Duration Scaling</h3>
-              <p className={styles.vizSubtitle}>
-                Cube-root relationship: effort → calendar time (Brooks's Law)
-              </p>
-              <DurationCurve data={durationCurveData} />
-            </div>
+        <div className={styles.vizCard}>
+          <h3 className={styles.vizTitle}>Uncertainty Ranges</h3>
+          <p className={styles.vizSubtitle}>
+            Per-item best → worst range, sorted by risk contribution
+          </p>
+          <div className={`${styles.vizContent} ${styles.vizContentScroll}`}>
+            <UncertaintyBars items={uncertaintyBars} />
           </div>
+          <details className={styles.details}>
+            <summary className={styles.detailsSummary}>Take action</summary>
+            <p className={styles.detailsBody}>
+              Items at the top contribute the most to portfolio risk. The percentage shows each
+              item's share of total variance. <strong>Focus investigation on the top 2-3
+              items</strong> — narrowing their ranges will have the biggest impact on reducing
+              overall uncertainty. Wide amber bars indicate items where a spike, prototype, or
+              requirements clarification session would be most valuable.
+            </p>
+          </details>
+        </div>
+
+        <div className={styles.vizCard}>
+          <h3 className={styles.vizTitle}>Diversification Effect</h3>
+          <p className={styles.vizSubtitle}>
+            Why portfolio risk is less than the sum of individual risks
+          </p>
+          <div className={styles.vizContent}>
+            {diversificationData && (
+              <DiversificationBar data={diversificationData} />
+            )}
+          </div>
+          <details className={styles.details}>
+            <summary className={styles.detailsSummary}>Why this matters</summary>
+            <p className={styles.detailsBody}>
+              If you added each item's uncertainty independently, you'd get the amber bar — an
+              overly pessimistic total. But statistically, when items are independent, some will
+              come in under estimate while others go over. They partially cancel out. <strong>The
+              more items in your portfolio, the stronger this effect</strong>. This is why
+              large projects are proportionally more predictable than small ones, and why
+              it's better to estimate many small items than one giant lump.
+            </p>
+          </details>
+        </div>
+
+        <div className={styles.vizCard}>
+          <h3 className={styles.vizTitle}>Duration Scaling</h3>
+          <p className={styles.vizSubtitle}>
+            Cube-root relationship: effort → calendar time
+          </p>
+          <div className={styles.vizContent}>
+            <DurationCurve data={durationCurveData} />
+          </div>
+          <details className={styles.details}>
+            <summary className={styles.detailsSummary}>What this means</summary>
+            <p className={styles.detailsBody}>
+              Calendar duration scales with the cube root of effort — not linearly. Doubling
+              the work doesn't double the timeline because you can add people. But each
+              additional person adds coordination overhead (Brooks's Law). <strong>The curve
+              flattens as projects grow</strong>, meaning large projects need proportionally
+              less calendar time per unit of effort. Adjust <em>Duration Scaling Power</em>
+              in advanced settings to match your team's actual parallelization ability.
+            </p>
+          </details>
         </div>
       </div>
-    </div>
+    </details>
   )
 }

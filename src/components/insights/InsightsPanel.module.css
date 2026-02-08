@@ -2,72 +2,39 @@
   margin-top: calc(var(--space) * 2);
 }
 
-/* Toggle button */
-.toggleButton {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--space) * 0.75);
-  padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
-  font-size: 0.8125rem;
+/* Section heading — acts as disclosure toggle */
+.sectionLabel {
+  font-size: 0.75rem;
   font-weight: 600;
-  font-family: inherit;
-  color: var(--text-accent);
-  background: var(--primary-50);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 calc(var(--space) * 2) 0;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-  min-height: 36px;
-  white-space: nowrap;
-}
-
-.toggleButton svg {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.toggleButton:hover:not(:disabled) {
-  background: var(--primary-100);
-  border-color: var(--primary-300);
-  box-shadow: var(--glow-sm);
-}
-
-.toggleButton:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.toggleButtonActive {
-  background: var(--primary-100);
-  border-color: var(--primary-400);
-  box-shadow: var(--glow-sm);
-}
-
-.toggleButton:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-/* Collapsible panel */
-.panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 500ms var(--ease-out),
-              opacity 300ms ease;
-  opacity: 0;
-}
-
-.panelOpen {
-  max-height: 1200px;
-  opacity: 1;
-}
-
-.panelInner {
-  padding: calc(var(--space) * 2) 0;
+  user-select: none;
+  list-style: none;
   display: flex;
-  flex-direction: column;
-  gap: calc(var(--space) * 2);
+  align-items: center;
+  gap: calc(var(--space) * 0.5);
+}
+
+.sectionLabel::-webkit-details-marker {
+  display: none;
+}
+
+.sectionLabel::before {
+  content: '▸';
+  font-size: 0.625rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+  display: inline-block;
+}
+
+.container[open] > .sectionLabel::before {
+  transform: rotate(90deg);
+}
+
+.sectionLabel:hover {
+  color: var(--text-primary);
 }
 
 /* Visualization cards */
@@ -77,6 +44,34 @@
   border-radius: var(--radius-md);
   padding: calc(var(--space) * 2) calc(var(--space) * 2.5);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Flex wrapper for SVG — fills remaining card space */
+.vizContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vizContent :global(svg) {
+  width: 100%;
+  height: 100%;
+}
+
+/* Scrollable variant for variable-height content (UncertaintyBars) */
+.vizContentScroll {
+  overflow-y: auto;
+  align-items: flex-start;
+}
+
+.vizContentScroll :global(svg) {
+  height: auto;
+  flex-shrink: 0;
 }
 
 .vizTitle {
@@ -95,51 +90,76 @@
   line-height: 1.4;
 }
 
-/* Top row: distribution + effort breakdown side by side */
-.topRow {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: calc(var(--space) * 2);
+/* Collapsible details / explanatory text */
+.details {
+  margin-top: auto;
+  padding-top: calc(var(--space) * 0.75);
+  border-top: 1px solid var(--surface-border);
 }
 
-/* Bottom row: three-column grid */
-.secondRow {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 0.8fr;
-  gap: calc(var(--space) * 2);
+.detailsSummary {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-accent);
+  cursor: pointer;
+  user-select: none;
+  padding: calc(var(--space) * 0.5) 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.5);
 }
 
-/* Make DurationCurve SVG fill its card width */
-.secondRow .vizCard:last-child :global(svg) {
-  width: 100%;
+.detailsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.detailsSummary::before {
+  content: '▸';
+  font-size: 0.625rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+  display: inline-block;
+}
+
+details[open] > .detailsSummary::before {
+  transform: rotate(90deg);
+}
+
+.detailsSummary:hover {
+  color: var(--primary-600);
+}
+
+.detailsBody {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: calc(var(--space) * 0.5) 0 calc(var(--space) * 0.5) calc(var(--space) * 1.5);
+}
+
+.detailsBody strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.detailsBody em {
+  color: var(--text-accent);
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* 2×2 equal grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 260px;
+  gap: calc(var(--space) * 2);
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .topRow {
-    grid-template-columns: 1fr;
-  }
-
-  .secondRow {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .secondRow > :first-child {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 768px) {
-  .topRow {
+  .grid {
     grid-template-columns: 1fr;
-  }
-
-  .secondRow {
-    grid-template-columns: 1fr;
-  }
-
-  .secondRow > :first-child {
-    grid-column: auto;
+    grid-auto-rows: auto;
   }
 
   .vizCard {
@@ -148,19 +168,25 @@
 }
 
 @media print {
-  .toggleButton {
-    display: none;
+  .container {
+    display: block;
   }
 
-  .panel {
-    max-height: none;
-    opacity: 1;
-    overflow: visible;
+  .sectionLabel {
+    cursor: default;
+  }
+
+  .sectionLabel::before {
+    display: none;
   }
 
   .vizCard {
     box-shadow: none;
     border: 1px solid #ccc;
     break-inside: avoid;
+  }
+
+  .details {
+    display: none;
   }
 }
