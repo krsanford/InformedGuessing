@@ -42,10 +42,10 @@ export interface PortfolioResults {
 // ============================================================================
 
 export const DEFAULT_CONSTANTS: EstimationConstants = {
-  expected_case_position: 0.4,
+  expected_case_position: 0.6,
   range_spread_divisor: 2.6,
   billable_hours_per_week: 36,
-  duration_scaling_power: 3.5,
+  duration_scaling_power: 3.2,
 };
 
 // ============================================================================
@@ -203,8 +203,9 @@ export function calculateTotalEffortStaffWeeks(
 
 /**
  * Calculate project duration in calendar weeks
- * Formula: ⌈duration_scaling_power × (total_effort_staff_weeks)^(1/3)⌉
- * Uses ceiling (round up) to ensure adequate calendar time
+ * Formula: min(⌈k × E^(1/3)⌉, ⌈E⌉)
+ * Cube-root scaling for larger projects, but never exceeds
+ * one-person sequential duration (staff-weeks rounded up).
  */
 export function calculateDurationWeeks(
   total_effort_staff_weeks: number,
@@ -213,8 +214,9 @@ export function calculateDurationWeeks(
   if (total_effort_staff_weeks === 0) {
     return 0;
   }
-  const duration = duration_scaling_power * Math.pow(total_effort_staff_weeks, 1 / 3);
-  return Math.ceil(duration);
+  const scaled = duration_scaling_power * Math.pow(total_effort_staff_weeks, 1 / 3);
+  const singlePerson = Math.ceil(total_effort_staff_weeks);
+  return Math.min(Math.ceil(scaled), singlePerson);
 }
 
 // ============================================================================

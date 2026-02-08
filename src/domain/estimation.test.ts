@@ -138,7 +138,7 @@ describe('estimation - individual work item calculations', () => {
       const item = { id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
-      expect(result.expected_hours).toBeCloseTo(96, 2)
+      expect(result.expected_hours).toBeCloseTo(104, 2)
       expect(result.range_spread_hours).toBeCloseTo(15.38, 2)
       expect(result.variance).toBeCloseTo(236.69, 1) // Variance precision adjusted
     })
@@ -147,7 +147,7 @@ describe('estimation - individual work item calculations', () => {
       const item = { id: 3, title: '', notes: '', best_case_hours: 100, worst_case_hours: 320 }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
-      expect(result.expected_hours).toBeCloseTo(188, 2)
+      expect(result.expected_hours).toBeCloseTo(232, 2)
       expect(result.range_spread_hours).toBeCloseTo(84.62, 2)
       expect(result.variance).toBeCloseTo(7159.76, 1) // Variance precision adjusted
     })
@@ -158,12 +158,12 @@ describe('estimation - portfolio calculations', () => {
   it('matches worked example from spec', () => {
     const result = calculatePortfolio(TEST_WORK_ITEMS, DEFAULT_CONSTANTS)
 
-    // Expected results from docs/estimation-math-spec.md
-    expect(result.total_expected_hours).toBeCloseTo(828.4, 1)
+    // Expected results with position=0.6, divisor=2.6, billable=36, power=3.2
+    expect(result.total_expected_hours).toBeCloseTo(957.6, 1)
     expect(result.portfolio_range_spread).toBeCloseTo(108.88, 1)
-    expect(result.total_effort_hours).toBeCloseTo(937.28, 1)
-    expect(result.total_effort_staff_weeks).toBeCloseTo(26.03, 1)
-    expect(result.duration_weeks).toBe(11)
+    expect(result.total_effort_hours).toBeCloseTo(1066.48, 1)
+    expect(result.total_effort_staff_weeks).toBeCloseTo(29.62, 1)
+    expect(result.duration_weeks).toBe(10)
   })
 
   it('calculates correct total variance', () => {
@@ -176,7 +176,7 @@ describe('estimation - portfolio calculations', () => {
     const singleItem = [{ id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 }]
     const result = calculatePortfolio(singleItem, DEFAULT_CONSTANTS)
 
-    expect(result.total_expected_hours).toBeCloseTo(96, 2)
+    expect(result.total_expected_hours).toBeCloseTo(104, 2)
     expect(result.portfolio_range_spread).toBeCloseTo(15.38, 2)
   })
 
@@ -269,7 +269,8 @@ describe('estimation - different constants', () => {
     const result = calculatePortfolio(TEST_WORK_ITEMS, constants)
 
     // More hours per week = fewer weeks needed
-    expect(result.total_effort_staff_weeks).toBeLessThan(26.03)
+    const defaultResult = calculatePortfolio(TEST_WORK_ITEMS, DEFAULT_CONSTANTS)
+    expect(result.total_effort_staff_weeks).toBeLessThan(defaultResult.total_effort_staff_weeks)
   })
 
   it('works with different duration_scaling_power', () => {

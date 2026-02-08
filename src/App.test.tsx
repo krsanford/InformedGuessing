@@ -168,10 +168,10 @@ describe('App - UI Integration Tests', () => {
     expect(expectedPosInput).not.toBeNull()
 
     // Should display default values
-    expect(screen.getByDisplayValue('0.4')).toBeInTheDocument()  // Expected case position default
+    expect(screen.getByDisplayValue('0.6')).toBeInTheDocument()  // Expected case position default
     expect(screen.getByDisplayValue('2.6')).toBeInTheDocument()  // Range spread divisor default
     expect(screen.getByDisplayValue('36')).toBeInTheDocument()   // Billable hours default
-    expect(screen.getByDisplayValue('3.5')).toBeInTheDocument()  // Duration scaling default
+    expect(screen.getByDisplayValue('3.2')).toBeInTheDocument()  // Duration scaling default
   })
 
   it('allows editing advanced variables', async () => {
