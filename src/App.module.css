@@ -1,6 +1,11 @@
 .container {
   min-height: 100vh;
   padding-bottom: 68px; /* space for sticky status bar */
+  transition: padding-bottom var(--duration-slow) var(--ease-out);
+}
+
+.containerSettingsOpen {
+  padding-bottom: 348px; /* 68px bar + 280px settings panel */
 }
 
 .main {

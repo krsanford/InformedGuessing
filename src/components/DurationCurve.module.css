@@ -1,0 +1,48 @@
+.svg {
+  width: 180px;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.empty {
+  width: 180px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 0.6875rem;
+  font-style: italic;
+}
+
+.tickLabel {
+  font-size: 6px;
+  fill: #78716C;
+  font-family: var(--font-mono);
+}
+
+.ceilLabel {
+  font-size: 6.5px;
+  font-weight: 600;
+  fill: #D97706;
+  font-family: var(--font-mono);
+}
+
+.axisTitle {
+  font-size: 5.5px;
+  fill: #A8A29E;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 768px) {
+  .svg {
+    width: 140px;
+  }
+}
+
+@media print {
+  .svg {
+    width: 160px;
+  }
+}

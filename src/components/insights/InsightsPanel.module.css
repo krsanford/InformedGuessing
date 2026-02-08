@@ -1,0 +1,166 @@
+.container {
+  margin-top: calc(var(--space) * 2);
+}
+
+/* Toggle button */
+.toggleButton {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-accent);
+  background: var(--primary-50);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+.toggleButton svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.toggleButton:hover:not(:disabled) {
+  background: var(--primary-100);
+  border-color: var(--primary-300);
+  box-shadow: var(--glow-sm);
+}
+
+.toggleButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.toggleButtonActive {
+  background: var(--primary-100);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+.toggleButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Collapsible panel */
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 500ms var(--ease-out),
+              opacity 300ms ease;
+  opacity: 0;
+}
+
+.panelOpen {
+  max-height: 1200px;
+  opacity: 1;
+}
+
+.panelInner {
+  padding: calc(var(--space) * 2) 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * 2);
+}
+
+/* Visualization cards */
+.vizCard {
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: calc(var(--space) * 2) calc(var(--space) * 2.5);
+  box-shadow: var(--shadow-sm);
+}
+
+.vizTitle {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-accent);
+  margin: 0 0 2px 0;
+}
+
+.vizSubtitle {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin: 0 0 calc(var(--space) * 1.5) 0;
+  line-height: 1.4;
+}
+
+/* Top row: distribution + effort breakdown side by side */
+.topRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: calc(var(--space) * 2);
+}
+
+/* Bottom row: three-column grid */
+.secondRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr;
+  gap: calc(var(--space) * 2);
+}
+
+/* Make DurationCurve SVG fill its card width */
+.secondRow .vizCard:last-child :global(svg) {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .secondRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .secondRow > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .secondRow {
+    grid-template-columns: 1fr;
+  }
+
+  .secondRow > :first-child {
+    grid-column: auto;
+  }
+
+  .vizCard {
+    padding: calc(var(--space) * 1.5);
+  }
+}
+
+@media print {
+  .toggleButton {
+    display: none;
+  }
+
+  .panel {
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+  }
+
+  .vizCard {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}

@@ -5,6 +5,7 @@ import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
+import { InsightsPanel } from './components/insights/InsightsPanel'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
@@ -57,7 +58,7 @@ function App() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${settingsOpen ? styles.containerSettingsOpen : ''}`}>
       <AppHeader />
 
       <main className={styles.main}>
@@ -77,6 +78,12 @@ function App() {
           items={itemsWithCalculations}
           onUpdate={handleFieldUpdate}
           onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+        />
+
+        <InsightsPanel
+          items={itemsWithCalculations}
+          results={results}
+          constants={state.constants}
         />
       </main>
 

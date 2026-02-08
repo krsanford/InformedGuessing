@@ -1,0 +1,44 @@
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+.itemLabel {
+  font-size: 8px;
+  font-weight: 500;
+  fill: #44403C;
+}
+
+.pctLabel {
+  font-size: 7px;
+  font-weight: 600;
+  fill: #78716C;
+  font-family: var(--font-mono);
+}
+
+.tickLabel {
+  font-size: 7px;
+  fill: #78716C;
+  font-family: var(--font-mono);
+}
+
+.rowHover:hover {
+  fill: rgba(67, 56, 202, 0.03);
+}
+
+@media print {
+  .svg {
+    max-width: 100%;
+  }
+}

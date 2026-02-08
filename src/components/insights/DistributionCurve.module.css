@@ -1,0 +1,83 @@
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+.markerLabel {
+  font-size: 8px;
+  font-weight: 600;
+  fill: #4338CA;
+  letter-spacing: 0.04em;
+}
+
+.markerLabelTeal {
+  font-size: 8px;
+  font-weight: 600;
+  fill: #0F766E;
+  letter-spacing: 0.04em;
+}
+
+.markerLabelDim {
+  font-size: 7px;
+  font-weight: 500;
+  fill: #78716C;
+  letter-spacing: 0.04em;
+}
+
+.confidenceLabel {
+  font-size: 9px;
+  font-weight: 700;
+  fill: #4338CA;
+  font-family: var(--font-mono);
+}
+
+.confidenceLabelTeal {
+  font-size: 9px;
+  font-weight: 700;
+  fill: #0F766E;
+  font-family: var(--font-mono);
+}
+
+.confidenceLabelDim {
+  font-size: 8px;
+  font-weight: 600;
+  fill: #A8A29E;
+  font-family: var(--font-mono);
+}
+
+.tickLabel {
+  font-size: 7px;
+  fill: #78716C;
+  font-family: var(--font-mono);
+}
+
+.valueCallout {
+  font-size: 9px;
+  font-weight: 700;
+  fill: #4338CA;
+  font-family: var(--font-mono);
+}
+
+.valueCalloutTeal {
+  font-size: 9px;
+  font-weight: 700;
+  fill: #0F766E;
+  font-family: var(--font-mono);
+}
+
+@media print {
+  .svg {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,51 @@
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-style: italic;
+  text-align: center;
+  padding: 0 var(--space);
+}
+
+.barLabel {
+  font-size: 7.5px;
+  font-weight: 500;
+  fill: #44403C;
+  letter-spacing: 0.02em;
+}
+
+.barValue {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  fill: #B45309;
+}
+
+.barValueTeal {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  fill: #0F766E;
+}
+
+.benefitLabel {
+  font-size: 8px;
+  font-weight: 700;
+  fill: #4338CA;
+  letter-spacing: 0.02em;
+}
+
+@media print {
+  .svg {
+    max-width: 100%;
+  }
+}
