@@ -49,7 +49,7 @@ export function OutputsSection({ results, settingsOpen, onSettingsToggle, settin
             <span className={styles.sep} aria-hidden="true" />
             <div className={styles.metric}>
               <span className={styles.metricLabel}>Total Effort Hours</span>
-              <span className={styles.metricValue}>
+              <span className={styles.metricValuePrimary}>
                 <AnimatedNumber value={results.total_effort_hours} />h
               </span>
             </div>
