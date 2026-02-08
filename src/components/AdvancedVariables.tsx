@@ -1,4 +1,6 @@
 import type { EstimationConstants } from '../domain/estimation'
+import { GearIcon, ChevronIcon } from './icons'
+import styles from './AdvancedVariables.module.css'
 
 interface AdvancedVariablesProps {
   constants: EstimationConstants
@@ -17,18 +19,20 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
 
   return (
     <details open>
-      <summary className="advanced-summary">
-        <span className="section-title">
-          <span className="section-number">⚙</span>
+      <summary className={styles.summary}>
+        <span className={styles.sectionTitle}>
+          <span className={styles.sectionBadge}>
+            <GearIcon />
+          </span>
           Advanced Settings
         </span>
-        <span className="collapse-icon">▼</span>
+        <ChevronIcon className={styles.chevronOpen} />
       </summary>
-      <div className="advanced-content">
-        <div className="advanced-field">
-          <label htmlFor="expected_case_position">
+      <div className={styles.content}>
+        <div className={styles.field}>
+          <label htmlFor="expected_case_position" className={styles.fieldLabel}>
             Expected Case Position
-            <span className="field-help">Position between best (0) and worst (1) case for expected calculation</span>
+            <span className={styles.fieldHelp}>Position between best (0) and worst (1) case for expected calculation</span>
           </label>
           <input
             id="expected_case_position"
@@ -38,14 +42,14 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
             step="0.1"
             value={constants.expected_case_position}
             onChange={(e) => handleNumberChange('expected_case_position', e.target.value)}
-            className="number-input"
+            className={styles.fieldInput}
           />
         </div>
 
-        <div className="advanced-field">
-          <label htmlFor="range_spread_divisor">
+        <div className={styles.field}>
+          <label htmlFor="range_spread_divisor" className={styles.fieldLabel}>
             Range Spread Divisor
-            <span className="field-help">Controls confidence interval width (higher = tighter spread)</span>
+            <span className={styles.fieldHelp}>Controls confidence interval width (higher = tighter spread)</span>
           </label>
           <input
             id="range_spread_divisor"
@@ -54,14 +58,14 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
             step="0.1"
             value={constants.range_spread_divisor}
             onChange={(e) => handleNumberChange('range_spread_divisor', e.target.value)}
-            className="number-input"
+            className={styles.fieldInput}
           />
         </div>
 
-        <div className="advanced-field">
-          <label htmlFor="billable_hours_per_week">
+        <div className={styles.field}>
+          <label htmlFor="billable_hours_per_week" className={styles.fieldLabel}>
             Billable Hours per Week
-            <span className="field-help">Actual productive development hours available per week</span>
+            <span className={styles.fieldHelp}>Actual productive development hours available per week</span>
           </label>
           <input
             id="billable_hours_per_week"
@@ -70,14 +74,14 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
             step="1"
             value={constants.billable_hours_per_week}
             onChange={(e) => handleNumberChange('billable_hours_per_week', e.target.value)}
-            className="number-input"
+            className={styles.fieldInput}
           />
         </div>
 
-        <div className="advanced-field">
-          <label htmlFor="duration_scaling_power">
+        <div className={styles.field}>
+          <label htmlFor="duration_scaling_power" className={styles.fieldLabel}>
             Duration Scaling Power
-            <span className="field-help">Coordination overhead factor (higher = more overhead impact)</span>
+            <span className={styles.fieldHelp}>Coordination overhead factor (higher = more overhead impact)</span>
           </label>
           <input
             id="duration_scaling_power"
@@ -86,11 +90,11 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
             step="0.1"
             value={constants.duration_scaling_power}
             onChange={(e) => handleNumberChange('duration_scaling_power', e.target.value)}
-            className="number-input"
+            className={styles.fieldInput}
           />
         </div>
 
-        <button onClick={onReset} className="btn-secondary reset-button">
+        <button onClick={onReset} className={styles.resetButton}>
           ↺ Reset to Defaults
         </button>
       </div>

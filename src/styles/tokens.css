@@ -1,0 +1,75 @@
+:root {
+  /* Primary: Deep Indigo */
+  --primary-50:  #EEF2FF;
+  --primary-100: #E0E7FF;
+  --primary-200: #C7D2FE;
+  --primary-300: #A5B4FC;
+  --primary-400: #818CF8;
+  --primary-500: #6366F1;
+  --primary-600: #4F46E5;
+  --primary-700: #4338CA;
+  --primary-800: #3730A3;
+  --primary-900: #312E81;
+
+  /* Accent: Warm Coral */
+  --accent-50:  #FFF7ED;
+  --accent-100: #FFEDD5;
+  --accent-200: #FED7AA;
+  --accent-300: #FDBA74;
+  --accent-400: #FB923C;
+  --accent-500: #F97316;
+  --accent-600: #EA580C;
+  --accent-700: #C2410C;
+
+  /* Semantic */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error:   #EF4444;
+
+  /* Neutrals (warm stone) */
+  --neutral-50:  #FAFAF9;
+  --neutral-100: #F5F5F4;
+  --neutral-200: #E7E5E4;
+  --neutral-300: #D6D3D1;
+  --neutral-400: #A8A29E;
+  --neutral-500: #78716C;
+  --neutral-600: #57534E;
+  --neutral-700: #44403C;
+  --neutral-800: #292524;
+  --neutral-900: #1C1917;
+
+  /* Surfaces */
+  --surface-bg: linear-gradient(135deg, #F5F3FF 0%, #FFF7ED 50%, #F0F9FF 100%);
+  --surface-card: rgba(255, 255, 255, 0.82);
+  --surface-card-solid: #FFFFFF;
+  --surface-card-border: rgba(255, 255, 255, 0.6);
+  --surface-glass-blur: 12px;
+
+  /* Shadows (indigo-tinted) */
+  --shadow-xs:  0 1px 2px rgba(79, 70, 229, 0.04);
+  --shadow-sm:  0 1px 3px rgba(79, 70, 229, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:  0 4px 8px rgba(79, 70, 229, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg:  0 12px 24px rgba(79, 70, 229, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl:  0 24px 48px rgba(79, 70, 229, 0.16), 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 16px 32px rgba(79, 70, 229, 0.14), 0 6px 12px rgba(0, 0, 0, 0.04);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space: 8px;
+
+  /* Timing */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.4);
+}

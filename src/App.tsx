@@ -1,11 +1,13 @@
 import { useReducer } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
 import { appReducer, initialState } from './reducer'
-import { WorkItemsTable } from './components/WorkItemsTable'
+import { AppHeader } from './components/AppHeader'
+import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
+import { PlusIcon, ChevronIcon, ChartIcon } from './components/icons'
 import type { WorkItem } from './domain/estimation'
-import './App.css'
+import styles from './App.module.css'
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
@@ -55,35 +57,29 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1 className="app-title">Informed Guessing</h1>
-        <p className="app-subtitle">Two-Point Estimation Workbench</p>
-      </header>
+    <div className={styles.container}>
+      <AppHeader />
 
-      <div className="main-layout">
-        <div className="primary-content">
-          <section className="section">
+      <div className={styles.mainLayout}>
+        <div className={styles.primaryContent}>
+          <section className={styles.section}>
             <details open>
-              <summary className="section-summary">
-                <span className="section-title">
-                  <span className="section-number">1</span>
+              <summary className={styles.sectionSummary}>
+                <span className={styles.sectionTitle}>
+                  <span className={styles.sectionBadge}>1</span>
                   Work Items
                 </span>
-                <span className="collapse-icon">▼</span>
+                <ChevronIcon className={styles.chevronOpen} />
               </summary>
-              <div className="section-content">
-                {state.workItems.length === 0 ? (
-                  <p className="empty-state">No work items yet. Click "+ Add Work Item" to get started.</p>
-                ) : (
-                  <WorkItemsTable
-                    items={itemsWithCalculations}
-                    onUpdate={handleFieldUpdate}
-                    onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
-                  />
-                )}
-                <div className="table-footer">
-                  <button onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })} className="btn-primary">
+              <div className={styles.sectionContent}>
+                <WorkItemList
+                  items={itemsWithCalculations}
+                  onUpdate={handleFieldUpdate}
+                  onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+                />
+                <div className={styles.tableFooter}>
+                  <button onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })} className={styles.addButton}>
+                    <PlusIcon />
                     + Add Work Item
                   </button>
                 </div>
@@ -91,24 +87,26 @@ function App() {
             </details>
           </section>
 
-          <section className="section">
+          <section className={styles.section}>
             <details open>
-              <summary className="section-summary">
-                <span className="section-title">
-                  <span className="section-number">2</span>
+              <summary className={styles.sectionSummary}>
+                <span className={styles.sectionTitle}>
+                  <span className={styles.sectionBadgeIcon}>
+                    <ChartIcon />
+                  </span>
                   Results
                 </span>
-                <span className="collapse-icon">▼</span>
+                <ChevronIcon className={styles.chevronOpen} />
               </summary>
-              <div className="section-content">
+              <div className={styles.sectionContent}>
                 <OutputsSection results={results} />
               </div>
             </details>
           </section>
         </div>
 
-        <aside className="sidebar">
-          <div className="sidebar-section">
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarCard}>
             <AdvancedVariables
               constants={state.constants}
               onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
