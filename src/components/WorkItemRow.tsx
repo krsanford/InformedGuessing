@@ -5,6 +5,7 @@ import styles from './WorkItemRow.module.css'
 
 interface WorkItemRowProps {
   item: WorkItemCalculated
+  rowNumber: number
   onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours', value: string) => void
   onRemove: () => void
 }
@@ -56,17 +57,17 @@ function NumberStepper({
   )
 }
 
-export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
+export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
 
   return (
     <div
       className={`${styles.row} ${warning ? styles.rowWarning : ''}`}
       role="listitem"
-      style={{ '--index': item.id } as React.CSSProperties}
+      style={{ '--index': rowNumber } as React.CSSProperties}
     >
       <span className={styles.id}>
-        <span aria-label={`Work item ${item.id}`}>{item.id}</span>
+        <span aria-label={`Work item ${rowNumber}`}>{rowNumber}</span>
         {warning && (
           <span
             className={styles.warningDot}
@@ -80,7 +81,7 @@ export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
       </span>
 
       <label htmlFor={`title-${item.id}`} className="sr-only">
-        Title for item {item.id}
+        Title for item {rowNumber}
       </label>
       <input
         id={`title-${item.id}`}
@@ -89,11 +90,11 @@ export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
         onChange={(e) => onUpdate('title', e.target.value)}
         className={styles.titleInput}
         placeholder="Feature or task name"
-        aria-label={`Title for work item ${item.id}`}
+        aria-label={`Title for work item ${rowNumber}`}
       />
 
       <label htmlFor={`notes-${item.id}`} className="sr-only">
-        Notes for item {item.id}
+        Notes for item {rowNumber}
       </label>
       <input
         id={`notes-${item.id}`}
@@ -102,26 +103,26 @@ export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
         onChange={(e) => onUpdate('notes', e.target.value)}
         className={styles.notesInput}
         placeholder="Notes..."
-        aria-label={`Notes for work item ${item.id}`}
+        aria-label={`Notes for work item ${rowNumber}`}
       />
 
       <label htmlFor={`best-${item.id}`} className="sr-only">
-        Best case hours for item {item.id}
+        Best case hours for item {rowNumber}
       </label>
       <NumberStepper
         id={`best-${item.id}`}
         value={item.best_case_hours}
-        ariaLabel={`Best case hours for work item ${item.id}`}
+        ariaLabel={`Best case hours for work item ${rowNumber}`}
         onChange={(v) => onUpdate('best_case_hours', v)}
       />
 
       <label htmlFor={`worst-${item.id}`} className="sr-only">
-        Worst case hours for item {item.id}
+        Worst case hours for item {rowNumber}
       </label>
       <NumberStepper
         id={`worst-${item.id}`}
         value={item.worst_case_hours}
-        ariaLabel={`Worst case hours for work item ${item.id}`}
+        ariaLabel={`Worst case hours for work item ${rowNumber}`}
         onChange={(v) => onUpdate('worst_case_hours', v)}
       />
 
@@ -140,7 +141,7 @@ export function WorkItemRow({ item, onUpdate, onRemove }: WorkItemRowProps) {
       <button
         onClick={onRemove}
         className={styles.removeButton}
-        aria-label={`Remove work item ${item.id}`}
+        aria-label={`Remove work item ${rowNumber}`}
       >
         <TrashIcon />
       </button>

@@ -36,10 +36,11 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
         <span className={styles.headerCellAction} />
       </div>
       <div role="list" aria-label="Work items">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <WorkItemRow
             key={item.id}
             item={item}
+            rowNumber={index + 1}
             onUpdate={(field, value) => onUpdate(item.id, field, value)}
             onRemove={() => onRemove(item.id)}
           />

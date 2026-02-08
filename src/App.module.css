@@ -31,9 +31,10 @@
   font-weight: 700;
   font-family: var(--font-mono);
   color: var(--text-accent);
-  background: var(--surface-overlay);
+  background: var(--primary-50);
   padding: 2px 8px;
   border-radius: var(--radius-full);
+  border: 1px solid var(--surface-border);
 }
 
 .toolbarSpacer {
@@ -47,26 +48,26 @@
   padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-hot);
-  background: transparent;
-  border: 1px solid rgba(244, 63, 94, 0.25);
+  color: #FFFFFF;
+  background: var(--gradient-hot);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
   font-family: inherit;
   white-space: nowrap;
   min-height: 36px;
+  box-shadow: var(--shadow-sm);
 }
 
 .addButton:hover {
-  background: rgba(244, 63, 94, 0.08);
-  border-color: var(--hot-400);
-  color: var(--hot-300);
-  box-shadow: var(--glow-hot);
+  box-shadow: var(--shadow-md), var(--glow-hot);
+  transform: translateY(-1px);
 }
 
 .addButton:active {
-  background: var(--surface-overlay);
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .addButton:focus-visible {

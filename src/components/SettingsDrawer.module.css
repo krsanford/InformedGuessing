@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.25);
   z-index: 200;
   animation: fadeIn var(--duration-fast) ease;
 }
@@ -15,7 +15,7 @@
   max-width: 90vw;
   background: var(--surface-base);
   border-left: 1px solid var(--surface-border-strong);
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.08);
   z-index: 201;
   transform: translateX(100%);
   transition: transform var(--duration-normal) var(--ease-out);
@@ -63,7 +63,7 @@
 
 .closeButton:hover {
   color: var(--text-primary);
-  background: var(--surface-raised);
+  background: var(--surface-overlay);
   border-color: var(--surface-border);
 }
 

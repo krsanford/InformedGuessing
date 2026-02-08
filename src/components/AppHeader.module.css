@@ -1,33 +1,21 @@
 .header {
-  background: var(--gradient-header);
-  border-bottom: 1px solid var(--surface-border-strong);
+  background:
+    /* Fine triangle grid — 10px, 3 directions */
+    repeating-linear-gradient(0deg, transparent, transparent 9px, rgba(255, 255, 255, 0.05) 9px, rgba(255, 255, 255, 0.05) 10px),
+    repeating-linear-gradient(60deg, transparent, transparent 9px, rgba(255, 255, 255, 0.05) 9px, rgba(255, 255, 255, 0.05) 10px),
+    repeating-linear-gradient(-60deg, transparent, transparent 9px, rgba(255, 255, 255, 0.05) 9px, rgba(255, 255, 255, 0.05) 10px),
+    /* Larger triangle grid — 24px, amber tint */
+    repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(251, 191, 36, 0.045) 23px, rgba(251, 191, 36, 0.045) 24px),
+    repeating-linear-gradient(60deg, transparent, transparent 23px, rgba(251, 191, 36, 0.045) 23px, rgba(251, 191, 36, 0.045) 24px),
+    repeating-linear-gradient(-60deg, transparent, transparent 23px, rgba(251, 191, 36, 0.045) 23px, rgba(251, 191, 36, 0.045) 24px),
+    var(--gradient-header);
   padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
   position: sticky;
   top: 0;
   z-index: 100;
   overflow: hidden;
-}
-
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--gradient-glow-line);
-}
-
-.header::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -20px;
-  width: 120px;
-  height: 120px;
-  border: 1px solid rgba(244, 63, 94, 0.08);
-  border-radius: 50%;
-  pointer-events: none;
+  border-bottom: none;
+  box-shadow: 0 2px 12px rgba(55, 48, 163, 0.20);
 }
 
 .inner {
@@ -36,6 +24,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 1;
 }
 
 .textGroup {
@@ -47,15 +37,16 @@
 .title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #FFFFFF;
   letter-spacing: -0.02em;
   margin: 0;
   line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
 }
 
 .subtitle {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.70);
   font-weight: 400;
   letter-spacing: 0.04em;
 }
@@ -67,23 +58,23 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  background: transparent;
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.80);
   cursor: pointer;
   transition: all var(--duration-fast) ease;
 }
 
 .gearButton:hover {
-  color: var(--text-accent);
-  background: var(--surface-raised);
-  border-color: var(--surface-border);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.20);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .gearButton:focus-visible {
   outline: none;
-  box-shadow: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
 }
 
 .gearButton svg {
@@ -93,9 +84,9 @@
 }
 
 .gearActive {
-  color: var(--text-accent);
-  background: var(--surface-overlay);
-  border-color: var(--surface-border-strong);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.30);
 }
 
 .gearActive svg {
@@ -122,6 +113,7 @@
     position: static;
     background: white;
     border-bottom: 2px solid black;
+    box-shadow: none;
   }
 
   .title {

@@ -21,7 +21,7 @@
 
 .row:focus-within {
   background: var(--surface-row-hover);
-  box-shadow: inset 3px 0 0 var(--hot-500);
+  box-shadow: inset 3px 0 0 var(--primary-500);
 }
 
 .rowWarning {
@@ -72,7 +72,7 @@
 
 .titleInput:hover,
 .notesInput:hover {
-  background: var(--surface-input);
+  background: var(--surface-overlay);
   border-color: var(--surface-border);
 }
 
@@ -80,8 +80,8 @@
 .notesInput:focus {
   outline: none;
   background: var(--surface-input);
-  border-color: var(--hot-500);
-  box-shadow: var(--glow-hot);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
   color: var(--text-primary);
 }
 
@@ -121,15 +121,15 @@
 }
 
 .numberInput:hover {
-  background: var(--surface-input);
+  background: var(--surface-overlay);
   border-color: var(--surface-border);
 }
 
 .numberInput:focus {
   outline: none;
   background: var(--surface-input);
-  border-color: var(--hot-500);
-  box-shadow: var(--glow-hot);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
 }
 
 /* Stepper buttons */
@@ -175,7 +175,7 @@
 
 .stepUp:hover,
 .stepDown:hover {
-  background: var(--hot-500);
+  background: var(--primary-500);
   color: white;
 }
 
@@ -197,6 +197,7 @@
   padding: 0 calc(var(--space) * 0.75);
   white-space: nowrap;
   user-select: all;
+  font-weight: 600;
 }
 
 /* Remove button */
@@ -225,7 +226,7 @@
 
 .removeButton:hover {
   color: var(--error);
-  background: rgba(251, 113, 133, 0.1);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 .removeButton:focus-visible {

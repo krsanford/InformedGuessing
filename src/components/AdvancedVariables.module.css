@@ -1,36 +1,37 @@
 .content {
   padding: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--space) * 2);
+  flex-wrap: wrap;
 }
 
 .field {
-  margin-bottom: calc(var(--space) * 2.5);
-}
-
-.field:last-of-type {
-  margin-bottom: calc(var(--space) * 1.5);
+  flex: 1;
+  min-width: 160px;
 }
 
 .fieldLabel {
   display: block;
-  margin-bottom: calc(var(--space) * 0.75);
+  margin-bottom: calc(var(--space) * 0.5);
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-primary);
 }
 
 .fieldHelp {
   display: block;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
   font-weight: 400;
-  margin-top: calc(var(--space) * 0.5);
-  line-height: 1.5;
+  margin-top: 2px;
+  line-height: 1.4;
 }
 
 .fieldInput {
   width: 100%;
-  padding: calc(var(--space) * 1) calc(var(--space) * 1.5);
-  font-size: 0.875rem;
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1);
+  font-size: 0.8125rem;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -39,7 +40,7 @@
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   transition: all var(--duration-fast) ease;
-  min-height: 40px;
+  min-height: 34px;
 }
 
 .fieldInput:hover {
@@ -56,28 +57,41 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--space) * 0.75);
-  margin-top: calc(var(--space) * 1.5);
-  width: 100%;
-  padding: calc(var(--space) * 1) calc(var(--space) * 2);
-  font-size: 0.8125rem;
+  gap: calc(var(--space) * 0.5);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--text-secondary);
-  background: var(--surface-raised);
+  color: var(--text-muted);
+  background: transparent;
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) ease;
   font-family: inherit;
+  white-space: nowrap;
+  min-height: 34px;
+  align-self: flex-end;
 }
 
 .resetButton:hover {
   background: var(--surface-overlay);
   border-color: var(--surface-border-strong);
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .resetButton:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(var(--space) * 1.5);
+  }
+
+  .field {
+    min-width: unset;
+  }
 }

@@ -1,5 +1,5 @@
 :root {
-  /* Primary: Electric Indigo */
+  /* Primary: Deep Indigo */
   --primary-50:  #EEF2FF;
   --primary-100: #E0E7FF;
   --primary-200: #C7D2FE;
@@ -11,67 +11,68 @@
   --primary-800: #3730A3;
   --primary-900: #312E81;
 
-  /* Hot Accent: Rose/Pink */
-  --hot-300: #FDA4AF;
-  --hot-400: #FB7185;
-  --hot-500: #F43F5E;
-  --hot-600: #E11D48;
+  /* Hot Accent: Warm Amber */
+  --hot-300: #FCD34D;
+  --hot-400: #FBBF24;
+  --hot-500: #D97706;
+  --hot-600: #B45309;
 
-  /* Computed: Emerald */
-  --accent-400: #34D399;
-  --accent-500: #10B981;
+  /* Accent: Deep Teal (computed values) */
+  --accent-400: #2DD4BF;
+  --accent-500: #0D9488;
+  --accent-600: #0F766E;
 
   /* Semantic */
-  --success: #34D399;
-  --warning: #FBBF24;
-  --error:   #FB7185;
+  --success: #059669;
+  --warning: #D97706;
+  --error:   #DC2626;
 
-  /* Dark Surfaces */
-  --surface-bg: #0A0A1A;
-  --surface-base: #0F0F23;
-  --surface-raised: #14142B;
-  --surface-overlay: #1C1C3A;
-  --surface-input: #111128;
-  --surface-border: rgba(129, 140, 248, 0.1);
-  --surface-border-strong: rgba(129, 140, 248, 0.2);
-  --surface-row-hover: rgba(244, 63, 94, 0.06);
-  --surface-row-alt: rgba(129, 140, 248, 0.03);
+  /* Light Surfaces */
+  --surface-bg: #F8F6F2;
+  --surface-base: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-overlay: #F3F1EC;
+  --surface-input: #FFFFFF;
+  --surface-border: rgba(67, 56, 202, 0.10);
+  --surface-border-strong: rgba(67, 56, 202, 0.18);
+  --surface-row-hover: rgba(67, 56, 202, 0.04);
+  --surface-row-alt: rgba(67, 56, 202, 0.025);
 
-  /* Text — brighter for dark bg readability */
-  --text-primary: #F1F5F9;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-dim: #64748B;
-  --text-accent: #A5B4FC;
-  --text-hot: #FB7185;
-  --text-computed: #34D399;
+  /* Text — dark for light bg readability */
+  --text-primary: #1C1917;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
+  --text-dim: #A8A29E;
+  --text-accent: #4338CA;
+  --text-hot: #B45309;
+  --text-computed: #0F766E;
 
   /* Gradients */
-  --gradient-header: linear-gradient(135deg, #0F0F23 0%, #1a0a2e 50%, #0F0F23 100%);
-  --gradient-hot: linear-gradient(135deg, #F43F5E, #818CF8);
+  --gradient-header: linear-gradient(135deg, #312E81 0%, #4338CA 45%, #5B21B6 100%);
+  --gradient-hot: linear-gradient(135deg, #D97706, #92400E);
   --gradient-glow-line: linear-gradient(90deg,
     transparent 0%,
-    rgba(244, 63, 94, 0.4) 20%,
-    rgba(129, 140, 248, 0.5) 50%,
-    rgba(244, 63, 94, 0.4) 80%,
+    rgba(67, 56, 202, 0.35) 20%,
+    rgba(180, 83, 9, 0.3) 50%,
+    rgba(67, 56, 202, 0.35) 80%,
     transparent 100%
   );
-  --gradient-table-header: linear-gradient(180deg, #1C1C3A 0%, #14142B 100%);
+  --gradient-table-header: linear-gradient(180deg, #F8F6F2 0%, #F0EDE6 100%);
 
-  /* Shadows (dark glow) */
-  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.6);
-  --shadow-lg:  0 12px 32px rgba(0, 0, 0, 0.7);
-  --glow-sm:    0 0 8px rgba(129, 140, 248, 0.2);
-  --glow-md:    0 0 16px rgba(129, 140, 248, 0.25);
-  --glow-hot:   0 0 12px rgba(244, 63, 94, 0.25);
-  --glow-focus: 0 0 0 2px rgba(129, 140, 248, 0.4);
+  /* Shadows (warm, grounded) */
+  --shadow-sm:  0 1px 3px rgba(28, 25, 23, 0.06), 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md:  0 4px 12px rgba(28, 25, 23, 0.08), 0 2px 4px rgba(28, 25, 23, 0.04);
+  --shadow-lg:  0 12px 32px rgba(28, 25, 23, 0.10), 0 4px 8px rgba(28, 25, 23, 0.05);
+  --glow-sm:    0 0 8px rgba(67, 56, 202, 0.12);
+  --glow-md:    0 0 16px rgba(67, 56, 202, 0.18);
+  --glow-hot:   0 0 12px rgba(217, 119, 6, 0.18);
+  --glow-focus: 0 0 0 3px rgba(67, 56, 202, 0.20);
 
   /* Radii */
   --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
   --radius-full: 9999px;
 
   /* Spacing */
@@ -85,7 +86,7 @@
   --duration-slow: 350ms;
 
   /* Focus */
-  --focus-ring: 0 0 0 2px rgba(244, 63, 94, 0.5);
+  --focus-ring: 0 0 0 3px rgba(67, 56, 202, 0.30);
 
   /* Font */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;

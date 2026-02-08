@@ -25,8 +25,8 @@
 }
 
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 4px rgba(129, 140, 248, 0.2); }
-  50% { box-shadow: 0 0 12px rgba(129, 140, 248, 0.4); }
+  0%, 100% { box-shadow: 0 0 4px rgba(67, 56, 202, 0.12); }
+  50% { box-shadow: 0 0 12px rgba(67, 56, 202, 0.25); }
 }
 
 @keyframes statusBarEnter {

@@ -5,7 +5,6 @@ import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
-import { SettingsDrawer } from './components/SettingsDrawer'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
@@ -59,10 +58,7 @@ function App() {
 
   return (
     <div className={styles.container}>
-      <AppHeader
-        onSettingsToggle={() => setSettingsOpen((o) => !o)}
-        settingsOpen={settingsOpen}
-      />
+      <AppHeader />
 
       <main className={styles.main}>
         <div className={styles.toolbar}>
@@ -84,18 +80,18 @@ function App() {
         />
       </main>
 
-      <OutputsSection results={results} />
-
-      <SettingsDrawer
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      >
-        <AdvancedVariables
-          constants={state.constants}
-          onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
-          onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
-        />
-      </SettingsDrawer>
+      <OutputsSection
+        results={results}
+        settingsOpen={settingsOpen}
+        onSettingsToggle={() => setSettingsOpen((o) => !o)}
+        settingsContent={
+          <AdvancedVariables
+            constants={state.constants}
+            onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
+            onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
+          />
+        }
+      />
     </div>
   )
 }

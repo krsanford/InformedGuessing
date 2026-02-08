@@ -9,7 +9,7 @@ describe('App - UI Integration Tests', () => {
     
     expect(screen.getByText('Informed Guessing')).toBeInTheDocument()
     expect(screen.getByText('Work Items')).toBeInTheDocument()
-    expect(screen.getByText('Advanced Settings')).toBeInTheDocument()
+    expect(screen.getByLabelText('Toggle advanced settings')).toBeInTheDocument()
     expect(screen.getByText('Results')).toBeInTheDocument()
   })
 
@@ -229,6 +229,24 @@ describe('App - UI Integration Tests', () => {
     expect(screen.getByText('Total Expected Hours')).toBeInTheDocument()
     const outputs = screen.getAllByText(/\d+\.\d+/)
     expect(outputs.length).toBeGreaterThan(0)
+  })
+
+  it('renumbers rows after deletion', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    // Add two more items (starts with 1, now 3 total)
+    await user.click(screen.getByText('+ Add Work Item'))
+    await user.click(screen.getByText('+ Add Work Item'))
+
+    // Delete the second item
+    const removeButtons = screen.getAllByLabelText(/remove work item/i)
+    await user.click(removeButtons[1])
+
+    // Remaining rows should be renumbered 1 and 2 (not 1 and 3)
+    expect(screen.getByLabelText('Title for work item 1')).toBeInTheDocument()
+    expect(screen.getByLabelText('Title for work item 2')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Title for work item 3')).not.toBeInTheDocument()
   })
 
   it('maintains accessibility with keyboard navigation', async () => {
