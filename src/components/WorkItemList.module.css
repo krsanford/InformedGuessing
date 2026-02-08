@@ -1,35 +1,86 @@
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space) * 2);
+.table {
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
+/* Header row */
+.headerRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 0.5fr 72px 72px 1px 72px 72px 72px 36px;
+  align-items: center;
+  padding: 0 calc(var(--space) * 1.5);
+  height: 32px;
+  background: var(--surface-overlay);
+  border-bottom: 1px solid var(--surface-border-strong);
+  position: sticky;
+  top: 44px;
+  z-index: 10;
+}
+
+.headerCell,
+.headerCellNotes,
+.headerCellNum,
+.headerCellComputed,
+.headerCellAction {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  user-select: none;
+}
+
+.headerCellNum,
+.headerCellComputed {
+  text-align: right;
+  padding-right: calc(var(--space) * 0.75);
+}
+
+.headerCellComputed {
+  color: var(--text-computed);
+  opacity: 0.6;
+}
+
+.headerDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--surface-border-strong);
+  justify-self: center;
+}
+
+/* Empty state */
 .emptyState {
   text-align: center;
-  padding: calc(var(--space) * 5) calc(var(--space) * 3);
-  color: var(--neutral-500);
-  font-size: 0.9375rem;
-  background: var(--neutral-50);
-  border: 2px dashed var(--neutral-200);
+  padding: calc(var(--space) * 4) calc(var(--space) * 3);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  background: var(--surface-raised);
+  border: 1px dashed var(--surface-border-strong);
   border-radius: var(--radius-md);
-  animation: fadeIn var(--duration-slow) var(--ease-out);
-}
-
-.emptyIllustration {
-  width: 160px;
-  height: auto;
-  margin: 0 auto calc(var(--space) * 2);
-  display: block;
-  opacity: 0.7;
 }
 
 .emptyText {
   font-weight: 500;
-  color: var(--neutral-600);
-  margin-bottom: calc(var(--space) * 0.5);
 }
 
-.emptyHint {
-  font-size: 0.8125rem;
-  color: var(--neutral-400);
+/* Responsive: tablet */
+@media (max-width: 1024px) {
+  .headerRow {
+    grid-template-columns: 32px 1fr 0.4fr 64px 64px 1px 64px 64px 64px 32px;
+  }
+}
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+  .headerRow {
+    grid-template-columns: 28px 1fr 56px 56px 28px;
+  }
+
+  .headerCellNotes,
+  .headerDivider,
+  .headerCellComputed {
+    display: none;
+  }
 }

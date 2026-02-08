@@ -1,5 +1,5 @@
 :root {
-  /* Primary: Deep Indigo */
+  /* Primary: Electric Indigo */
   --primary-50:  #EEF2FF;
   --primary-100: #E0E7FF;
   --primary-200: #C7D2FE;
@@ -11,53 +11,49 @@
   --primary-800: #3730A3;
   --primary-900: #312E81;
 
-  /* Accent: Warm Coral */
-  --accent-50:  #FFF7ED;
-  --accent-100: #FFEDD5;
-  --accent-200: #FED7AA;
-  --accent-300: #FDBA74;
-  --accent-400: #FB923C;
-  --accent-500: #F97316;
-  --accent-600: #EA580C;
-  --accent-700: #C2410C;
+  /* Accent: Emerald (computed values) */
+  --accent-400: #34D399;
+  --accent-500: #10B981;
+  --accent-600: #059669;
 
   /* Semantic */
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error:   #EF4444;
+  --success: #34D399;
+  --warning: #FBBF24;
+  --error:   #F87171;
 
-  /* Neutrals (warm stone) */
-  --neutral-50:  #FAFAF9;
-  --neutral-100: #F5F5F4;
-  --neutral-200: #E7E5E4;
-  --neutral-300: #D6D3D1;
-  --neutral-400: #A8A29E;
-  --neutral-500: #78716C;
-  --neutral-600: #57534E;
-  --neutral-700: #44403C;
-  --neutral-800: #292524;
-  --neutral-900: #1C1917;
+  /* Dark Surfaces */
+  --surface-bg: #0C0C1D;
+  --surface-base: #111128;
+  --surface-raised: #161629;
+  --surface-overlay: #1E1E38;
+  --surface-input: #12122A;
+  --surface-border: rgba(129, 140, 248, 0.12);
+  --surface-border-strong: rgba(129, 140, 248, 0.25);
+  --surface-row-hover: rgba(129, 140, 248, 0.06);
+  --surface-row-alt: rgba(129, 140, 248, 0.03);
 
-  /* Surfaces */
-  --surface-bg: linear-gradient(135deg, #F5F3FF 0%, #FFF7ED 50%, #F0F9FF 100%);
-  --surface-card: rgba(255, 255, 255, 0.82);
-  --surface-card-solid: #FFFFFF;
-  --surface-card-border: rgba(255, 255, 255, 0.6);
-  --surface-glass-blur: 12px;
+  /* Text */
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-dim: #475569;
+  --text-accent: #818CF8;
+  --text-computed: #34D399;
 
-  /* Shadows (indigo-tinted) */
-  --shadow-xs:  0 1px 2px rgba(79, 70, 229, 0.04);
-  --shadow-sm:  0 1px 3px rgba(79, 70, 229, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md:  0 4px 8px rgba(79, 70, 229, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg:  0 12px 24px rgba(79, 70, 229, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
-  --shadow-xl:  0 24px 48px rgba(79, 70, 229, 0.16), 0 8px 16px rgba(0, 0, 0, 0.04);
-  --shadow-hover: 0 16px 32px rgba(79, 70, 229, 0.14), 0 6px 12px rgba(0, 0, 0, 0.04);
+  /* Shadows (dark glow) */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 12px 32px rgba(0, 0, 0, 0.6);
+  --glow-sm:    0 0 8px rgba(129, 140, 248, 0.15);
+  --glow-md:    0 0 16px rgba(129, 140, 248, 0.2);
+  --glow-focus: 0 0 0 2px rgba(129, 140, 248, 0.4);
+  --glow-line:  0 -1px 12px rgba(129, 140, 248, 0.3);
 
   /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
 
   /* Spacing */
@@ -66,10 +62,13 @@
   /* Timing */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
 
   /* Focus */
-  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.4);
+  --focus-ring: 0 0 0 2px rgba(99, 102, 241, 0.5);
+
+  /* Font */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
 }

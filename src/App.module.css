@@ -1,162 +1,71 @@
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
   min-height: 100vh;
+  padding-bottom: 52px; /* space for sticky status bar */
 }
 
-/* Main Layout */
-.mainLayout {
-  display: flex;
-  gap: calc(var(--space) * 3);
-  padding: 0 calc(var(--space) * 3);
-  align-items: flex-start;
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: calc(var(--space) * 2) calc(var(--space) * 3);
 }
 
-.primaryContent {
-  flex: 1;
-  min-width: 0;
-  max-width: 820px;
-}
-
-.sidebar {
-  width: 340px;
-  position: sticky;
-  top: calc(var(--space) * 12);
-  flex-shrink: 0;
-}
-
-.sidebarCard {
-  background: var(--surface-card);
-  backdrop-filter: blur(var(--surface-glass-blur));
-  -webkit-backdrop-filter: blur(var(--surface-glass-blur));
-  border-radius: var(--radius-lg);
-  padding: calc(var(--space) * 2.5);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--surface-card-border);
-}
-
-/* Sections */
-.section {
-  background: var(--surface-card);
-  backdrop-filter: blur(var(--surface-glass-blur));
-  -webkit-backdrop-filter: blur(var(--surface-glass-blur));
-  border-radius: var(--radius-lg);
-  padding: calc(var(--space) * 3);
-  margin-bottom: calc(var(--space) * 2.5);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--surface-card-border);
-}
-
-.sectionSummary {
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin-bottom: calc(var(--space) * 2.5);
-  user-select: none;
-  transition: opacity var(--duration-fast) ease;
-}
-
-.sectionSummary::-webkit-details-marker {
-  display: none;
-}
-
-.sectionSummary:hover {
-  opacity: 0.7;
-}
-
-.sectionSummary:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-  border-radius: var(--radius-sm);
-}
-
-.sectionTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--neutral-800);
-  letter-spacing: -0.02em;
+/* Toolbar */
+.toolbar {
   display: flex;
   align-items: center;
   gap: calc(var(--space) * 1.5);
+  margin-bottom: calc(var(--space) * 1.5);
 }
 
-.sectionBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: var(--primary-600);
-  color: white;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
+.sectionLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.count {
+  font-size: 0.6875rem;
   font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-accent);
+  background: var(--surface-overlay);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
 }
 
-.sectionBadgeIcon {
-  composes: sectionBadge;
-}
-
-.sectionBadgeIcon svg {
-  width: 16px;
-  height: 16px;
-}
-
-.chevron {
-  width: 16px;
-  height: 16px;
-  color: var(--neutral-500);
-  transition: transform var(--duration-normal) var(--ease-out);
-  flex-shrink: 0;
-}
-
-.chevronOpen {
-  composes: chevron;
-  transform: rotate(90deg);
-}
-
-.sectionContent {
-  animation: sectionExpand var(--duration-normal) var(--ease-out);
-}
-
-/* Add button area */
-.tableFooter {
-  margin-top: calc(var(--space) * 2);
-  display: flex;
-  justify-content: center;
+.toolbarSpacer {
+  flex: 1;
 }
 
 .addButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: calc(var(--space) * 1);
-  padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
-  font-size: 0.9375rem;
+  gap: calc(var(--space) * 0.75);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: white;
-  background: var(--primary-600);
-  border: none;
+  color: var(--text-accent);
+  background: transparent;
+  border: 1px solid var(--surface-border-strong);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
-  box-shadow: var(--shadow-xs);
   font-family: inherit;
   white-space: nowrap;
-  min-height: 44px;
+  min-height: 36px;
 }
 
 .addButton:hover {
-  background: var(--primary-700);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+  background: var(--surface-raised);
+  border-color: var(--primary-400);
+  color: var(--primary-300);
 }
 
 .addButton:active {
-  transform: translateY(0);
+  background: var(--surface-overlay);
 }
 
 .addButton:focus-visible {
@@ -165,67 +74,24 @@
 }
 
 .addButton svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .mainLayout {
-    flex-direction: column;
-    padding: 0 calc(var(--space) * 2);
-  }
-
-  .sidebar {
-    width: 100%;
-    position: static;
-    order: 1;
-  }
-
-  .primaryContent {
-    max-width: 100%;
-  }
-}
-
 @media (max-width: 768px) {
-  .mainLayout {
-    padding: 0 calc(var(--space) * 2);
-    gap: calc(var(--space) * 2);
-  }
-
-  .section {
-    padding: calc(var(--space) * 2);
+  .main {
+    padding: calc(var(--space) * 1.5) calc(var(--space) * 1.5);
   }
 
   .addButton {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .mainLayout {
-    padding: 0 calc(var(--space) * 1.5);
-  }
-
-  .section {
-    padding: calc(var(--space) * 1.5);
-  }
-
-  .sectionTitle {
-    font-size: 0.9375rem;
-  }
-
-  .sectionBadge,
-  .sectionBadgeIcon {
-    width: 24px;
-    height: 24px;
+    padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
     font-size: 0.75rem;
   }
 }
 
 @media print {
-  .section {
-    box-shadow: none;
-    page-break-inside: avoid;
+  .container {
+    padding-bottom: 0;
   }
 }

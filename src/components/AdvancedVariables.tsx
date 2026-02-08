@@ -1,5 +1,4 @@
 import type { EstimationConstants } from '../domain/estimation'
-import { GearIcon, ChevronIcon } from './icons'
 import styles from './AdvancedVariables.module.css'
 
 interface AdvancedVariablesProps {
@@ -18,86 +17,75 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
   }
 
   return (
-    <details open>
-      <summary className={styles.summary}>
-        <span className={styles.sectionTitle}>
-          <span className={styles.sectionBadge}>
-            <GearIcon />
-          </span>
-          Advanced Settings
-        </span>
-        <ChevronIcon className={styles.chevronOpen} />
-      </summary>
-      <div className={styles.content}>
-        <div className={styles.field}>
-          <label htmlFor="expected_case_position" className={styles.fieldLabel}>
-            Expected Case Position
-            <span className={styles.fieldHelp}>Position between best (0) and worst (1) case for expected calculation</span>
-          </label>
-          <input
-            id="expected_case_position"
-            type="number"
-            min="0"
-            max="1"
-            step="0.1"
-            value={constants.expected_case_position}
-            onChange={(e) => handleNumberChange('expected_case_position', e.target.value)}
-            className={styles.fieldInput}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="range_spread_divisor" className={styles.fieldLabel}>
-            Range Spread Divisor
-            <span className={styles.fieldHelp}>Controls confidence interval width (higher = tighter spread)</span>
-          </label>
-          <input
-            id="range_spread_divisor"
-            type="number"
-            min="0.1"
-            step="0.1"
-            value={constants.range_spread_divisor}
-            onChange={(e) => handleNumberChange('range_spread_divisor', e.target.value)}
-            className={styles.fieldInput}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="billable_hours_per_week" className={styles.fieldLabel}>
-            Billable Hours per Week
-            <span className={styles.fieldHelp}>Actual productive development hours available per week</span>
-          </label>
-          <input
-            id="billable_hours_per_week"
-            type="number"
-            min="1"
-            step="1"
-            value={constants.billable_hours_per_week}
-            onChange={(e) => handleNumberChange('billable_hours_per_week', e.target.value)}
-            className={styles.fieldInput}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="duration_scaling_power" className={styles.fieldLabel}>
-            Duration Scaling Power
-            <span className={styles.fieldHelp}>Coordination overhead factor (higher = more overhead impact)</span>
-          </label>
-          <input
-            id="duration_scaling_power"
-            type="number"
-            min="1"
-            step="0.1"
-            value={constants.duration_scaling_power}
-            onChange={(e) => handleNumberChange('duration_scaling_power', e.target.value)}
-            className={styles.fieldInput}
-          />
-        </div>
-
-        <button onClick={onReset} className={styles.resetButton}>
-          ↺ Reset to Defaults
-        </button>
+    <div className={styles.content}>
+      <div className={styles.field}>
+        <label htmlFor="expected_case_position" className={styles.fieldLabel}>
+          Expected Case Position
+          <span className={styles.fieldHelp}>Position between best (0) and worst (1) case</span>
+        </label>
+        <input
+          id="expected_case_position"
+          type="number"
+          min="0"
+          max="1"
+          step="0.1"
+          value={constants.expected_case_position}
+          onChange={(e) => handleNumberChange('expected_case_position', e.target.value)}
+          className={styles.fieldInput}
+        />
       </div>
-    </details>
+
+      <div className={styles.field}>
+        <label htmlFor="range_spread_divisor" className={styles.fieldLabel}>
+          Range Spread Divisor
+          <span className={styles.fieldHelp}>Confidence interval width (higher = tighter)</span>
+        </label>
+        <input
+          id="range_spread_divisor"
+          type="number"
+          min="0.1"
+          step="0.1"
+          value={constants.range_spread_divisor}
+          onChange={(e) => handleNumberChange('range_spread_divisor', e.target.value)}
+          className={styles.fieldInput}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="billable_hours_per_week" className={styles.fieldLabel}>
+          Billable Hours per Week
+          <span className={styles.fieldHelp}>Productive dev hours available per week</span>
+        </label>
+        <input
+          id="billable_hours_per_week"
+          type="number"
+          min="1"
+          step="1"
+          value={constants.billable_hours_per_week}
+          onChange={(e) => handleNumberChange('billable_hours_per_week', e.target.value)}
+          className={styles.fieldInput}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="duration_scaling_power" className={styles.fieldLabel}>
+          Duration Scaling Power
+          <span className={styles.fieldHelp}>Coordination overhead factor</span>
+        </label>
+        <input
+          id="duration_scaling_power"
+          type="number"
+          min="1"
+          step="0.1"
+          value={constants.duration_scaling_power}
+          onChange={(e) => handleNumberChange('duration_scaling_power', e.target.value)}
+          className={styles.fieldInput}
+        />
+      </div>
+
+      <button onClick={onReset} className={styles.resetButton}>
+        ↺ Reset to Defaults
+      </button>
+    </div>
   )
 }

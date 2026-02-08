@@ -1,7 +1,5 @@
 import type { PortfolioResults } from '../domain/estimation'
-import { MetricCard } from './MetricCard'
 import { AnimatedNumber } from './AnimatedNumber'
-import { ChartIcon } from './icons'
 import styles from './OutputsSection.module.css'
 
 interface OutputsSectionProps {
@@ -10,27 +8,47 @@ interface OutputsSectionProps {
 
 export function OutputsSection({ results }: OutputsSectionProps) {
   return (
-    <div aria-live="polite">
+    <div className={styles.bar} aria-live="polite">
+      <span className={styles.label}>Results</span>
       {results ? (
-        <div className={styles.grid}>
-          <MetricCard label="Total Expected Hours" icon={<ChartIcon />}>
-            <AnimatedNumber value={results.total_expected_hours} /> hrs
-          </MetricCard>
-          <MetricCard label="Portfolio Range Spread" icon={<ChartIcon />}>
-            ±<AnimatedNumber value={results.portfolio_range_spread} /> hrs
-          </MetricCard>
-          <MetricCard label="Total Effort Hours" icon={<ChartIcon />}>
-            <AnimatedNumber value={results.total_effort_hours} /> hrs
-          </MetricCard>
-          <MetricCard label="Total Staff Weeks" icon={<ChartIcon />}>
-            <AnimatedNumber value={results.total_effort_staff_weeks} /> weeks
-          </MetricCard>
-          <MetricCard label="Duration (Calendar)" icon={<ChartIcon />}>
-            {results.duration_weeks} weeks
-          </MetricCard>
+        <div className={styles.metrics}>
+          <div className={styles.metric}>
+            <span className={styles.metricLabel}>Total Expected Hours</span>
+            <span className={styles.metricValue}>
+              <AnimatedNumber value={results.total_expected_hours} />h
+            </span>
+          </div>
+          <span className={styles.sep} aria-hidden="true" />
+          <div className={styles.metric}>
+            <span className={styles.metricLabel}>Portfolio Range Spread</span>
+            <span className={styles.metricValue}>
+              ±<AnimatedNumber value={results.portfolio_range_spread} />h
+            </span>
+          </div>
+          <span className={styles.sep} aria-hidden="true" />
+          <div className={styles.metric}>
+            <span className={styles.metricLabel}>Total Effort Hours</span>
+            <span className={styles.metricValue}>
+              <AnimatedNumber value={results.total_effort_hours} />h
+            </span>
+          </div>
+          <span className={styles.sep} aria-hidden="true" />
+          <div className={styles.metric}>
+            <span className={styles.metricLabel}>Total Staff Weeks</span>
+            <span className={styles.metricValue}>
+              <AnimatedNumber value={results.total_effort_staff_weeks} />wk
+            </span>
+          </div>
+          <span className={styles.sep} aria-hidden="true" />
+          <div className={styles.metric}>
+            <span className={styles.metricLabel}>Duration (Calendar)</span>
+            <span className={styles.metricValue}>
+              {results.duration_weeks}wk
+            </span>
+          </div>
         </div>
       ) : (
-        <p className={styles.emptyState}>Add work items above to see portfolio calculations</p>
+        <span className={styles.empty}>add items to see results</span>
       )}
     </div>
   )

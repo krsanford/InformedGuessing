@@ -1,6 +1,5 @@
 import type { WorkItem, WorkItemCalculated } from '../domain/estimation'
-import { WorkItemCard } from './WorkItemCard'
-import { EmptyStateIllustration } from './icons'
+import { WorkItemRow } from './WorkItemRow'
 import styles from './WorkItemList.module.css'
 
 interface WorkItemListProps {
@@ -17,23 +16,35 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
   if (items.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <EmptyStateIllustration className={styles.emptyIllustration} />
         <p className={styles.emptyText}>No work items yet</p>
-        <p className={styles.emptyHint}>Click &quot;+ Add Work Item&quot; to get started.</p>
       </div>
     )
   }
 
   return (
-    <div className={styles.list} role="list" aria-label="Work items">
-      {items.map((item) => (
-        <WorkItemCard
-          key={item.id}
-          item={item}
-          onUpdate={(field, value) => onUpdate(item.id, field, value)}
-          onRemove={() => onRemove(item.id)}
-        />
-      ))}
+    <div className={styles.table}>
+      <div className={styles.headerRow} aria-hidden="true">
+        <span className={styles.headerCell}>#</span>
+        <span className={styles.headerCell}>Title</span>
+        <span className={styles.headerCellNotes}>Notes</span>
+        <span className={styles.headerCellNum}>Best</span>
+        <span className={styles.headerCellNum}>Worst</span>
+        <span className={styles.headerDivider} />
+        <span className={styles.headerCellComputed}>Exp</span>
+        <span className={styles.headerCellComputed}>Range</span>
+        <span className={styles.headerCellComputed}>Var</span>
+        <span className={styles.headerCellAction} />
+      </div>
+      <div role="list" aria-label="Work items">
+        {items.map((item) => (
+          <WorkItemRow
+            key={item.id}
+            item={item}
+            onUpdate={(field, value) => onUpdate(item.id, field, value)}
+            onRemove={() => onRemove(item.id)}
+          />
+        ))}
+      </div>
     </div>
   )
 }

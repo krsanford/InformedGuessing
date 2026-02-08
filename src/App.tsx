@@ -1,16 +1,18 @@
-import { useReducer } from 'react'
+import { useReducer, useState } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
-import { PlusIcon, ChevronIcon, ChartIcon } from './components/icons'
+import { SettingsDrawer } from './components/SettingsDrawer'
+import { PlusIcon } from './components/icons'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const itemsWithCalculations = state.workItems.map((item) => ({
     ...item,
@@ -58,63 +60,44 @@ function App() {
 
   return (
     <div className={styles.container}>
-      <AppHeader />
+      <AppHeader
+        onSettingsToggle={() => setSettingsOpen((o) => !o)}
+        settingsOpen={settingsOpen}
+      />
 
-      <div className={styles.mainLayout}>
-        <div className={styles.primaryContent}>
-          <section className={styles.section}>
-            <details open>
-              <summary className={styles.sectionSummary}>
-                <span className={styles.sectionTitle}>
-                  <span className={styles.sectionBadge}>1</span>
-                  Work Items
-                </span>
-                <ChevronIcon className={styles.chevronOpen} />
-              </summary>
-              <div className={styles.sectionContent}>
-                <WorkItemList
-                  items={itemsWithCalculations}
-                  onUpdate={handleFieldUpdate}
-                  onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
-                />
-                <div className={styles.tableFooter}>
-                  <button onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })} className={styles.addButton}>
-                    <PlusIcon />
-                    + Add Work Item
-                  </button>
-                </div>
-              </div>
-            </details>
-          </section>
-
-          <section className={styles.section}>
-            <details open>
-              <summary className={styles.sectionSummary}>
-                <span className={styles.sectionTitle}>
-                  <span className={styles.sectionBadgeIcon}>
-                    <ChartIcon />
-                  </span>
-                  Results
-                </span>
-                <ChevronIcon className={styles.chevronOpen} />
-              </summary>
-              <div className={styles.sectionContent}>
-                <OutputsSection results={results} />
-              </div>
-            </details>
-          </section>
+      <main className={styles.main}>
+        <div className={styles.toolbar}>
+          <h2 className={styles.sectionLabel}>Work Items</h2>
+          <span className={styles.count}>{state.workItems.length}</span>
+          <div className={styles.toolbarSpacer} />
+          <button
+            onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })}
+            className={styles.addButton}
+          >
+            <PlusIcon />
+            + Add Work Item
+          </button>
         </div>
 
-        <aside className={styles.sidebar}>
-          <div className={styles.sidebarCard}>
-            <AdvancedVariables
-              constants={state.constants}
-              onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
-              onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
-            />
-          </div>
-        </aside>
-      </div>
+        <WorkItemList
+          items={itemsWithCalculations}
+          onUpdate={handleFieldUpdate}
+          onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+        />
+      </main>
+
+      <OutputsSection results={results} />
+
+      <SettingsDrawer
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      >
+        <AdvancedVariables
+          constants={state.constants}
+          onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
+          onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
+        />
+      </SettingsDrawer>
     </div>
   )
 }

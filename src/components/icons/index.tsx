@@ -1,8 +1,6 @@
-export { CrystalBallIcon } from './CrystalBallIcon'
 export { PlusIcon } from './PlusIcon'
 export { TrashIcon } from './TrashIcon'
 export { GearIcon } from './GearIcon'
 export { ChevronIcon } from './ChevronIcon'
 export { ChartIcon } from './ChartIcon'
 export { WarningIcon } from './WarningIcon'
-export { EmptyStateIllustration } from './EmptyStateIllustration'

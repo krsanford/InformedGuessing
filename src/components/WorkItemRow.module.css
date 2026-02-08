@@ -1,0 +1,211 @@
+.row {
+  display: grid;
+  grid-template-columns: 40px 1fr 0.5fr 72px 72px 1px 72px 72px 72px 36px;
+  align-items: center;
+  gap: 0;
+  min-height: 44px;
+  padding: 0 calc(var(--space) * 1.5);
+  border-bottom: 1px solid var(--surface-border);
+  transition: background var(--duration-fast) ease;
+  animation: rowEnter var(--duration-normal) var(--ease-out) both;
+  animation-delay: calc(var(--index) * 20ms);
+}
+
+.row:nth-child(even) {
+  background: var(--surface-row-alt);
+}
+
+.row:hover {
+  background: var(--surface-row-hover);
+}
+
+.row:focus-within {
+  background: var(--surface-row-hover);
+  box-shadow: inset 2px 0 0 var(--primary-400);
+}
+
+.rowWarning {
+  box-shadow: inset 2px 0 0 var(--warning);
+}
+
+/* ID column */
+.id {
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  font-family: var(--font-mono);
+  user-select: none;
+}
+
+.warningDot {
+  position: absolute;
+  top: -2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warning);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Text inputs */
+.titleInput,
+.notesInput {
+  width: 100%;
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+}
+
+.notesInput {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.titleInput:hover,
+.notesInput:hover {
+  background: var(--surface-input);
+  border-color: var(--surface-border);
+}
+
+.titleInput:focus,
+.notesInput:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+  color: var(--text-primary);
+}
+
+.titleInput::placeholder,
+.notesInput::placeholder {
+  color: var(--text-dim);
+}
+
+/* Number inputs */
+.numberInput {
+  width: 100%;
+  padding: calc(var(--space) * 0.5) calc(var(--space) * 0.75);
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+  -moz-appearance: textfield;
+}
+
+.numberInput::-webkit-inner-spin-button,
+.numberInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.numberInput:hover {
+  background: var(--surface-input);
+  border-color: var(--surface-border);
+}
+
+.numberInput:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+/* Divider between inputs and computed */
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--surface-border-strong);
+  justify-self: center;
+}
+
+/* Computed values */
+.computed {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-computed);
+  padding: 0 calc(var(--space) * 0.75);
+  white-space: nowrap;
+  user-select: all;
+}
+
+/* Remove button */
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  opacity: 0;
+  justify-self: center;
+}
+
+.row:hover .removeButton,
+.row:focus-within .removeButton,
+.removeButton:focus-visible {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  color: var(--error);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.removeButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  opacity: 1;
+}
+
+.removeButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive: tablet */
+@media (max-width: 1024px) {
+  .row {
+    grid-template-columns: 32px 1fr 0.4fr 64px 64px 1px 64px 64px 64px 32px;
+  }
+}
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 28px 1fr 56px 56px 28px;
+    padding: 0 calc(var(--space) * 1);
+  }
+
+  .notesInput,
+  .divider,
+  .computed {
+    display: none;
+  }
+
+  .removeButton {
+    opacity: 1;
+  }
+}
