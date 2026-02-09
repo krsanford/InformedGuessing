@@ -54,19 +54,19 @@
   font-size: 0.8125rem;
   font-weight: 600;
   color: #FFFFFF;
-  background: var(--gradient-hot);
-  border: none;
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+  border: 1.5px solid var(--accent-400);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
   font-family: inherit;
   white-space: nowrap;
   min-height: 36px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md), var(--glow-sm);
 }
 
 .addButton:hover {
-  box-shadow: var(--shadow-md), var(--glow-hot);
+  box-shadow: var(--shadow-md), var(--glow-sm);
   transform: translateY(-1px);
 }
 

@@ -4,18 +4,24 @@
 
 /* Section heading — acts as disclosure toggle */
 .sectionLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
+  color: var(--text-accent);
+  background: var(--primary-50);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
   margin: 0 0 calc(var(--space) * 2) 0;
   cursor: pointer;
   user-select: none;
   list-style: none;
   display: flex;
   align-items: center;
-  gap: calc(var(--space) * 0.5);
+  gap: calc(var(--space) * 0.75);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
 }
 
 .sectionLabel::-webkit-details-marker {
@@ -23,18 +29,19 @@
 }
 
 .sectionLabel::before {
-  content: '▸';
-  font-size: 0.625rem;
+  content: '▾';
+  font-size: 0.875rem;
   transition: transform var(--duration-fast) var(--ease-out);
   display: inline-block;
 }
 
-.container[open] > .sectionLabel::before {
-  transform: rotate(90deg);
+.container:not([open]) > .sectionLabel::before {
+  transform: rotate(-90deg);
 }
 
 .sectionLabel:hover {
-  color: var(--text-primary);
+  background: var(--primary-100);
+  color: var(--primary-700);
 }
 
 /* Visualization cards */
