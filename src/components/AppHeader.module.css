@@ -23,9 +23,16 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: calc(var(--space) * 1.5);
   position: relative;
   z-index: 1;
+}
+
+.logo {
+  width: 28px;
+  height: 28px;
+  color: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
 }
 
 .textGroup {

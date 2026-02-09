@@ -48,7 +48,7 @@
   --text-computed: #0F766E;
 
   /* Gradients */
-  --gradient-header: linear-gradient(135deg, #312E81 0%, #4338CA 45%, #5B21B6 100%);
+  --gradient-header: linear-gradient(135deg, #312E81 0%, #4338CA 40%, #6D28D9 70%, #8B5CF6 100%);
   --gradient-hot: linear-gradient(135deg, #D97706, #92400E);
   --gradient-glow-line: linear-gradient(90deg,
     transparent 0%,
