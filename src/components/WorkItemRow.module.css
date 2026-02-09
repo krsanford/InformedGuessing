@@ -39,15 +39,20 @@
   user-select: none;
 }
 
-.warningDot {
-  position: absolute;
-  top: -2px;
-  right: 2px;
-  width: 6px;
-  height: 6px;
+.warningBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--warning);
-  animation: pulse 2s ease-in-out infinite;
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  justify-self: center;
+  cursor: default;
 }
 
 /* Text inputs */

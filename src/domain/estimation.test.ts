@@ -225,18 +225,24 @@ describe('estimation - root-sum-square effect', () => {
 })
 
 describe('estimation - edge cases and errors', () => {
-  it('throws error for invalid work item', () => {
-    const items = [{ id: 1, title: '', notes: '', best_case_hours: -10, worst_case_hours: 20 }]
-    expect(() => calculatePortfolio(items, DEFAULT_CONSTANTS)).toThrow(
-      'Invalid work item 1: Best case hours cannot be negative'
-    )
+  it('skips invalid work item with negative hours', () => {
+    const items = [
+      { id: 1, title: '', notes: '', best_case_hours: -10, worst_case_hours: 20 },
+      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 },
+    ]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
+    // Only the valid item should contribute
+    expect(result.total_expected_hours).toBeCloseTo(104, 2)
   })
 
-  it('throws error for worst < best', () => {
-    const items = [{ id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20 }]
-    expect(() => calculatePortfolio(items, DEFAULT_CONSTANTS)).toThrow(
-      'Invalid work item 1: Worst case hours cannot be less than best case hours'
-    )
+  it('skips work item where worst < best', () => {
+    const items = [
+      { id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20 },
+      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120 },
+    ]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
+    // Only the valid item should contribute
+    expect(result.total_expected_hours).toBeCloseTo(104, 2)
   })
 
   it('throws error for invalid constants', () => {

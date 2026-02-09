@@ -30,18 +30,7 @@ function App() {
   const handleNumberInput = (id: WorkItem['id'], field: 'best_case_hours' | 'worst_case_hours', value: string) => {
     const numValue = parseFloat(value)
     if (!isNaN(numValue) && numValue >= 0) {
-      const currentItem = state.workItems.find((item) => item.id === id)
-      if (!currentItem) return
-
-      const updates: Partial<Omit<WorkItem, 'id'>> = { [field]: numValue }
-
-      if (field === 'best_case_hours' && numValue > currentItem.worst_case_hours) {
-        updates.worst_case_hours = numValue
-      } else if (field === 'worst_case_hours' && numValue < currentItem.best_case_hours) {
-        updates.best_case_hours = numValue
-      }
-
-      dispatch({ type: 'UPDATE_WORK_ITEM', id, updates })
+      dispatch({ type: 'UPDATE_WORK_ITEM', id, updates: { [field]: numValue } })
     }
   }
 

@@ -62,23 +62,22 @@ describe('App - UI Integration Tests', () => {
     expect(worstInput.value).toBe('120')
   })
 
-  it('auto-adjusts worst case when best exceeds it', async () => {
-    const user = userEvent.setup()
+  it('shows warning when best case exceeds worst case', async () => {
     render(<App />)
-    
+
     const bestInput = screen.getByLabelText('Best case hours for work item 1') as HTMLInputElement
     const worstInput = screen.getByLabelText('Worst case hours for work item 1') as HTMLInputElement
-    
-    // Set worst to a lower value first
-    await user.clear(worstInput)
-    await user.type(worstInput, '50')
-    
-    // Set best higher - should auto-adjust worst
-    await user.clear(bestInput)
-    await user.type(bestInput, '100')
-    
-    // Worst should be auto-adjusted to match best
-    expect(worstInput.value).toBe('100')
+
+    const { fireEvent } = await import('@testing-library/react')
+    fireEvent.change(worstInput, { target: { value: '50' } })
+    fireEvent.change(bestInput, { target: { value: '100' } })
+
+    // Both values should be accepted as-is
+    expect(bestInput.value).toBe('100')
+    expect(worstInput.value).toBe('50')
+
+    // Warning should be displayed
+    expect(screen.getByLabelText(/Warning:/)).toBeInTheDocument()
   })
 
   it('displays zero values correctly when best equals worst', async () => {

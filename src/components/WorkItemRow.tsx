@@ -68,16 +68,6 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRow
     >
       <span className={styles.id}>
         <span aria-label={`Work item ${rowNumber}`}>{rowNumber}</span>
-        {warning && (
-          <span
-            className={styles.warningDot}
-            title={warning}
-            role="img"
-            aria-label={`Warning: ${warning}`}
-          >
-            <span className="sr-only">{warning}</span>
-          </span>
-        )}
       </span>
 
       <label htmlFor={`title-${item.id}`} className="sr-only">
@@ -126,7 +116,16 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRow
         onChange={(v) => onUpdate('worst_case_hours', v)}
       />
 
-      <span className={styles.divider} aria-hidden="true" />
+      {warning ? (
+        <span
+          className={styles.warningBadge}
+          title={warning}
+          role="img"
+          aria-label={`Warning: ${warning}`}
+        >!</span>
+      ) : (
+        <span className={styles.divider} aria-hidden="true" />
+      )}
 
       <span className={styles.computed} aria-label={`Expected hours: ${item.expected_hours.toFixed(2)}`}>
         {item.expected_hours.toFixed(2)}

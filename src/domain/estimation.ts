@@ -236,14 +236,10 @@ export function calculatePortfolio(
     throw new Error(`Invalid constants: ${constantsError}`);
   }
 
-  // Validate and calculate all work items
-  const calculatedItems: WorkItemCalculated[] = items.map((item) => {
-    const error = validateWorkItem(item);
-    if (error) {
-      throw new Error(`Invalid work item ${item.id}: ${error}`);
-    }
-    return calculateWorkItem(item, constants);
-  });
+  // Calculate valid work items, skip invalid ones
+  const calculatedItems: WorkItemCalculated[] = items
+    .filter((item) => validateWorkItem(item) === null)
+    .map((item) => calculateWorkItem(item, constants));
 
   // Portfolio aggregation
   const total_expected_hours = calculateTotalExpectedHours(calculatedItems);
