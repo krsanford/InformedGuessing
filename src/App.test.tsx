@@ -7,7 +7,7 @@ describe('App - UI Integration Tests', () => {
   it('renders the main sections', () => {
     render(<App />)
     
-    expect(screen.getByText('Informed Guessing')).toBeInTheDocument()
+    expect(screen.getByText('Rough Math')).toBeInTheDocument()
     expect(screen.getByText('Work Items')).toBeInTheDocument()
     expect(screen.getByLabelText('Toggle advanced settings')).toBeInTheDocument()
     expect(screen.getByText('Results')).toBeInTheDocument()

@@ -1,4 +1,4 @@
-# Informed Guessing
+# Rough Math
 
 [![Azure Static Web Apps CI/CD](https://github.com/krsanford/InformedGuessing/actions/workflows/azure-static-web-apps-proud-beach-0c6c9240f.yml/badge.svg)](https://github.com/krsanford/InformedGuessing/actions/workflows/azure-static-web-apps-proud-beach-0c6c9240f.yml)
 

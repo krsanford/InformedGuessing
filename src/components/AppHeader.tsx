@@ -5,7 +5,7 @@ export function AppHeader() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.textGroup}>
-          <h1 className={styles.title}>Informed Guessing</h1>
+          <h1 className={styles.title}>Rough Math</h1>
           <p className={styles.subtitle}>two-point estimation workbench</p>
         </div>
       </div>
