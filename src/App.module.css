@@ -14,21 +14,64 @@
   padding: calc(var(--space) * 2) calc(var(--space) * 3);
 }
 
-/* Toolbar */
-.toolbar {
+/* Collapsible sections */
+.section {
+  margin-bottom: calc(var(--space) * 1);
+}
+
+.sectionToggle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-accent);
+  background: var(--primary-50);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
+  margin: 0 0 calc(var(--space) * 1.5) 0;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.sectionToggle::-webkit-details-marker {
+  display: none;
+}
+
+.sectionToggle::before {
+  content: '▾';
+  font-size: 0.875rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+  display: inline-block;
+}
+
+.section:not([open]) > .sectionToggle::before {
+  transform: rotate(-90deg);
+}
+
+.sectionToggle:hover {
+  background: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.sectionLabel {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+/* Toolbar (row of actions below section heading) */
+.sectionToolbar {
   display: flex;
   align-items: center;
   gap: calc(var(--space) * 1.5);
   margin-bottom: calc(var(--space) * 1.5);
-}
-
-.sectionLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  margin: 0;
 }
 
 .count {
@@ -36,7 +79,7 @@
   font-weight: 700;
   font-family: var(--font-mono);
   color: var(--text-accent);
-  background: var(--primary-50);
+  background: transparent;
   padding: 2px 8px;
   border-radius: var(--radius-full);
   border: 1px solid var(--surface-border);

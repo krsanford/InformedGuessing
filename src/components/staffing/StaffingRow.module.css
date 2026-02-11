@@ -1,0 +1,218 @@
+.row {
+  display: grid;
+  align-items: stretch;
+  gap: 0;
+  min-height: 44px;
+  border-bottom: 1px solid var(--surface-border);
+  transition: background var(--duration-fast) ease;
+  animation: rowEnter var(--duration-normal) var(--ease-out) both;
+  animation-delay: calc(var(--index) * 20ms);
+  background: var(--surface-raised);
+}
+
+/* Solid opaque backgrounds so sticky columns fully mask scrolled content */
+.row:nth-child(even) {
+  background: #FAFAFF;
+}
+
+.row:hover {
+  background: #F7F6FD;
+}
+
+.row:focus-within {
+  background: #F7F6FD;
+  box-shadow: inset 3px 0 0 var(--primary-500);
+}
+
+/* ============================================================
+   Sticky columns — all left-side columns stay fixed on scroll.
+   Row uses align-items:stretch so every cell fills full height,
+   providing a solid background that masks scrolled content.
+   Each cell uses flex to vertically center its content.
+   Column order: # | trash | Discipline | $/hr | Hours | Cost
+   ============================================================ */
+.stickyId,
+.stickyTrash,
+.stickyDiscipline,
+.stickyRate,
+.stickyHours,
+.stickyCost {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.stickyId         { left: 0; justify-content: center; }
+.stickyTrash      { left: 40px; justify-content: center; }
+.stickyDiscipline { left: 72px; }
+.stickyRate       { left: 232px; }
+.stickyHours      { left: 312px; justify-content: flex-end; }
+.stickyCost       { left: 384px; justify-content: flex-end; }
+
+/* Shadow on the last sticky column to indicate scrollable content */
+.stickyCost::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -6px;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to right, rgba(0,0,0,0.04), transparent);
+  pointer-events: none;
+}
+
+/* ID column */
+.id {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  user-select: none;
+}
+
+/* Discipline input */
+.disciplineInput {
+  width: 100%;
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.disciplineInput::placeholder {
+  color: var(--text-dim);
+}
+
+.disciplineInput:hover {
+  background: var(--surface-overlay);
+  border-color: var(--surface-border);
+}
+
+.disciplineInput:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+/* Rate input with $ prefix
+   NOTE: no position:relative here — sticky provides the
+   positioning context for the absolute $ prefix */
+.ratePrefix {
+  position: absolute;
+  left: calc(var(--space) * 0.5);
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rateInput {
+  width: 100%;
+  padding: calc(var(--space) * 0.5) calc(var(--space) * 0.75) calc(var(--space) * 0.5) calc(var(--space) * 1.75);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-primary);
+  background: var(--surface-overlay);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+  box-sizing: border-box;
+  -moz-appearance: textfield;
+}
+
+.rateInput::-webkit-inner-spin-button,
+.rateInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.rateInput::placeholder {
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+.rateInput:hover {
+  border-color: var(--surface-border-strong);
+}
+
+.rateInput:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+/* Computed totals */
+.computed {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-computed);
+  padding: 0 calc(var(--space) * 0.75);
+  white-space: nowrap;
+  user-select: all;
+  font-weight: 600;
+}
+
+.cost {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-accent);
+  padding: 0 calc(var(--space) * 0.75);
+  white-space: nowrap;
+  user-select: all;
+  font-weight: 600;
+}
+
+/* Remove button */
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  opacity: 0;
+}
+
+.row:hover .removeButton,
+.row:focus-within .removeButton,
+.removeButton:focus-visible {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.removeButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  opacity: 1;
+}
+
+.removeButton svg {
+  width: 14px;
+  height: 14px;
+}

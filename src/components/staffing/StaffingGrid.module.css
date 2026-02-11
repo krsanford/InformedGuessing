@@ -1,0 +1,151 @@
+.grid {
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-glow-line);
+  z-index: 11;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.scrollContainer {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Header row */
+.headerRow {
+  display: grid;
+  align-items: center;
+  height: 32px;
+  background: var(--gradient-table-header);
+  border-bottom: 1px solid var(--surface-border-strong);
+  min-width: fit-content;
+}
+
+.headerCell,
+.headerCellNum,
+.headerCellWeek,
+.headerCellComputed,
+.headerCellAction {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+/* ============================================================
+   Sticky columns — match StaffingRow positions exactly.
+   Column order: # | trash | Discipline | $/hr | Hours | Cost
+   ============================================================ */
+.stickyId,
+.stickyTrash,
+.stickyDiscipline,
+.stickyRate,
+.stickyHours,
+.stickyCost {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+.stickyId         { left: 0; justify-content: center; }
+.stickyTrash      { left: 40px; }
+.stickyDiscipline { left: 72px; }
+.stickyRate       { left: 232px; }
+.stickyHours      { left: 312px; justify-content: flex-end; }
+.stickyCost       { left: 384px; justify-content: flex-end; }
+
+.headerCellNum,
+.headerCellWeek {
+  text-align: right;
+  padding-right: calc(var(--space) * 0.5);
+}
+
+.headerCellWeek {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--text-dim);
+}
+
+.headerCellComputed {
+  text-align: right;
+  padding-right: calc(var(--space) * 0.75);
+  color: var(--text-computed);
+  opacity: 0.7;
+}
+
+/* Summary row */
+.summaryRow {
+  display: grid;
+  align-items: center;
+  min-height: 40px;
+  background: var(--gradient-table-header);
+  border-top: 2px solid var(--surface-border-strong);
+  min-width: fit-content;
+}
+
+.summaryLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.summaryCell {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.summaryTotal {
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-right: calc(var(--space) * 0.75);
+  color: var(--text-computed);
+  font-weight: 800;
+}
+
+.summaryCost {
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-right: calc(var(--space) * 0.75);
+  color: var(--text-accent);
+  font-weight: 800;
+}
+
+/* Raw cost footnote */
+.costFootnote {
+  text-align: right;
+  padding: calc(var(--space) * 0.5) calc(var(--space) * 1.5);
+  font-size: 0.625rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--surface-border);
+}

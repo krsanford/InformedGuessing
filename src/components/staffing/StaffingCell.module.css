@@ -1,0 +1,58 @@
+.cell {
+  width: 100%;
+  padding: calc(var(--space) * 0.5);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.cell::placeholder {
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+.cell:hover {
+  background: var(--surface-overlay);
+  border-color: var(--surface-border);
+}
+
+.cell:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+.cellAnnotation {
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-hot);
+  background: rgba(217, 119, 6, 0.06);
+}
+
+.cellAnnotation:hover {
+  background: rgba(217, 119, 6, 0.10);
+}
+
+.cellAnnotation:focus {
+  background: var(--surface-input);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-align: right;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}

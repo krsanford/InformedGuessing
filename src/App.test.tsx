@@ -10,7 +10,7 @@ describe('App - UI Integration Tests', () => {
     expect(screen.getByText('Rough Math')).toBeInTheDocument()
     expect(screen.getByText('Work Items')).toBeInTheDocument()
     expect(screen.getByLabelText('Toggle advanced settings')).toBeInTheDocument()
-    expect(screen.getByText('Results')).toBeInTheDocument()
+    expect(screen.getByText('Estimate')).toBeInTheDocument()
   })
 
   it('starts with one empty work item', () => {
@@ -128,12 +128,12 @@ describe('App - UI Integration Tests', () => {
     await user.clear(worstInput)
     await user.type(worstInput, '200')
     
-    // Should show calculated outputs
-    expect(screen.getByText('Total Expected Hours')).toBeInTheDocument()
-    expect(screen.getByText('Portfolio Range Spread')).toBeInTheDocument()
-    expect(screen.getByText('Total Effort Hours')).toBeInTheDocument()
-    expect(screen.getByText('Total Staff Weeks')).toBeInTheDocument()
-    expect(screen.getByText('Duration (Calendar)')).toBeInTheDocument()
+    // Should show calculated outputs in footer bar
+    expect(screen.getAllByText('Expected').length).toBeGreaterThan(0)
+    expect(screen.getByText('Spread')).toBeInTheDocument()
+    expect(screen.getByText('Total Effort')).toBeInTheDocument()
+    expect(screen.getByText('Staff Weeks')).toBeInTheDocument()
+    expect(screen.getByText('Duration')).toBeInTheDocument()
     
     // Values should be calculated (check for numeric pattern)
     const outputs = screen.getAllByText(/\d+\.\d+/)
@@ -217,7 +217,7 @@ describe('App - UI Integration Tests', () => {
     await user.type(worstInput, '200')
 
     // Get initial expected hours value (should be 140 with default 0.4 position)
-    expect(screen.getByText('Total Expected Hours')).toBeInTheDocument()
+    expect(screen.getAllByText('Expected').length).toBeGreaterThan(0)
 
     // Change expected_case_position from 0.4 to 0.5
     const expectedPosInput = container.querySelector('#expected_case_position') as HTMLInputElement
@@ -225,7 +225,7 @@ describe('App - UI Integration Tests', () => {
     await user.type(expectedPosInput, '0.5')
 
     // Should recalculate - just verify calculation still exists
-    expect(screen.getByText('Total Expected Hours')).toBeInTheDocument()
+    expect(screen.getAllByText('Expected').length).toBeGreaterThan(0)
     const outputs = screen.getAllByText(/\d+\.\d+/)
     expect(outputs.length).toBeGreaterThan(0)
   })

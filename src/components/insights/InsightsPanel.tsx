@@ -36,13 +36,21 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
     [results, constants]
   )
 
-  if (!hasData || !hasRanges) return null
+  const showViz = hasData && hasRanges
 
   return (
     <details className={styles.container} open>
       <summary className={styles.sectionLabel}>Insights</summary>
 
-      <div className={styles.grid}>
+      {!showViz && (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>
+            Add work items with best/worst case estimates to see visualizations
+          </p>
+        </div>
+      )}
+
+      {showViz && <div className={styles.grid}>
         <div className={styles.vizCard}>
           <h3 className={styles.vizTitle}>Effort Breakdown</h3>
           <p className={styles.vizSubtitle}>
@@ -127,7 +135,7 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
             </p>
           </details>
         </div>
-      </div>
+      </div>}
     </details>
   )
 }

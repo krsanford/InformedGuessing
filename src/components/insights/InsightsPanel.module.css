@@ -154,6 +154,20 @@ details[open] > .detailsSummary::before {
   font-weight: 500;
 }
 
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: calc(var(--space) * 3) calc(var(--space) * 3);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.emptyText {
+  font-weight: 500;
+  font-style: italic;
+  margin: 0;
+}
+
 /* 2×2 equal grid */
 .grid {
   display: grid;

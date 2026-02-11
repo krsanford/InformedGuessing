@@ -107,11 +107,20 @@
   border-right: 1px solid var(--surface-border);
 }
 
+/* Divider between estimate and staffing metric groups */
+.divider {
+  width: 2px;
+  height: 32px;
+  background: var(--surface-border-strong);
+  flex-shrink: 0;
+}
+
 .metrics {
   display: flex;
   align-items: center;
   gap: calc(var(--space) * 1.5);
-  flex: 1;
+  flex-shrink: 1;
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -146,6 +155,15 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--text-accent);
+  white-space: nowrap;
+}
+
+.metricValueAccent {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-hot);
   white-space: nowrap;
 }
 

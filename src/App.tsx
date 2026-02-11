@@ -1,11 +1,13 @@
-import { useReducer, useState } from 'react'
+import { useReducer, useMemo, useState } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
+import { calculateStaffingGrid, calculateStaffingComparison } from './domain/staffing'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
 import { InsightsPanel } from './components/insights/InsightsPanel'
+import { StaffingSection } from './components/staffing/StaffingSection'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
@@ -26,6 +28,18 @@ function App() {
   } catch {
     // Invalid inputs — results stay null, outputs show empty state
   }
+
+  const staffingGridComputed = useMemo(
+    () => calculateStaffingGrid(state.staffing.rows, state.staffing.week_count),
+    [state.staffing.rows, state.staffing.week_count]
+  )
+
+  const staffingComparison = useMemo(
+    () => results
+      ? calculateStaffingComparison(results.total_effort_hours, staffingGridComputed.grand_total_hours)
+      : null,
+    [results, staffingGridComputed.grand_total_hours]
+  )
 
   const handleNumberInput = (id: WorkItem['id'], field: 'best_case_hours' | 'worst_case_hours', value: string) => {
     const numValue = parseFloat(value)
@@ -51,33 +65,47 @@ function App() {
       <AppHeader />
 
       <main className={styles.main}>
-        <div className={styles.toolbar}>
-          <h2 className={styles.sectionLabel}>Work Items</h2>
-          <span className={styles.count}>{state.workItems.length}</span>
-          <div className={styles.toolbarSpacer} />
-          <button
-            onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })}
-            className={styles.addButton}
-          >
-            + Add Work Item
-          </button>
-        </div>
+        <details className={styles.section} open>
+          <summary className={styles.sectionToggle}>
+            <span className={styles.sectionLabel}>Work Items</span>
+            <span className={styles.count}>{state.workItems.length}</span>
+          </summary>
 
-        <WorkItemList
-          items={itemsWithCalculations}
-          onUpdate={handleFieldUpdate}
-          onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
-        />
+          <div className={styles.sectionToolbar}>
+            <div className={styles.toolbarSpacer} />
+            <button
+              onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })}
+              className={styles.addButton}
+            >
+              + Add Work Item
+            </button>
+          </div>
+
+          <WorkItemList
+            items={itemsWithCalculations}
+            onUpdate={handleFieldUpdate}
+            onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+          />
+        </details>
 
         <InsightsPanel
           items={itemsWithCalculations}
           results={results}
           constants={state.constants}
         />
+
+        <StaffingSection
+          staffing={state.staffing}
+          comparison={staffingComparison}
+          gridComputed={staffingGridComputed}
+          dispatch={dispatch}
+          estimateDurationWeeks={results?.duration_weeks ?? null}
+        />
       </main>
 
       <OutputsSection
         results={results}
+        staffingComputed={staffingGridComputed}
         settingsOpen={settingsOpen}
         onSettingsToggle={() => setSettingsOpen((o) => !o)}
         settingsContent={

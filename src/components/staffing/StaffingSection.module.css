@@ -1,0 +1,281 @@
+.section {
+  margin-top: calc(var(--space) * 4);
+}
+
+/* Collapsible section toggle — matches InsightsPanel and App.module.css pattern */
+.sectionToggle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-accent);
+  background: var(--primary-50);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
+  margin: 0 0 calc(var(--space) * 1.5) 0;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.sectionToggle::-webkit-details-marker {
+  display: none;
+}
+
+.sectionToggle::before {
+  content: '▾';
+  font-size: 0.875rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+  display: inline-block;
+}
+
+.section:not([open]) > .sectionToggle::before {
+  transform: rotate(-90deg);
+}
+
+.sectionToggle:hover {
+  background: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.sectionLabelText {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+/* Toolbar — row of actions below section heading */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 1.5);
+  margin-bottom: calc(var(--space) * 1.5);
+}
+
+.count {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-accent);
+  background: transparent;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--surface-border);
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+/* Week count adjuster */
+.weekAdjuster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+
+.weekButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  font-family: inherit;
+}
+
+.weekButton:hover:not(:disabled) {
+  background: var(--surface-overlay);
+  color: var(--text-accent);
+}
+
+.weekButton:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.weekDisplay {
+  padding: 0 calc(var(--space) * 0.75);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-accent);
+  border-left: 1px solid var(--surface-border);
+  border-right: 1px solid var(--surface-border);
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  user-select: none;
+}
+
+.weekLabel {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: inherit;
+}
+
+/* Add Role button */
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+  border: 1.5px solid var(--accent-400);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  font-family: inherit;
+  white-space: nowrap;
+  min-height: 36px;
+  box-shadow: var(--shadow-md), var(--glow-sm);
+}
+
+.addButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.addButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.addButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.addButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Initialize from estimate button */
+.initButton {
+  display: block;
+  width: 100%;
+  padding: calc(var(--space) * 2) calc(var(--space) * 3);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-accent);
+  background: var(--surface-raised);
+  border: 2px dashed var(--surface-border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  font-family: inherit;
+  text-align: center;
+}
+
+.initButton:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-400);
+  color: var(--primary-700);
+}
+
+.initButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Comparison banner */
+.comparison {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 2);
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 2);
+  margin-bottom: calc(var(--space) * 1.5);
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+}
+
+.comparisonItem {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--space) * 0.75);
+}
+
+.comparisonLabel {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.comparisonValue {
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text-computed);
+}
+
+.comparisonDelta {
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text-hot);
+}
+
+.comparisonSep {
+  width: 1px;
+  height: 20px;
+  background: var(--surface-border-strong);
+  flex-shrink: 0;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: calc(var(--space) * 3) calc(var(--space) * 3);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.emptyText {
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .comparison {
+    flex-direction: column;
+    gap: calc(var(--space) * 1);
+  }
+
+  .comparisonSep {
+    width: 100%;
+    height: 1px;
+  }
+
+  .addButton {
+    padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
+    font-size: 0.75rem;
+  }
+}
