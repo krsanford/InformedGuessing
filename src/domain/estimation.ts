@@ -12,6 +12,7 @@ export interface EstimationConstants {
   range_spread_divisor: number; // >0, default 2.6
   billable_hours_per_week: number; // >0, default 36
   duration_scaling_power: number; // >0, default 3.5
+  coordination_cost_per_pair: number; // 0.5-8, default 1
 }
 
 export interface WorkItem {
@@ -46,6 +47,7 @@ export const DEFAULT_CONSTANTS: EstimationConstants = {
   range_spread_divisor: 2.6,
   billable_hours_per_week: 36,
   duration_scaling_power: 3.2,
+  coordination_cost_per_pair: 1,
 };
 
 // ============================================================================
@@ -74,6 +76,9 @@ export function validateConstants(constants: EstimationConstants): string | null
   }
   if (constants.duration_scaling_power <= 0) {
     return 'Duration scaling power must be greater than 0';
+  }
+  if (constants.coordination_cost_per_pair < 0.5 || constants.coordination_cost_per_pair > 8) {
+    return 'Coordination cost per pair must be between 0.5 and 8';
   }
   return null;
 }

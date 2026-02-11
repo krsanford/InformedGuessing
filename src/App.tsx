@@ -1,6 +1,7 @@
 import { useReducer, useMemo, useState } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
 import { calculateStaffingGrid, calculateStaffingComparison } from './domain/staffing'
+import { calculateCoordination, calculateGapDecomposition } from './domain/coordination'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
@@ -39,6 +40,31 @@ function App() {
       ? calculateStaffingComparison(results.total_effort_hours, staffingGridComputed.grand_total_hours)
       : null,
     [results, staffingGridComputed.grand_total_hours]
+  )
+
+  const impliedPeople = results && results.duration_weeks > 0
+    ? Math.ceil(results.total_effort_staff_weeks / results.duration_weeks)
+    : 0
+
+  const coordinationResult = useMemo(
+    () => calculateCoordination(
+      state.staffing.rows,
+      state.staffing.week_count,
+      state.constants.coordination_cost_per_pair,
+      impliedPeople
+    ),
+    [state.staffing.rows, state.staffing.week_count, state.constants.coordination_cost_per_pair, impliedPeople]
+  )
+
+  const gapDecomposition = useMemo(
+    () => results && staffingGridComputed.grand_total_hours > 0
+      ? calculateGapDecomposition(
+          results.total_effort_hours,
+          coordinationResult.total_coordination_hours,
+          staffingGridComputed.grand_total_hours
+        )
+      : null,
+    [results, coordinationResult, staffingGridComputed.grand_total_hours]
   )
 
   const handleNumberInput = (id: WorkItem['id'], field: 'best_case_hours' | 'worst_case_hours', value: string) => {
@@ -97,6 +123,8 @@ function App() {
           gridComputed={staffingGridComputed}
           dispatch={dispatch}
           estimateDurationWeeks={results?.duration_weeks ?? null}
+          gapDecomposition={gapDecomposition}
+          impliedPeople={impliedPeople}
         />
       </main>
 

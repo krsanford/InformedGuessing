@@ -12,7 +12,8 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
     const numValue = parseFloat(value)
     if (isNaN(numValue)) return
     if (field === 'expected_case_position' && (numValue < 0 || numValue > 1)) return
-    if (field !== 'expected_case_position' && numValue <= 0) return
+    if (field === 'coordination_cost_per_pair' && (numValue < 0.5 || numValue > 8)) return
+    if (field !== 'expected_case_position' && field !== 'coordination_cost_per_pair' && numValue <= 0) return
     onUpdate({ [field]: numValue })
   }
 
@@ -79,6 +80,23 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
           step="0.1"
           value={constants.duration_scaling_power}
           onChange={(e) => handleNumberChange('duration_scaling_power', e.target.value)}
+          className={styles.fieldInput}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="coordination_cost_per_pair" className={styles.fieldLabel}>
+          Coordination Cost / Pair
+          <span className={styles.fieldHelp}>Hours of overhead per pair of people per week</span>
+        </label>
+        <input
+          id="coordination_cost_per_pair"
+          type="number"
+          min="0.5"
+          max="8"
+          step="0.5"
+          value={constants.coordination_cost_per_pair}
+          onChange={(e) => handleNumberChange('coordination_cost_per_pair', e.target.value)}
           className={styles.fieldInput}
         />
       </div>

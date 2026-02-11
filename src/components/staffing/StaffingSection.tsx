@@ -1,4 +1,5 @@
 import type { AppAction, StaffingState, StaffingGridComputed, StaffingComparison } from '../../types'
+import type { GapDecomposition } from '../../domain/coordination'
 import { StaffingGrid } from './StaffingGrid'
 import styles from './StaffingSection.module.css'
 
@@ -8,6 +9,8 @@ interface StaffingSectionProps {
   gridComputed: StaffingGridComputed
   dispatch: React.Dispatch<AppAction>
   estimateDurationWeeks: number | null
+  gapDecomposition: GapDecomposition | null
+  impliedPeople: number
 }
 
 export function StaffingSection({
@@ -16,6 +19,8 @@ export function StaffingSection({
   gridComputed,
   dispatch,
   estimateDurationWeeks,
+  gapDecomposition,
+  impliedPeople,
 }: StaffingSectionProps) {
   // Don't render until there's an estimate or the user has started staffing
   if (staffing.rows.length === 0 && staffing.week_count === 0 && estimateDurationWeeks === null) {
@@ -76,8 +81,61 @@ export function StaffingSection({
         </button>
       )}
 
-      {/* Comparison banner */}
-      {comparison && hasData && (
+      {/* Gap decomposition banner (replaces simple comparison when available) */}
+      {gapDecomposition && hasData && (
+        <div className={styles.comparison}>
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Implied Team</span>
+            <span className={styles.comparisonValue}>
+              {impliedPeople}
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Base Estimate</span>
+            <span className={styles.comparisonValue}>
+              {Math.round(gapDecomposition.base_effort_hours)}h
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Coordination</span>
+            <span className={styles.comparisonCoordination}>
+              +{Math.round(gapDecomposition.coordination_overhead_hours)}h
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Adjusted</span>
+            <span className={styles.comparisonValue}>
+              {Math.round(gapDecomposition.adjusted_effort_hours)}h
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Staffed</span>
+            <span className={styles.comparisonValue}>
+              {Math.round(gapDecomposition.staffed_hours)}h
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Buffer</span>
+            <span className={
+              gapDecomposition.buffer_status === 'short'
+                ? styles.comparisonShort
+                : gapDecomposition.buffer_status === 'tight'
+                  ? styles.comparisonDelta
+                  : styles.comparisonBuffered
+            }>
+              {gapDecomposition.remaining_buffer_hours >= 0 ? '+' : ''}{Math.round(gapDecomposition.remaining_buffer_hours)}h
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Fallback: simple comparison when gap decomposition not available */}
+      {!gapDecomposition && comparison && hasData && (
         <div className={styles.comparison}>
           <div className={styles.comparisonItem}>
             <span className={styles.comparisonLabel}>Estimated Effort</span>

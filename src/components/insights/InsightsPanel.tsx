@@ -135,6 +135,7 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
             </p>
           </details>
         </div>
+
       </div>}
     </details>
   )
