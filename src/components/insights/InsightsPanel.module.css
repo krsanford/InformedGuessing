@@ -1,5 +1,5 @@
 .container {
-  margin-top: calc(var(--space) * 2);
+  margin-top: calc(var(--space) * 3);
 }
 
 /* Section heading — acts as disclosure toggle */
@@ -13,7 +13,7 @@
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
-  margin: 0 0 calc(var(--space) * 2) 0;
+  margin: 0 0 calc(var(--space) * 1) 0;
   cursor: pointer;
   user-select: none;
   list-style: none;

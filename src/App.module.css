@@ -29,7 +29,7 @@
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
   padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
-  margin: 0 0 calc(var(--space) * 1.5) 0;
+  margin: 0 0 calc(var(--space) * 1) 0;
   cursor: pointer;
   user-select: none;
   list-style: none;
@@ -66,14 +66,6 @@
   margin: 0;
 }
 
-/* Toolbar (row of actions below section heading) */
-.sectionToolbar {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space) * 1.5);
-  margin-bottom: calc(var(--space) * 1.5);
-}
-
 .count {
   font-size: 0.6875rem;
   font-weight: 700;
@@ -89,12 +81,18 @@
   flex: 1;
 }
 
+/* Hide toolbar items when section is collapsed */
+.section:not([open]) .toolbarSpacer,
+.section:not([open]) .addButton {
+  display: none;
+}
+
 .addButton {
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--space) * 0.75);
-  padding: calc(var(--space) * 0.75) calc(var(--space) * 2);
-  font-size: 0.8125rem;
+  gap: calc(var(--space) * 0.5);
+  padding: calc(var(--space) * 0.5) calc(var(--space) * 1.5);
+  font-size: 0.75rem;
   font-weight: 600;
   color: #FFFFFF;
   background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
@@ -104,7 +102,7 @@
   transition: all var(--duration-fast) var(--ease-out);
   font-family: inherit;
   white-space: nowrap;
-  min-height: 36px;
+  min-height: 30px;
   box-shadow: var(--shadow-md), var(--glow-sm);
 }
 

@@ -69,17 +69,14 @@ function App() {
           <summary className={styles.sectionToggle}>
             <span className={styles.sectionLabel}>Work Items</span>
             <span className={styles.count}>{state.workItems.length}</span>
-          </summary>
-
-          <div className={styles.sectionToolbar}>
-            <div className={styles.toolbarSpacer} />
+            <span className={styles.toolbarSpacer} />
             <button
-              onClick={() => dispatch({ type: 'ADD_WORK_ITEM' })}
+              onClick={(e) => { e.preventDefault(); dispatch({ type: 'ADD_WORK_ITEM' }) }}
               className={styles.addButton}
             >
               + Add Work Item
             </button>
-          </div>
+          </summary>
 
           <WorkItemList
             items={itemsWithCalculations}

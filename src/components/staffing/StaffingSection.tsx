@@ -31,17 +31,13 @@ export function StaffingSection({
         {staffing.rows.length > 0 && (
           <span className={styles.count}>{staffing.rows.length}</span>
         )}
-      </summary>
-
-      {/* Toolbar */}
-      <div className={styles.toolbar}>
-        <div className={styles.toolbarSpacer} />
+        <span className={styles.toolbarSpacer} />
 
         {/* Week count adjuster */}
         {staffing.week_count > 0 && (
-          <div className={styles.weekAdjuster}>
+          <div className={styles.weekAdjuster} onClick={(e) => e.preventDefault()}>
             <button
-              onClick={() => dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count - 1 })}
+              onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count - 1 }) }}
               className={styles.weekButton}
               aria-label="Remove week"
               disabled={staffing.week_count <= 1}
@@ -52,7 +48,7 @@ export function StaffingSection({
               {staffing.week_count} <span className={styles.weekLabel}>wks</span>
             </span>
             <button
-              onClick={() => dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count + 1 })}
+              onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count + 1 }) }}
               className={styles.weekButton}
               aria-label="Add week"
             >
@@ -62,13 +58,13 @@ export function StaffingSection({
         )}
 
         <button
-          onClick={() => dispatch({ type: 'STAFFING_ADD_ROW' })}
+          onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_ADD_ROW' }) }}
           className={styles.addButton}
           disabled={staffing.week_count === 0}
         >
           + Add Role
         </button>
-      </div>
+      </summary>
 
       {/* Initialize from estimate prompt */}
       {staffing.week_count === 0 && estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (
