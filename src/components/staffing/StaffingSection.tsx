@@ -236,10 +236,19 @@ export function StaffingSection({
             />
           )}
 
-          {/* Empty state */}
+          {/* Empty state with reinitialize option */}
           {staffing.week_count > 0 && staffing.rows.length === 0 && (
             <div className={styles.emptyState}>
               <p className={styles.emptyText}>No roles yet — click "+ Add Role" to start building your staffing plan</p>
+              {estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (
+                <button
+                  onClick={() => dispatch({ type: 'STAFFING_INIT_FROM_ESTIMATE', weekCount: estimateDurationWeeks, impliedPeople, totalEffortHours: baseEffortHours!, hoursPerWeek: billableHoursPerWeek })}
+                  className={styles.initButton}
+                  type="button"
+                >
+                  Reinitialize from estimate ({estimateDurationWeeks} weeks)
+                </button>
+              )}
             </div>
           )}
         </>
