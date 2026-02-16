@@ -1,44 +1,17 @@
-.footer {
+/* Bottom results bar — pure data, no toolbar */
+.bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 50;
-}
-
-/* Collapsible settings panel */
-.settingsPanel {
-  max-height: 0;
-  overflow: hidden;
-  background: var(--surface-base);
-  border-top: 1px solid transparent;
-  transition: max-height var(--duration-slow) var(--ease-out),
-              border-color var(--duration-fast) ease;
-}
-
-.settingsPanelOpen {
-  max-height: 280px;
-  border-top-color: var(--surface-border-strong);
-}
-
-.settingsInner {
-  padding: calc(var(--space) * 2) calc(var(--space) * 3);
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-/* Bottom results bar */
-.bar {
   background: var(--surface-base);
   border-top: 1px solid var(--surface-border-strong);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
   padding: calc(var(--space) * 2) calc(var(--space) * 3);
   display: flex;
-  align-items: center;
-  gap: calc(var(--space) * 2);
+  justify-content: center;
   animation: statusBarEnter var(--duration-normal) var(--ease-out);
-  min-height: 64px;
-  position: relative;
 }
 
 .bar::before {
@@ -52,197 +25,199 @@
   border-radius: 2px;
 }
 
-/* Settings toggle button in the bar */
-.settingsToggle {
-  display: inline-flex;
-  align-items: center;
+/* Two-panel layout: Estimate | Plan */
+.panels {
+  display: flex;
+  align-items: stretch;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  background: var(--surface-overlay);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all var(--duration-fast) ease;
-  flex-shrink: 0;
+  gap: calc(var(--space) * 4);
+  max-width: 1200px;
+  width: 100%;
 }
 
-.settingsToggle svg {
-  width: 16px;
-  height: 16px;
-  transition: transform var(--duration-normal) var(--ease-out);
-}
-
-.settingsToggle:hover {
-  color: var(--text-accent);
-  border-color: var(--surface-border-strong);
-  background: var(--primary-50);
-}
-
-.settingsToggle:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.settingsToggleActive {
-  color: var(--text-accent);
-  background: var(--primary-50);
-  border-color: var(--primary-400);
-}
-
-.settingsToggleActive svg {
-  transform: rotate(90deg);
-}
-
-.label {
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-accent);
-  flex-shrink: 0;
-  padding-right: calc(var(--space) * 1);
-  border-right: 1px solid var(--surface-border);
-}
-
-/* Divider between estimate and staffing metric groups */
+/* Vertical divider between panels */
 .divider {
-  width: 2px;
-  height: 32px;
+  width: 1px;
   background: var(--surface-border-strong);
   flex-shrink: 0;
 }
 
-.metrics {
+/* Each panel: a labeled section */
+.panel {
   display: flex;
-  align-items: center;
-  gap: calc(var(--space) * 1.5);
-  flex-shrink: 1;
-  min-width: 0;
-  overflow-x: auto;
+  flex-direction: column;
+  gap: calc(var(--space) * 0.75);
 }
 
+.panelLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-accent);
+  line-height: 1;
+}
+
+/* Metrics within a panel */
+.metricsRow {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--space) * 3);
+}
+
+/* Stacked metric: label → value → detail */
 .metric {
   display: flex;
-  align-items: baseline;
-  gap: calc(var(--space) * 0.75);
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .metricLabel {
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: 0.6rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
   white-space: nowrap;
+  line-height: 1;
 }
 
-.metricValue {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-computed);
-  white-space: nowrap;
-}
+/* ── Value tiers ── */
 
-.metricValuePrimary {
-  font-size: 1.375rem;
+.valueHero {
+  font-size: 1.75rem;
   font-weight: 800;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--text-accent);
   white-space: nowrap;
+  line-height: 1.1;
 }
 
-.metricValueAccent {
-  font-size: 1.0625rem;
+.valueTeal {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-computed);
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.valueHot {
+  font-size: 1.5rem;
   font-weight: 700;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--text-hot);
   white-space: nowrap;
+  line-height: 1.1;
 }
 
-.sep {
-  width: 1px;
-  height: 20px;
-  background: var(--surface-border-strong);
-  flex-shrink: 0;
+.unit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+/* Supporting detail line */
+.detail {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  white-space: nowrap;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.detailSpread {
+  color: var(--text-computed);
+  font-weight: 600;
 }
 
 .empty {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--text-muted);
   font-style: italic;
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 1024px) {
-  .metricLabel {
-    display: none;
+  .panels {
+    gap: calc(var(--space) * 2.5);
   }
 
-  .metric {
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
+  .metricsRow {
+    gap: calc(var(--space) * 2);
+  }
+
+  .valueHero {
+    font-size: 1.5rem;
+  }
+
+  .valueTeal,
+  .valueHot {
+    font-size: 1.25rem;
   }
 }
 
 @media (max-width: 768px) {
   .bar {
-    padding: calc(var(--space) * 0.75) calc(var(--space) * 1.5);
-    gap: calc(var(--space) * 1);
+    padding: calc(var(--space) * 1.5) calc(var(--space) * 1.5);
   }
 
-  .settingsInner {
-    padding: calc(var(--space) * 2) calc(var(--space) * 1.5);
+  .panels {
+    gap: calc(var(--space) * 2);
   }
 
-  .metrics {
-    gap: calc(var(--space) * 1);
+  .metricsRow {
+    gap: calc(var(--space) * 1.5);
   }
 
-  .metricValue {
-    font-size: 0.875rem;
+  .valueHero {
+    font-size: 1.25rem;
   }
 
-  .metricValuePrimary {
+  .valueTeal,
+  .valueHot {
     font-size: 1.125rem;
+  }
+
+  .detail {
+    display: none;
   }
 }
 
 @media print {
-  .footer {
-    position: static;
-  }
-
-  .settingsPanel {
-    display: none;
-  }
-
   .bar {
+    position: static;
     background: white;
     border-top: 2px solid black;
     box-shadow: none;
-    color: black;
   }
 
   .bar::before {
     display: none;
   }
 
-  .settingsToggle {
-    display: none;
+  .panelLabel {
+    color: #333;
   }
 
-  .metricLabel,
-  .metricValue,
-  .label {
+  .metricLabel {
+    color: #666;
+  }
+
+  .valueHero,
+  .valueTeal,
+  .valueHot,
+  .detail {
+    color: black;
+  }
+
+  .detailSpread {
     color: black;
   }
 }

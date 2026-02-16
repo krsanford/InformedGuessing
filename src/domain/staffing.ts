@@ -98,7 +98,7 @@ export function roundUpToCost(rawCost: number, increment: number = COST_ROUNDING
 /**
  * Calculate the full grid: all row totals, week totals, grand totals.
  */
-export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number): StaffingGridComputed {
+export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number, costRoundingIncrement: number = COST_ROUNDING_INCREMENT): StaffingGridComputed {
   const enabledRows = rows.filter((r) => r.enabled)
   const row_totals = rows.map((row) => {
     if (!row.enabled) return { total_hours: 0, total_cost: 0 }
@@ -109,7 +109,7 @@ export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number): S
   const week_totals = calculateWeekTotals(enabledRows, weekCount)
   const grand_total_hours = row_totals.reduce((sum, r) => sum + r.total_hours, 0)
   const grand_total_cost_raw = row_totals.reduce((sum, r) => sum + r.total_cost, 0)
-  const grand_total_cost = roundUpToCost(grand_total_cost_raw)
+  const grand_total_cost = roundUpToCost(grand_total_cost_raw, costRoundingIncrement)
 
   return {
     row_totals,

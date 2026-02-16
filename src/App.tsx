@@ -48,8 +48,8 @@ function App() {
   }
 
   const staffingGridComputed = useMemo(
-    () => calculateStaffingGrid(state.staffing.rows, state.staffing.week_count),
-    [state.staffing.rows, state.staffing.week_count]
+    () => calculateStaffingGrid(state.staffing.rows, state.staffing.week_count, state.constants.cost_rounding_increment),
+    [state.staffing.rows, state.staffing.week_count, state.constants.cost_rounding_increment]
   )
 
   const staffingComparison = useMemo(
@@ -129,8 +129,21 @@ function App() {
   }
 
   return (
-    <div className={`${styles.container} ${settingsOpen ? styles.containerSettingsOpen : ''}`}>
-      <AppHeader />
+    <div className={styles.container}>
+      <AppHeader
+        settingsOpen={settingsOpen}
+        onSettingsToggle={() => setSettingsOpen((o) => !o)}
+        onExport={handleExport}
+        onImport={handleImport}
+        onReset={handleReset}
+        settingsContent={
+          <AdvancedVariables
+            constants={state.constants}
+            onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
+            onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
+          />
+        }
+      />
 
       <main className={styles.main}>
         <details className={styles.section} open>
@@ -177,18 +190,8 @@ function App() {
       <OutputsSection
         results={results}
         staffingComputed={staffingGridComputed}
-        settingsOpen={settingsOpen}
-        onSettingsToggle={() => setSettingsOpen((o) => !o)}
-        onExport={handleExport}
-        onImport={handleImport}
-        onReset={handleReset}
-        settingsContent={
-          <AdvancedVariables
-            constants={state.constants}
-            onUpdate={(updates) => dispatch({ type: 'UPDATE_CONSTANTS', updates })}
-            onReset={() => dispatch({ type: 'RESET_CONSTANTS' })}
-          />
-        }
+        staffingWeeks={state.staffing.week_count}
+        staffingPeople={state.staffing.rows.filter((r) => r.enabled).length}
       />
     </div>
   )

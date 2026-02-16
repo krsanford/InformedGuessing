@@ -62,6 +62,10 @@ export function importSession(json: string): AppState {
   if (typeof s.constants !== 'object' || s.constants === null) {
     throw new Error('Missing constants object')
   }
+  const c = s.constants as Record<string, unknown>
+  if (typeof c.cost_rounding_increment !== 'number' || c.cost_rounding_increment <= 0) {
+    c.cost_rounding_increment = 1000
+  }
 
   // Validate nextId
   if (typeof s.nextId !== 'number') {

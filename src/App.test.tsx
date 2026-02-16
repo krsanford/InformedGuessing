@@ -13,7 +13,6 @@ describe('App - UI Integration Tests', () => {
     expect(screen.getByText('Rough Math')).toBeInTheDocument()
     expect(screen.getByText('Work Items')).toBeInTheDocument()
     expect(screen.getByLabelText('Toggle advanced settings')).toBeInTheDocument()
-    expect(screen.getByText('Estimate')).toBeInTheDocument()
   })
 
   it('starts with one empty work item', () => {
@@ -132,12 +131,10 @@ describe('App - UI Integration Tests', () => {
     await user.clear(worstInput)
     await user.type(worstInput, '200')
     
-    // Should show calculated outputs in footer bar
-    expect(screen.getAllByText('Expected').length).toBeGreaterThan(0)
-    expect(screen.getByText('Spread')).toBeInTheDocument()
-    expect(screen.getByText('Total Effort')).toBeInTheDocument()
-    expect(screen.getByText('Staff Weeks')).toBeInTheDocument()
-    expect(screen.getByText('Duration')).toBeInTheDocument()
+    // Should show calculated outputs in results bar
+    expect(screen.getByText('Estimate')).toBeInTheDocument()
+    expect(screen.getByText('Effort')).toBeInTheDocument()
+    expect(screen.getByText(/staff-wk/)).toBeInTheDocument()
     
     // Values should be calculated (check for numeric pattern)
     const outputs = screen.getAllByText(/\d+\.\d+/)
@@ -194,9 +191,10 @@ describe('App - UI Integration Tests', () => {
 
     const billableHoursInput = container.querySelector('#billable_hours_per_week') as HTMLInputElement
 
-    // Change from default 36 to 40
+    // Change from default 36 to 40, then blur to commit
     const { fireEvent } = await import('@testing-library/react')
     fireEvent.change(billableHoursInput, { target: { value: '40' } })
+    fireEvent.blur(billableHoursInput)
     expect(billableHoursInput.value).toBe('40')
 
     // Reset button

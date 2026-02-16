@@ -13,6 +13,7 @@ const sampleState: AppState = {
     billable_hours_per_week: 36,
     duration_scaling_power: 3.2,
     coordination_cost_per_pair: 1,
+    cost_rounding_increment: 1000,
   },
   nextId: 3,
   staffing: {
