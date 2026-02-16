@@ -103,6 +103,13 @@
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.30);
 }
 
+.actionBtnInfo {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
+}
+
 .actionBtnActive {
   color: #FFFFFF;
   background: rgba(255, 255, 255, 0.22);
@@ -115,18 +122,24 @@
 
 /* Settings panel — light surface, below the gradient bar */
 .settingsPanel {
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   overflow: hidden;
   background: var(--surface-base);
   border-bottom: 1px solid transparent;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: max-height var(--duration-slow) var(--ease-out),
+  transition: grid-template-rows var(--duration-slow) var(--ease-out),
               border-color var(--duration-fast) ease;
 }
 
 .settingsPanelOpen {
-  max-height: 280px;
+  grid-template-rows: 1fr;
+  overflow: visible;
   border-bottom-color: var(--surface-border-strong);
+}
+
+.settingsInnerWrap {
+  min-height: 0;
 }
 
 .settingsInner {

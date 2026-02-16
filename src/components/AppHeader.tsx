@@ -1,5 +1,5 @@
 import { type ReactNode, useRef } from 'react'
-import { GearIcon, DownloadIcon, UploadIcon, ResetIcon } from './icons'
+import { GearIcon, DownloadIcon, UploadIcon, ResetIcon, InfoIcon } from './icons'
 import styles from './AppHeader.module.css'
 
 interface AppHeaderProps {
@@ -8,10 +8,11 @@ interface AppHeaderProps {
   onExport: () => void
   onImport: (json: string) => void
   onReset: () => void
+  onInfoToggle: () => void
   settingsContent: ReactNode
 }
 
-export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, onReset, settingsContent }: AppHeaderProps) {
+export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, onReset, onInfoToggle, settingsContent }: AppHeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +50,15 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
           </div>
 
           <div className={styles.actions}>
+            <button
+              onClick={onInfoToggle}
+              className={`${styles.actionBtn} ${styles.actionBtnInfo}`}
+              aria-label="About Rough Math"
+              data-tip="What is this tool and how does it work?"
+              data-tip-pos="bottom-end"
+            >
+              <InfoIcon />
+            </button>
             <button
               onClick={onSettingsToggle}
               className={`${styles.actionBtn} ${settingsOpen ? styles.actionBtnActive : ''}`}
@@ -97,8 +107,10 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
       </header>
 
       <div className={`${styles.settingsPanel} ${settingsOpen ? styles.settingsPanelOpen : ''}`}>
-        <div className={styles.settingsInner}>
-          {settingsContent}
+        <div className={styles.settingsInnerWrap}>
+          <div className={styles.settingsInner}>
+            {settingsContent}
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { calculateCoordination, calculateGapDecomposition } from './domain/coord
 import { exportSession, importSession, triggerDownload, saveToStorage, loadFromStorage } from './domain/serialization'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
+import { InfoPanel } from './components/InfoPanel'
 import { WorkItemList } from './components/WorkItemList'
 import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
@@ -16,6 +17,7 @@ import styles from './App.module.css'
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState, () => loadFromStorage() ?? initialState)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [infoOpen, setInfoOpen] = useState(false)
 
   useEffect(() => {
     saveToStorage(state)
@@ -136,6 +138,7 @@ function App() {
         onExport={handleExport}
         onImport={handleImport}
         onReset={handleReset}
+        onInfoToggle={() => setInfoOpen(true)}
         settingsContent={
           <AdvancedVariables
             constants={state.constants}
@@ -195,6 +198,8 @@ function App() {
         staffingPeople={state.staffing.rows.filter((r) => r.enabled).length}
         gapDecomposition={gapDecomposition}
       />
+
+      <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
     </div>
   )
 }
