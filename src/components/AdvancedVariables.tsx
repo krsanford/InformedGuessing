@@ -70,7 +70,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="expected_case_position"
         label="Expected Case Position"
         help="Position between best (0) and worst (1) case"
-        tip="Where the expected value falls between best and worst. 0 = optimistic, 1 = pessimistic. Default 0.4 means slightly optimistic."
+        tip="Where the expected value falls between best and worst. 0 = optimistic, 1 = pessimistic. Default 0.6 means slightly pessimistic."
         value={constants.expected_case_position}
         step="0.1"
         onCommit={(v) => onUpdate({ expected_case_position: v })}
@@ -79,7 +79,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="range_spread_divisor"
         label="Range Spread Divisor"
         help="Confidence interval width (higher = tighter)"
-        tip="Divides the best–worst range to compute standard deviation. Higher = tighter confidence intervals. Default 3.3 approximates a 95% range."
+        tip="Divides the best–worst range to compute spread. Higher = tighter confidence intervals. Default 2.6 assumes the range captures roughly 90% of outcomes."
         value={constants.range_spread_divisor}
         step="0.1"
         onCommit={(v) => onUpdate({ range_spread_divisor: v })}
@@ -97,7 +97,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="duration_scaling_power"
         label="Duration Scaling Power"
         help="Coordination overhead factor"
-        tip="Exponent for effort → duration. 0.33 (cube root) means doubling effort adds ~26% more calendar time. Lower = more parallelizable."
+        tip="Multiplier in the cube-root duration formula (k × effort^⅓). Higher values produce longer calendar durations for the same effort. Default 3.2."
         value={constants.duration_scaling_power}
         step="0.1"
         onCommit={(v) => onUpdate({ duration_scaling_power: v })}

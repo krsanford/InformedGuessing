@@ -8,10 +8,10 @@
 // ============================================================================
 
 export interface EstimationConstants {
-  expected_case_position: number; // 0-1, default 0.4
+  expected_case_position: number; // 0-1, default 0.6
   range_spread_divisor: number; // >0, default 2.6
   billable_hours_per_week: number; // >0, default 36
-  duration_scaling_power: number; // >0, default 3.5
+  duration_scaling_power: number; // >0, default 3.2
   coordination_cost_per_pair: number; // 0.5-8, default 1
 }
 

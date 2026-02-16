@@ -123,7 +123,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
         </details>
 
         <p className={styles.footnote}>
-          The approach draws on PERT estimation, variance addition under independence, and cube-root scheduling heuristics. It's a model, not a prophecy &mdash; but it tends to beat gut-feel padding and worst-case-everything budgets.
+          The underlying model applies established techniques from statistical estimation, portfolio risk theory, and software scheduling research (Brooks, McConnell). It's a model, not a prophecy &mdash; but it tends to beat gut-feel padding and worst-case-everything budgets.
         </p>
       </div>
     </div>
