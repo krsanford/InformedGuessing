@@ -125,6 +125,9 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
         <p className={styles.footnote}>
           The underlying model applies established techniques from statistical estimation, portfolio risk theory, and software scheduling research (Brooks, McConnell). It's a model, not a prophecy &mdash; but it tends to beat gut-feel padding and worst-case-everything budgets.
         </p>
+        <p className={styles.footnote}>
+          <a href="https://github.com/krsanford/InformedGuessing" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
+        </p>
       </div>
     </div>
   )
