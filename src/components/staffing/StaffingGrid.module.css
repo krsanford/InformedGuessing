@@ -71,7 +71,28 @@
 .stickyDiscipline { left: 72px; }
 .stickyRate       { left: 232px; }
 .stickyHours      { left: 312px; justify-content: flex-end; }
-.stickyCost       { left: 384px; justify-content: flex-end; }
+.stickyCost       { left: 384px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
+
+/* Shadow on last sticky header column */
+.stickyCost::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -6px;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to right, rgba(0,0,0,0.04), transparent);
+  pointer-events: none;
+}
+
+/* Make sticky header labels slightly bolder */
+.headerRow .stickyDiscipline,
+.headerRow .stickyRate,
+.headerRow .stickyHours,
+.headerRow .stickyCost {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
 
 .headerCellNum,
 .headerCellWeek {
@@ -89,8 +110,7 @@
 .headerCellComputed {
   text-align: right;
   padding-right: calc(var(--space) * 0.75);
-  color: var(--text-computed);
-  opacity: 0.7;
+  color: color-mix(in srgb, var(--text-computed) 70%, transparent);
 }
 
 /* Summary row */

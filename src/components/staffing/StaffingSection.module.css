@@ -2,8 +2,9 @@
   margin-top: calc(var(--space) * 3);
 }
 
-/* Collapsible section toggle — matches InsightsPanel and App.module.css pattern */
+/* Collapsible section toggle */
 .sectionToggle {
+  width: 100%;
   font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -16,16 +17,11 @@
   margin: 0 0 calc(var(--space) * 1) 0;
   cursor: pointer;
   user-select: none;
-  list-style: none;
   display: flex;
   align-items: center;
   gap: calc(var(--space) * 0.75);
   transition: background var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out);
-}
-
-.sectionToggle::-webkit-details-marker {
-  display: none;
 }
 
 .sectionToggle::before {
@@ -35,7 +31,7 @@
   display: inline-block;
 }
 
-.section:not([open]) > .sectionToggle::before {
+.section:not(.sectionOpen) > .sectionToggle::before {
   transform: rotate(-90deg);
 }
 
@@ -63,13 +59,6 @@
 
 .toolbarSpacer {
   flex: 1;
-}
-
-/* Hide toolbar items when section is collapsed */
-.section:not([open]) .toolbarSpacer,
-.section:not([open]) .weekAdjuster,
-.section:not([open]) .addButton {
-  display: none;
 }
 
 /* Draw attention when section opens */
@@ -100,8 +89,8 @@
   }
 }
 
-.section[open] .addButton,
-.section[open] .weekAdjuster {
+.sectionOpen .addButton,
+.sectionOpen .weekAdjuster {
   animation: buttonWiggle 1s ease-in-out 0.3s;
 }
 

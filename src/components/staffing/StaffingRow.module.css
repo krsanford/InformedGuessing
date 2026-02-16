@@ -49,7 +49,7 @@
 .stickyDiscipline { left: 72px; }
 .stickyRate       { left: 232px; }
 .stickyHours      { left: 312px; justify-content: flex-end; }
-.stickyCost       { left: 384px; justify-content: flex-end; }
+.stickyCost       { left: 384px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
 
 /* Shadow on the last sticky column to indicate scrollable content */
 .stickyCost::after {

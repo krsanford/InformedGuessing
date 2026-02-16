@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { AppAction, StaffingState, StaffingGridComputed, StaffingComparison } from '../../types'
 import type { GapDecomposition } from '../../domain/coordination'
 import { StaffingGrid } from './StaffingGrid'
@@ -26,6 +27,8 @@ export function StaffingSection({
   baseEffortHours,
   billableHoursPerWeek,
 }: StaffingSectionProps) {
+  const [isOpen, setIsOpen] = useState(true)
+
   // Don't render until there's an estimate or the user has started staffing
   if (staffing.rows.length === 0 && staffing.week_count === 0 && estimateDurationWeeks === null) {
     return null
@@ -34,8 +37,13 @@ export function StaffingSection({
   const hasData = staffing.rows.length > 0 && gridComputed.grand_total_hours > 0
 
   return (
-    <details className={styles.section} open>
-      <summary className={styles.sectionToggle}>
+    <div className={`${styles.section} ${isOpen ? styles.sectionOpen : ''}`}>
+      {/* Toggle header */}
+      <button
+        className={styles.sectionToggle}
+        onClick={() => setIsOpen((o) => !o)}
+        type="button"
+      >
         <span className={styles.sectionLabelText}>Staffing Plan</span>
         {staffing.rows.length > 0 && (
           <span className={styles.count}>{staffing.rows.length}</span>
@@ -43,13 +51,14 @@ export function StaffingSection({
         <span className={styles.toolbarSpacer} />
 
         {/* Week count adjuster */}
-        {staffing.week_count > 0 && (
-          <div className={styles.weekAdjuster} onClick={(e) => e.preventDefault()}>
+        {isOpen && staffing.week_count > 0 && (
+          <div className={styles.weekAdjuster} onClick={(e) => e.stopPropagation()}>
             <button
-              onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count - 1 }) }}
+              onClick={() => dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count - 1 })}
               className={styles.weekButton}
               aria-label="Remove week"
               disabled={staffing.week_count <= 1}
+              type="button"
             >
               −
             </button>
@@ -57,31 +66,29 @@ export function StaffingSection({
               {staffing.week_count} <span className={styles.weekLabel}>wks</span>
             </span>
             <button
-              onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count + 1 }) }}
+              onClick={() => dispatch({ type: 'STAFFING_SET_WEEK_COUNT', weekCount: staffing.week_count + 1 })}
               className={styles.weekButton}
               aria-label="Add week"
+              type="button"
             >
               +
             </button>
           </div>
         )}
 
-        <button
-          onClick={(e) => { e.preventDefault(); dispatch({ type: 'STAFFING_ADD_ROW' }) }}
-          className={styles.addButton}
-          disabled={staffing.week_count === 0}
-        >
-          + Add Role
-        </button>
-      </summary>
+        {isOpen && (
+          <button
+            onClick={(e) => { e.stopPropagation(); dispatch({ type: 'STAFFING_ADD_ROW' }) }}
+            className={styles.addButton}
+            disabled={staffing.week_count === 0}
+            type="button"
+          >
+            + Add Role
+          </button>
+        )}
+      </button>
 
-      {!hasData && staffing.week_count === 0 && baseEffortHours === null && (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyText}>
-            Create your estimate, then initialize the staffing grid and add roles.
-          </p>
-        </div>
-      )}
+      {/* Data banners — always visible */}
 
       {/* Estimate summary — shown before staffing grid has data */}
       {!hasData && baseEffortHours !== null && (
@@ -102,17 +109,7 @@ export function StaffingSection({
         </div>
       )}
 
-      {/* Initialize from estimate prompt */}
-      {staffing.week_count === 0 && estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (
-        <button
-          onClick={() => dispatch({ type: 'STAFFING_INIT_FROM_ESTIMATE', weekCount: estimateDurationWeeks, impliedPeople, totalEffortHours: baseEffortHours!, hoursPerWeek: billableHoursPerWeek })}
-          className={styles.initButton}
-        >
-          Initialize staffing grid ({estimateDurationWeeks} weeks from estimate)
-        </button>
-      )}
-
-      {/* Gap decomposition banner (replaces simple comparison when available) */}
+      {/* Gap decomposition banner */}
       {gapDecomposition && hasData && (
         <div className={styles.comparison}>
           <div className={styles.comparisonItem}>
@@ -165,7 +162,7 @@ export function StaffingSection({
         </div>
       )}
 
-      {/* Fallback: simple comparison when gap decomposition not available */}
+      {/* Fallback: simple comparison */}
       {!gapDecomposition && comparison && hasData && (
         <div className={styles.comparison}>
           <div className={styles.comparisonItem}>
@@ -193,30 +190,54 @@ export function StaffingSection({
         </div>
       )}
 
-      {/* Grid */}
-      {staffing.week_count > 0 && (
-        <StaffingGrid
-          rows={staffing.rows}
-          weekCount={staffing.week_count}
-          gridComputed={gridComputed}
-          onUpdateRow={(rowId, updates) =>
-            dispatch({ type: 'STAFFING_UPDATE_ROW', rowId, updates })
-          }
-          onUpdateCell={(rowId, weekIndex, value) =>
-            dispatch({ type: 'STAFFING_UPDATE_CELL', rowId, weekIndex, value })
-          }
-          onRemoveRow={(rowId) =>
-            dispatch({ type: 'STAFFING_REMOVE_ROW', rowId })
-          }
-        />
-      )}
+      {/* Collapsible content */}
+      {isOpen && (
+        <>
+          {!hasData && staffing.week_count === 0 && baseEffortHours === null && (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyText}>
+                Create your estimate, then initialize the staffing grid and add roles.
+              </p>
+            </div>
+          )}
 
-      {/* Empty state */}
-      {staffing.week_count > 0 && staffing.rows.length === 0 && (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No roles yet — click "+ Add Role" to start building your staffing plan</p>
-        </div>
+          {/* Initialize from estimate prompt */}
+          {staffing.week_count === 0 && estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (
+            <button
+              onClick={() => dispatch({ type: 'STAFFING_INIT_FROM_ESTIMATE', weekCount: estimateDurationWeeks, impliedPeople, totalEffortHours: baseEffortHours!, hoursPerWeek: billableHoursPerWeek })}
+              className={styles.initButton}
+              type="button"
+            >
+              Initialize staffing grid ({estimateDurationWeeks} weeks from estimate)
+            </button>
+          )}
+
+          {/* Grid */}
+          {staffing.week_count > 0 && (
+            <StaffingGrid
+              rows={staffing.rows}
+              weekCount={staffing.week_count}
+              gridComputed={gridComputed}
+              onUpdateRow={(rowId, updates) =>
+                dispatch({ type: 'STAFFING_UPDATE_ROW', rowId, updates })
+              }
+              onUpdateCell={(rowId, weekIndex, value) =>
+                dispatch({ type: 'STAFFING_UPDATE_CELL', rowId, weekIndex, value })
+              }
+              onRemoveRow={(rowId) =>
+                dispatch({ type: 'STAFFING_REMOVE_ROW', rowId })
+              }
+            />
+          )}
+
+          {/* Empty state */}
+          {staffing.week_count > 0 && staffing.rows.length === 0 && (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyText}>No roles yet — click "+ Add Role" to start building your staffing plan</p>
+            </div>
+          )}
+        </>
       )}
-    </details>
+    </div>
   )
 }
