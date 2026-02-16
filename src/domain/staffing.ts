@@ -156,6 +156,43 @@ export function createStaffingRow(id: number, weekCount: number): StaffingRow {
 }
 
 /**
+ * Create pre-populated rows that allocate totalEffortHours across
+ * impliedPeople at hoursPerWeek, filling week-by-week until hours are exhausted.
+ */
+export function createPrepopulatedRows(
+  startId: number,
+  weekCount: number,
+  impliedPeople: number,
+  totalEffortHours: number,
+  hoursPerWeek: number
+): StaffingRow[] {
+  const rows: StaffingRow[] = []
+  for (let p = 0; p < impliedPeople; p++) {
+    rows.push({
+      id: startId + p,
+      discipline: '',
+      hourly_rate: 0,
+      cells: new Array(weekCount).fill(''),
+    })
+  }
+
+  let remaining = totalEffortHours
+  for (let w = 0; w < weekCount && remaining > 0; w++) {
+    for (let p = 0; p < impliedPeople && remaining > 0; p++) {
+      if (remaining >= hoursPerWeek) {
+        rows[p].cells[w] = String(hoursPerWeek)
+        remaining -= hoursPerWeek
+      } else {
+        rows[p].cells[w] = String(Math.round(remaining))
+        remaining = 0
+      }
+    }
+  }
+
+  return rows
+}
+
+/**
  * Resize all rows' cell arrays to match a new week count.
  * If growing, pad with empty strings.
  * If shrinking, truncate from the end.

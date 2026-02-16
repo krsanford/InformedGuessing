@@ -1,5 +1,5 @@
 import { DEFAULT_CONSTANTS } from './domain/estimation'
-import { createStaffingRow, resizeRowCells } from './domain/staffing'
+import { createStaffingRow, createPrepopulatedRows, resizeRowCells } from './domain/staffing'
 import type { AppState, AppAction, StaffingState } from './types'
 
 const DEFAULT_STAFFING: StaffingState = {
@@ -140,15 +140,24 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       }
     }
 
-    case 'STAFFING_INIT_FROM_ESTIMATE':
+    case 'STAFFING_INIT_FROM_ESTIMATE': {
+      const rows = createPrepopulatedRows(
+        state.staffing.nextRowId,
+        action.weekCount,
+        action.impliedPeople,
+        action.totalEffortHours,
+        action.hoursPerWeek
+      )
       return {
         ...state,
         staffing: {
           ...state.staffing,
           week_count: action.weekCount,
-          rows: resizeRowCells(state.staffing.rows, action.weekCount),
+          rows,
+          nextRowId: state.staffing.nextRowId + action.impliedPeople,
         },
       }
+    }
 
     default:
       return state

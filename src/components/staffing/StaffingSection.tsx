@@ -12,6 +12,7 @@ interface StaffingSectionProps {
   gapDecomposition: GapDecomposition | null
   impliedPeople: number
   baseEffortHours: number | null
+  billableHoursPerWeek: number
 }
 
 export function StaffingSection({
@@ -23,6 +24,7 @@ export function StaffingSection({
   gapDecomposition,
   impliedPeople,
   baseEffortHours,
+  billableHoursPerWeek,
 }: StaffingSectionProps) {
   // Don't render until there's an estimate or the user has started staffing
   if (staffing.rows.length === 0 && staffing.week_count === 0 && estimateDurationWeeks === null) {
@@ -103,7 +105,7 @@ export function StaffingSection({
       {/* Initialize from estimate prompt */}
       {staffing.week_count === 0 && estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (
         <button
-          onClick={() => dispatch({ type: 'STAFFING_INIT_FROM_ESTIMATE', weekCount: estimateDurationWeeks })}
+          onClick={() => dispatch({ type: 'STAFFING_INIT_FROM_ESTIMATE', weekCount: estimateDurationWeeks, impliedPeople, totalEffortHours: baseEffortHours!, hoursPerWeek: billableHoursPerWeek })}
           className={styles.initButton}
         >
           Initialize staffing grid ({estimateDurationWeeks} weeks from estimate)

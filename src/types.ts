@@ -60,4 +60,4 @@ export type AppAction =
   | { type: 'STAFFING_UPDATE_ROW'; rowId: number; updates: Partial<Omit<StaffingRow, 'id' | 'cells'>> }
   | { type: 'STAFFING_UPDATE_CELL'; rowId: number; weekIndex: number; value: string }
   | { type: 'STAFFING_SET_WEEK_COUNT'; weekCount: number }
-  | { type: 'STAFFING_INIT_FROM_ESTIMATE'; weekCount: number }
+  | { type: 'STAFFING_INIT_FROM_ESTIMATE'; weekCount: number; impliedPeople: number; totalEffortHours: number; hoursPerWeek: number }

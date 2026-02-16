@@ -126,6 +126,7 @@ function App() {
           gapDecomposition={gapDecomposition}
           impliedPeople={impliedPeople}
           baseEffortHours={results?.total_effort_hours ?? null}
+          billableHoursPerWeek={state.constants.billable_hours_per_week}
         />
       </main>
 
