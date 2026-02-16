@@ -16,13 +16,13 @@ import type { StaffingRow } from '../types'
 
 // Test data from docs/staffing-plan-spec.md "Worked Example"
 const TEST_ROWS: StaffingRow[] = [
-  { id: 1, discipline: 'Scrum Master', hourly_rate: 100,
+  { id: 1, discipline: 'Scrum Master', hourly_rate: 100, enabled: true,
     cells: ['6','6','6','6','6','6','PI Plan','6','6','6','6','6','6','6','6'] },
-  { id: 2, discipline: 'Lead Dev', hourly_rate: 175,
+  { id: 2, discipline: 'Lead Dev', hourly_rate: 175, enabled: true,
     cells: ['36','36','36','36','36','36','PI Plan','PTO','PTO','36','36','36','36','36','36'] },
-  { id: 3, discipline: 'Associate Dev', hourly_rate: 125,
+  { id: 3, discipline: 'Associate Dev', hourly_rate: 125, enabled: true,
     cells: ['36','36','36','36','36','36','PI Plan','36','36','36','36','36','36','36','36'] },
-  { id: 4, discipline: 'QA', hourly_rate: 125,
+  { id: 4, discipline: 'QA', hourly_rate: 125, enabled: true,
     cells: ['8','8','0','0','0','0','PI Plan','8','8','8','20','20','20','20','20'] },
 ]
 
@@ -111,17 +111,17 @@ describe('staffing - validation', () => {
     })
 
     it('rejects negative hourly rate', () => {
-      const row: StaffingRow = { id: 1, discipline: 'Dev', hourly_rate: -50, cells: [] }
+      const row: StaffingRow = { id: 1, discipline: 'Dev', hourly_rate: -50, cells: [], enabled: true }
       expect(validateStaffingRow(row)).toBe('Hourly rate cannot be negative')
     })
 
     it('accepts zero hourly rate', () => {
-      const row: StaffingRow = { id: 1, discipline: 'Intern', hourly_rate: 0, cells: [] }
+      const row: StaffingRow = { id: 1, discipline: 'Intern', hourly_rate: 0, cells: [], enabled: true }
       expect(validateStaffingRow(row)).toBeNull()
     })
 
     it('accepts empty discipline name', () => {
-      const row: StaffingRow = { id: 1, discipline: '', hourly_rate: 100, cells: [] }
+      const row: StaffingRow = { id: 1, discipline: '', hourly_rate: 100, cells: [], enabled: true }
       expect(validateStaffingRow(row)).toBeNull()
     })
   })
@@ -165,14 +165,14 @@ describe('staffing - row calculations', () => {
   })
 
   it('handles row with all empty cells', () => {
-    const row: StaffingRow = { id: 1, discipline: 'Empty', hourly_rate: 100, cells: ['', '', ''] }
+    const row: StaffingRow = { id: 1, discipline: 'Empty', hourly_rate: 100, cells: ['', '', ''], enabled: true }
     const result = calculateRowTotals(row)
     expect(result.total_hours).toBe(0)
     expect(result.total_cost).toBe(0)
   })
 
   it('handles row with zero rate', () => {
-    const row: StaffingRow = { id: 1, discipline: 'Intern', hourly_rate: 0, cells: ['36', '36'] }
+    const row: StaffingRow = { id: 1, discipline: 'Intern', hourly_rate: 0, cells: ['36', '36'], enabled: true }
     const result = calculateRowTotals(row)
     expect(result.total_hours).toBe(72)
     expect(result.total_cost).toBe(0)
@@ -369,7 +369,7 @@ describe('staffing - row management', () => {
 
   it('preserves existing data when growing', () => {
     const rows: StaffingRow[] = [{
-      id: 1, discipline: 'Dev', hourly_rate: 150,
+      id: 1, discipline: 'Dev', hourly_rate: 150, enabled: true,
       cells: ['36', 'PTO', '36'],
     }]
     const resized = resizeRowCells(rows, 5)

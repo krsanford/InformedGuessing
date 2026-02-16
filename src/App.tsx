@@ -108,6 +108,7 @@ function App() {
             items={itemsWithCalculations}
             onUpdate={handleFieldUpdate}
             onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
+            onToggle={(id) => dispatch({ type: 'TOGGLE_WORK_ITEM', id })}
           />
         </details>
 

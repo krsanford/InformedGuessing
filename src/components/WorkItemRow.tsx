@@ -8,6 +8,7 @@ interface WorkItemRowProps {
   rowNumber: number
   onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours', value: string) => void
   onRemove: () => void
+  onToggle: () => void
 }
 
 function NumberStepper({
@@ -57,18 +58,32 @@ function NumberStepper({
   )
 }
 
-export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRowProps) {
+export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
+  const disabled = !item.enabled
 
   return (
     <div
-      className={`${styles.row} ${warning ? styles.rowWarning : ''}`}
+      className={`${styles.row} ${warning ? styles.rowWarning : ''} ${disabled ? styles.rowDisabled : ''}`}
       role="listitem"
       style={{ '--index': rowNumber } as React.CSSProperties}
     >
       <span className={styles.id}>
         <span aria-label={`Work item ${rowNumber}`}>{rowNumber}</span>
       </span>
+
+      <label className={styles.toggleLabel}>
+        <input
+          type="checkbox"
+          checked={item.enabled}
+          onChange={onToggle}
+          className={styles.toggleInput}
+          aria-label={`${disabled ? 'Enable' : 'Disable'} work item ${rowNumber}`}
+        />
+        <span className={styles.toggleTrack}>
+          <span className={styles.toggleThumb} />
+        </span>
+      </label>
 
       <button
         onClick={onRemove}

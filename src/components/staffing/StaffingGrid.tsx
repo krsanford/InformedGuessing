@@ -9,16 +9,17 @@ interface StaffingGridProps {
   onUpdateRow: (rowId: number, updates: Partial<Omit<StaffingRowType, 'id' | 'cells'>>) => void
   onUpdateCell: (rowId: number, weekIndex: number, value: string) => void
   onRemoveRow: (rowId: number) => void
+  onToggleRow: (rowId: number) => void
 }
 
 function formatCurrency(value: number): string {
   return '$' + value.toLocaleString('en-US', { maximumFractionDigits: 0 })
 }
 
-// Column order: # | trash | Discipline | $/hr | Hours | Cost | W1 W2 ... WN
+// Column order: # | toggle | trash | Discipline | $/hr | Hours | Cost | W1 W2 ... WN
 function buildGridColumns(weekCount: number): string {
   const weekCols = weekCount > 0 ? ` repeat(${weekCount}, 56px)` : ''
-  return `40px 32px 160px 80px 72px 88px${weekCols}`
+  return `40px 32px 32px 160px 80px 72px 88px${weekCols}`
 }
 
 export function StaffingGrid({
@@ -28,6 +29,7 @@ export function StaffingGrid({
   onUpdateRow,
   onUpdateCell,
   onRemoveRow,
+  onToggleRow,
 }: StaffingGridProps) {
   const gridColumns = buildGridColumns(weekCount)
 
@@ -41,6 +43,7 @@ export function StaffingGrid({
           aria-hidden="true"
         >
           <span className={`${styles.headerCell} ${styles.stickyId}`}>#</span>
+          <span className={`${styles.headerCellAction} ${styles.stickyToggle}`} />
           <span className={`${styles.headerCellAction} ${styles.stickyTrash}`} />
           <span className={`${styles.headerCell} ${styles.stickyDiscipline}`}>Discipline</span>
           <span className={`${styles.headerCellNum} ${styles.stickyRate}`}>$/hr</span>
@@ -64,6 +67,7 @@ export function StaffingGrid({
               onUpdateRow={(updates) => onUpdateRow(row.id, updates)}
               onUpdateCell={(weekIndex, value) => onUpdateCell(row.id, weekIndex, value)}
               onRemove={() => onRemoveRow(row.id)}
+              onToggle={() => onToggleRow(row.id)}
               gridColumns={gridColumns}
             />
           ))}
@@ -76,6 +80,7 @@ export function StaffingGrid({
             style={{ gridTemplateColumns: gridColumns }}
           >
             <span className={styles.stickyId} />
+            <span className={styles.stickyToggle} />
             <span className={styles.stickyTrash} />
             <span className={`${styles.summaryLabel} ${styles.stickyDiscipline}`}>Totals</span>
             <span className={styles.stickyRate} />

@@ -50,9 +50,10 @@
 
 /* ============================================================
    Sticky columns — match StaffingRow positions exactly.
-   Column order: # | trash | Discipline | $/hr | Hours | Cost
+   Column order: # | toggle | trash | Discipline | $/hr | Hours | Cost
    ============================================================ */
 .stickyId,
+.stickyToggle,
 .stickyTrash,
 .stickyDiscipline,
 .stickyRate,
@@ -67,11 +68,12 @@
 }
 
 .stickyId         { left: 0; justify-content: center; }
-.stickyTrash      { left: 40px; }
-.stickyDiscipline { left: 72px; }
-.stickyRate       { left: 232px; }
-.stickyHours      { left: 312px; justify-content: flex-end; }
-.stickyCost       { left: 384px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
+.stickyToggle     { left: 40px; }
+.stickyTrash      { left: 72px; }
+.stickyDiscipline { left: 104px; }
+.stickyRate       { left: 264px; }
+.stickyHours      { left: 344px; justify-content: flex-end; }
+.stickyCost       { left: 416px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
 
 /* Shadow on last sticky header column */
 .stickyCost::after {

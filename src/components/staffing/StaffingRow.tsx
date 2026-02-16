@@ -11,6 +11,7 @@ interface StaffingRowProps {
   onUpdateRow: (updates: Partial<Omit<StaffingRowType, 'id' | 'cells'>>) => void
   onUpdateCell: (weekIndex: number, value: string) => void
   onRemove: () => void
+  onToggle: () => void
   gridColumns: string
 }
 
@@ -25,11 +26,14 @@ export const StaffingRow = memo(function StaffingRow({
   onUpdateRow,
   onUpdateCell,
   onRemove,
+  onToggle,
   gridColumns,
 }: StaffingRowProps) {
+  const disabled = !row.enabled
+
   return (
     <div
-      className={styles.row}
+      className={`${styles.row} ${disabled ? styles.rowDisabled : ''}`}
       role="listitem"
       style={{ gridTemplateColumns: gridColumns, '--index': rowNumber } as React.CSSProperties}
     >
@@ -38,7 +42,21 @@ export const StaffingRow = memo(function StaffingRow({
         <span aria-label={`Staffing row ${rowNumber}`}>{rowNumber}</span>
       </span>
 
-      {/* Remove button - sticky, right after # */}
+      {/* Toggle - sticky */}
+      <label className={`${styles.toggleLabel} ${styles.stickyToggle}`}>
+        <input
+          type="checkbox"
+          checked={row.enabled}
+          onChange={onToggle}
+          className={styles.toggleInput}
+          aria-label={`${disabled ? 'Enable' : 'Disable'} staffing row ${rowNumber}`}
+        />
+        <span className={styles.toggleTrack}>
+          <span className={styles.toggleThumb} />
+        </span>
+      </label>
+
+      {/* Remove button - sticky */}
       <button
         onClick={onRemove}
         className={`${styles.removeButton} ${styles.stickyTrash}`}

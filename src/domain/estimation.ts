@@ -21,6 +21,7 @@ export interface WorkItem {
   notes: string
   best_case_hours: number;
   worst_case_hours: number;
+  enabled: boolean;
 }
 
 export interface WorkItemCalculated extends WorkItem {
@@ -243,7 +244,7 @@ export function calculatePortfolio(
 
   // Calculate valid work items, skip invalid ones
   const calculatedItems: WorkItemCalculated[] = items
-    .filter((item) => validateWorkItem(item) === null)
+    .filter((item) => item.enabled && validateWorkItem(item) === null)
     .map((item) => calculateWorkItem(item, constants));
 
   // Portfolio aggregation

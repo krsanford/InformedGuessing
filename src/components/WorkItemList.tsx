@@ -10,9 +10,10 @@ interface WorkItemListProps {
     value: string
   ) => void
   onRemove: (id: WorkItem['id']) => void
+  onToggle: (id: WorkItem['id']) => void
 }
 
-export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
+export function WorkItemList({ items, onUpdate, onRemove, onToggle }: WorkItemListProps) {
   if (items.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -25,6 +26,7 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
     <div className={styles.table}>
       <div className={styles.headerRow} aria-hidden="true">
         <span className={styles.headerCellId}>#</span>
+        <span className={styles.headerCellToggle} />
         <span className={styles.headerCellAction} />
         <span className={styles.headerCell}>Title</span>
         <span className={styles.headerCellNotes}>Notes</span>
@@ -43,6 +45,7 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
             rowNumber={index + 1}
             onUpdate={(field, value) => onUpdate(item.id, field, value)}
             onRemove={() => onRemove(item.id)}
+            onToggle={() => onToggle(item.id)}
           />
         ))}
       </div>

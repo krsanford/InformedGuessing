@@ -9,13 +9,13 @@ import type { StaffingRow } from '../types'
 
 // Test data from docs/staffing-plan-spec.md and coordination-overhead-spec.md
 const TEST_ROWS: StaffingRow[] = [
-  { id: 1, discipline: 'Scrum Master', hourly_rate: 100,
+  { id: 1, discipline: 'Scrum Master', hourly_rate: 100, enabled: true,
     cells: ['6','6','6','6','6','6','PI Plan','6','6','6','6','6','6','6','6'] },
-  { id: 2, discipline: 'Lead Dev', hourly_rate: 175,
+  { id: 2, discipline: 'Lead Dev', hourly_rate: 175, enabled: true,
     cells: ['36','36','36','36','36','36','PI Plan','PTO','PTO','36','36','36','36','36','36'] },
-  { id: 3, discipline: 'Associate Dev', hourly_rate: 125,
+  { id: 3, discipline: 'Associate Dev', hourly_rate: 125, enabled: true,
     cells: ['36','36','36','36','36','36','PI Plan','36','36','36','36','36','36','36','36'] },
-  { id: 4, discipline: 'QA', hourly_rate: 125,
+  { id: 4, discipline: 'QA', hourly_rate: 125, enabled: true,
     cells: ['8','8','0','0','0','0','PI Plan','8','8','8','20','20','20','20','20'] },
 ]
 

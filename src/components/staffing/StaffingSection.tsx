@@ -227,6 +227,9 @@ export function StaffingSection({
               onRemoveRow={(rowId) =>
                 dispatch({ type: 'STAFFING_REMOVE_ROW', rowId })
               }
+              onToggleRow={(rowId) =>
+                dispatch({ type: 'STAFFING_TOGGLE_ROW', rowId })
+              }
             />
           )}
 

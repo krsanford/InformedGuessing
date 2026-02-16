@@ -1,6 +1,6 @@
 .row {
   display: grid;
-  grid-template-columns: 28px 32px 1fr 0.5fr 88px 88px 1px 72px 72px 72px;
+  grid-template-columns: 28px 28px 32px 1fr 0.5fr 88px 88px 1px 72px 72px 72px;
   align-items: center;
   gap: 0;
   min-height: 44px;
@@ -31,13 +31,70 @@
 
 /* ID column */
 .id {
-  position: relative;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
   text-align: center;
   font-family: var(--font-mono);
   user-select: none;
+}
+
+/* Slide toggle */
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 24px;
+  height: 14px;
+  background: var(--text-dim);
+  border-radius: 7px;
+  transition: background var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: var(--primary-500);
+}
+
+.toggleInput:focus-visible + .toggleTrack {
+  box-shadow: var(--focus-ring);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack .toggleThumb {
+  transform: translateX(10px);
+}
+
+/* Disabled row */
+.rowDisabled {
+  opacity: 0.45;
+}
+
+.rowDisabled .titleInput,
+.rowDisabled .notesInput,
+.rowDisabled .stepperWrap {
+  pointer-events: none;
 }
 
 .warningBadge {
@@ -247,14 +304,14 @@
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .row {
-    grid-template-columns: 24px 28px 1fr 0.4fr 80px 80px 1px 64px 64px 64px;
+    grid-template-columns: 24px 28px 28px 1fr 0.4fr 80px 80px 1px 64px 64px 64px;
   }
 }
 
 /* Responsive: mobile */
 @media (max-width: 768px) {
   .row {
-    grid-template-columns: 28px 28px 1fr 72px 72px;
+    grid-template-columns: 28px 28px 28px 1fr 72px 72px;
     padding: 0 calc(var(--space) * 1);
   }
 

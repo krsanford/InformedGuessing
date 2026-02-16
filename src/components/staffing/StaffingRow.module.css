@@ -33,6 +33,7 @@
    Column order: # | trash | Discipline | $/hr | Hours | Cost
    ============================================================ */
 .stickyId,
+.stickyToggle,
 .stickyTrash,
 .stickyDiscipline,
 .stickyRate,
@@ -46,11 +47,12 @@
 }
 
 .stickyId         { left: 0; justify-content: center; }
-.stickyTrash      { left: 40px; justify-content: center; }
-.stickyDiscipline { left: 72px; }
-.stickyRate       { left: 232px; }
-.stickyHours      { left: 312px; justify-content: flex-end; }
-.stickyCost       { left: 384px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
+.stickyToggle     { left: 40px; justify-content: center; }
+.stickyTrash      { left: 72px; justify-content: center; }
+.stickyDiscipline { left: 104px; }
+.stickyRate       { left: 264px; }
+.stickyHours      { left: 344px; justify-content: flex-end; }
+.stickyCost       { left: 416px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
 
 /* Shadow on the last sticky column to indicate scrollable content */
 .stickyCost::after {
@@ -62,6 +64,60 @@
   width: 6px;
   background: linear-gradient(to right, rgba(0,0,0,0.04), transparent);
   pointer-events: none;
+}
+
+/* Disabled row */
+.rowDisabled {
+  opacity: 0.45;
+}
+
+.rowDisabled .disciplineInput,
+.rowDisabled .rateInput {
+  pointer-events: none;
+}
+
+/* Slide toggle */
+.toggleLabel {
+  cursor: pointer;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 24px;
+  height: 14px;
+  background: var(--text-dim);
+  border-radius: 7px;
+  transition: background var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: var(--primary-500);
+}
+
+.toggleInput:focus-visible + .toggleTrack {
+  box-shadow: var(--focus-ring);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack .toggleThumb {
+  transform: translateX(10px);
 }
 
 /* ID column */

@@ -16,6 +16,7 @@ export const initialState: AppState = {
       notes: '',
       best_case_hours: 0,
       worst_case_hours: 0,
+      enabled: true,
     },
   ],
   constants: DEFAULT_CONSTANTS,
@@ -36,6 +37,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
             notes: '',
             best_case_hours: 0,
             worst_case_hours: 0,
+            enabled: true,
           },
         ],
         nextId: state.nextId + 1,
@@ -53,6 +55,14 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         workItems: state.workItems.filter((item) => item.id !== action.id),
+      }
+
+    case 'TOGGLE_WORK_ITEM':
+      return {
+        ...state,
+        workItems: state.workItems.map((item) =>
+          item.id === action.id ? { ...item, enabled: !item.enabled } : item
+        ),
       }
 
     case 'UPDATE_CONSTANTS':
@@ -124,6 +134,17 @@ export function appReducer(state: AppState, action: AppAction): AppState {
                   ),
                 }
               : r
+          ),
+        },
+      }
+
+    case 'STAFFING_TOGGLE_ROW':
+      return {
+        ...state,
+        staffing: {
+          ...state.staffing,
+          rows: state.staffing.rows.map((r) =>
+            r.id === action.rowId ? { ...r, enabled: !r.enabled } : r
           ),
         },
       }
