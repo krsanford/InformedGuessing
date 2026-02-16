@@ -50,7 +50,7 @@
   </g>
 
   <!-- Title -->
-  <text x="200" y="248" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="700" fill="white" letter-spacing="-1">Rough Math</text>
+  <text x="200" y="260" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="700" fill="white" letter-spacing="-1">Rough Math</text>
 
   <!-- Subtitle -->
   <text x="102" y="330" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" fill="rgba(255,255,255,0.7)" font-weight="400">Two-point estimation with real statistics.</text>
