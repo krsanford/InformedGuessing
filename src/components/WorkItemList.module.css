@@ -22,13 +22,17 @@
 /* Header row */
 .headerRow {
   display: grid;
-  grid-template-columns: 28px 28px 32px 1fr 0.5fr 88px 88px 1px 72px 72px 72px;
+  grid-template-columns: 20px 28px 28px 32px 1fr 0.5fr 88px 88px 1px 72px 72px 72px;
   align-items: center;
   padding: 0 calc(var(--space) * 1.5) 0 0;
   height: 32px;
   background: var(--gradient-table-header);
   border-bottom: 1px solid var(--surface-border-strong);
   border-left: 3px solid transparent;
+}
+
+.headerCellGrip {
+  /* empty spacer to align with drag handle */
 }
 
 .headerCell,
@@ -85,14 +89,14 @@
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .headerRow {
-    grid-template-columns: 24px 28px 28px 1fr 0.4fr 80px 80px 1px 64px 64px 64px;
+    grid-template-columns: 20px 24px 28px 28px 1fr 0.4fr 80px 80px 1px 64px 64px 64px;
   }
 }
 
 /* Responsive: mobile */
 @media (max-width: 768px) {
   .headerRow {
-    grid-template-columns: 28px 28px 28px 1fr 56px 56px;
+    grid-template-columns: 20px 28px 28px 28px 1fr 56px 56px;
   }
 
   .headerCellNotes,

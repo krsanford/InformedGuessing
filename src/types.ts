@@ -66,3 +66,5 @@ export type AppAction =
   | { type: 'DUPLICATE_WORK_ITEM'; id: number }
   | { type: 'DUPLICATE_STAFFING_ROW'; rowId: number }
   | { type: 'STAFFING_INIT_FROM_ESTIMATE'; weekCount: number; impliedPeople: number; totalEffortHours: number; hoursPerWeek: number }
+  | { type: 'REORDER_WORK_ITEMS'; activeId: number; overId: number }
+  | { type: 'REORDER_STAFFING_ROWS'; activeId: number; overId: number }

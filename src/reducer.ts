@@ -2,6 +2,13 @@ import { DEFAULT_CONSTANTS } from './domain/estimation'
 import { createStaffingRow, createPrepopulatedRows, resizeRowCells } from './domain/staffing'
 import type { AppState, AppAction, StaffingState } from './types'
 
+function arrayMove<T>(array: T[], fromIndex: number, toIndex: number): T[] {
+  const result = [...array]
+  const [removed] = result.splice(fromIndex, 1)
+  result.splice(toIndex, 0, removed)
+  return result
+}
+
 const DEFAULT_STAFFING: StaffingState = {
   rows: [],
   week_count: 0,
@@ -202,6 +209,23 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           rows,
           nextRowId: state.staffing.nextRowId + action.impliedPeople,
         },
+      }
+    }
+
+    case 'REORDER_WORK_ITEMS': {
+      const oldIndex = state.workItems.findIndex((item) => item.id === action.activeId)
+      const newIndex = state.workItems.findIndex((item) => item.id === action.overId)
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return state
+      return { ...state, workItems: arrayMove(state.workItems, oldIndex, newIndex) }
+    }
+
+    case 'REORDER_STAFFING_ROWS': {
+      const oldIndex = state.staffing.rows.findIndex((r) => r.id === action.activeId)
+      const newIndex = state.staffing.rows.findIndex((r) => r.id === action.overId)
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return state
+      return {
+        ...state,
+        staffing: { ...state.staffing, rows: arrayMove(state.staffing.rows, oldIndex, newIndex) },
       }
     }
 

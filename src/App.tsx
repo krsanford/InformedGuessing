@@ -169,6 +169,7 @@ function App() {
             onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
             onToggle={(id) => dispatch({ type: 'TOGGLE_WORK_ITEM', id })}
             onDuplicate={(id) => dispatch({ type: 'DUPLICATE_WORK_ITEM', id })}
+            onReorder={(activeId, overId) => dispatch({ type: 'REORDER_WORK_ITEMS', activeId, overId })}
           />
         </details>
 

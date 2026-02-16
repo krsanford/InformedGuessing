@@ -30,8 +30,9 @@
    Row uses align-items:stretch so every cell fills full height,
    providing a solid background that masks scrolled content.
    Each cell uses flex to vertically center its content.
-   Column order: # | trash | Discipline | $/hr | Hours | Cost
+   Column order: grip | # | toggle | trash | Discipline | $/hr | Hours | Cost
    ============================================================ */
+.stickyGrip,
 .stickyId,
 .stickyToggle,
 .stickyTrash,
@@ -46,14 +47,52 @@
   align-items: center;
 }
 
-.stickyId         { left: 0; justify-content: center; }
-.stickyToggle     { left: 40px; justify-content: center; }
-.stickyTrash      { left: 72px; justify-content: center; }
+.stickyGrip       { left: 0; justify-content: center; }
+.stickyId         { left: 20px; justify-content: center; }
+.stickyToggle     { left: 60px; justify-content: center; }
+.stickyTrash      { left: 92px; justify-content: center; }
 .stickyTrash:has([aria-expanded="true"]) { z-index: 30; }
-.stickyDiscipline { left: 104px; }
-.stickyRate       { left: 264px; }
-.stickyHours      { left: 344px; justify-content: flex-end; }
-.stickyCost       { left: 416px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
+.stickyDiscipline { left: 124px; }
+.stickyRate       { left: 284px; }
+.stickyHours      { left: 364px; justify-content: flex-end; }
+.stickyCost       { left: 436px; justify-content: flex-end; border-right: 1px solid var(--surface-border); }
+
+/* Drag handle */
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: grab;
+  touch-action: none;
+  transition: color var(--duration-fast) ease;
+}
+
+.dragHandle:hover {
+  color: var(--text-muted);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Dragging state */
+.rowDragging {
+  background: var(--surface-raised) !important;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-xs);
+  opacity: 0.9;
+  animation: none;
+}
 
 /* Shadow on the last sticky column to indicate scrollable content */
 .stickyCost::after {

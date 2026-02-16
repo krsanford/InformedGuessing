@@ -233,6 +233,9 @@ export function StaffingSection({
               onDuplicateRow={(rowId) =>
                 dispatch({ type: 'DUPLICATE_STAFFING_ROW', rowId })
               }
+              onReorderRow={(activeId, overId) =>
+                dispatch({ type: 'REORDER_STAFFING_ROWS', activeId, overId })
+              }
             />
           )}
 

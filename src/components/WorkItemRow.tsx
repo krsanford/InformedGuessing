@@ -1,5 +1,8 @@
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { validateWorkItem } from '../domain/estimation'
 import type { WorkItemCalculated } from '../domain/estimation'
+import { GripIcon } from './icons'
 import { RowContextMenu } from './RowContextMenu'
 import styles from './WorkItemRow.module.css'
 
@@ -64,12 +67,41 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onD
   const disabled = !item.enabled
   const mult = item.multiplier ?? 1
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id })
+
+  const style: React.CSSProperties = {
+    '--index': rowNumber,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
+    position: 'relative',
+  } as React.CSSProperties
+
   return (
     <div
-      className={`${styles.row} ${warning ? styles.rowWarning : ''} ${disabled ? styles.rowDisabled : ''}`}
+      ref={setNodeRef}
+      className={`${styles.row} ${warning ? styles.rowWarning : ''} ${disabled ? styles.rowDisabled : ''} ${isDragging ? styles.rowDragging : ''}`}
       role="listitem"
-      style={{ '--index': rowNumber } as React.CSSProperties}
+      style={style}
     >
+      <button
+        className={styles.dragHandle}
+        {...attributes}
+        {...listeners}
+        aria-label={`Reorder work item ${rowNumber}`}
+        type="button"
+      >
+        <GripIcon />
+      </button>
+
       <span className={styles.id}>
         <span aria-label={`Work item ${rowNumber}`}>{rowNumber}</span>
       </span>

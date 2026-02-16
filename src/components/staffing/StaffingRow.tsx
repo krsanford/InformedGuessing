@@ -1,5 +1,8 @@
 import { memo } from 'react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import type { StaffingRow as StaffingRowType, StaffingRowComputed } from '../../types'
+import { GripIcon } from '../icons'
 import { StaffingCell } from './StaffingCell'
 import { RowContextMenu } from '../RowContextMenu'
 import styles from './StaffingRow.module.css'
@@ -34,12 +37,43 @@ export const StaffingRow = memo(function StaffingRow({
   const disabled = !row.enabled
   const mult = row.multiplier ?? 1
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: row.id })
+
+  const style: React.CSSProperties = {
+    gridTemplateColumns: gridColumns,
+    '--index': rowNumber,
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 10 : undefined,
+    position: 'relative',
+  } as React.CSSProperties
+
   return (
     <div
-      className={`${styles.row} ${disabled ? styles.rowDisabled : ''}`}
+      ref={setNodeRef}
+      className={`${styles.row} ${disabled ? styles.rowDisabled : ''} ${isDragging ? styles.rowDragging : ''}`}
       role="listitem"
-      style={{ gridTemplateColumns: gridColumns, '--index': rowNumber } as React.CSSProperties}
+      style={style}
     >
+      {/* Drag handle - sticky */}
+      <button
+        className={`${styles.dragHandle} ${styles.stickyGrip}`}
+        {...attributes}
+        {...listeners}
+        aria-label={`Reorder staffing row ${rowNumber}`}
+        type="button"
+      >
+        <GripIcon />
+      </button>
+
       {/* # column - sticky */}
       <span className={`${styles.id} ${styles.stickyId}`}>
         <span aria-label={`Staffing row ${rowNumber}`}>{rowNumber}</span>

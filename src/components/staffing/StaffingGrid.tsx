@@ -1,3 +1,17 @@
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import type { StaffingRow as StaffingRowType, StaffingGridComputed } from '../../types'
 import { StaffingRow } from './StaffingRow'
 import styles from './StaffingGrid.module.css'
@@ -11,16 +25,17 @@ interface StaffingGridProps {
   onRemoveRow: (rowId: number) => void
   onToggleRow: (rowId: number) => void
   onDuplicateRow: (rowId: number) => void
+  onReorderRow: (activeId: number, overId: number) => void
 }
 
 function formatCurrency(value: number): string {
   return '$' + value.toLocaleString('en-US', { maximumFractionDigits: 0 })
 }
 
-// Column order: # | toggle | trash | Discipline | $/hr | Hours | Cost | W1 W2 ... WN
+// Column order: grip | # | toggle | trash | Discipline | $/hr | Hours | Cost | W1 W2 ... WN
 function buildGridColumns(weekCount: number): string {
   const weekCols = weekCount > 0 ? ` repeat(${weekCount}, 56px)` : ''
-  return `40px 32px 32px 160px 80px 72px 88px${weekCols}`
+  return `20px 40px 32px 32px 160px 80px 72px 88px${weekCols}`
 }
 
 export function StaffingGrid({
@@ -32,8 +47,21 @@ export function StaffingGrid({
   onRemoveRow,
   onToggleRow,
   onDuplicateRow,
+  onReorderRow,
 }: StaffingGridProps) {
   const gridColumns = buildGridColumns(weekCount)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor)
+  )
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      onReorderRow(active.id as number, over.id as number)
+    }
+  }
 
   return (
     <div className={styles.grid}>
@@ -44,6 +72,7 @@ export function StaffingGrid({
           style={{ gridTemplateColumns: gridColumns }}
           aria-hidden="true"
         >
+          <span className={styles.stickyGrip} />
           <span className={`${styles.headerCell} ${styles.stickyId}`}>#</span>
           <span className={`${styles.headerCellAction} ${styles.stickyToggle}`} />
           <span className={`${styles.headerCellAction} ${styles.stickyTrash}`} />
@@ -59,22 +88,34 @@ export function StaffingGrid({
         </div>
 
         {/* Data rows */}
-        <div role="list" aria-label="Staffing rows">
-          {rows.map((row, index) => (
-            <StaffingRow
-              key={row.id}
-              row={row}
-              rowNumber={index + 1}
-              rowComputed={gridComputed.row_totals[index]}
-              onUpdateRow={(updates) => onUpdateRow(row.id, updates)}
-              onUpdateCell={(weekIndex, value) => onUpdateCell(row.id, weekIndex, value)}
-              onRemove={() => onRemoveRow(row.id)}
-              onToggle={() => onToggleRow(row.id)}
-              onDuplicate={() => onDuplicateRow(row.id)}
-              gridColumns={gridColumns}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          modifiers={[restrictToVerticalAxis]}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={rows.map((r) => r.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div role="list" aria-label="Staffing rows">
+              {rows.map((row, index) => (
+                <StaffingRow
+                  key={row.id}
+                  row={row}
+                  rowNumber={index + 1}
+                  rowComputed={gridComputed.row_totals[index]}
+                  onUpdateRow={(updates) => onUpdateRow(row.id, updates)}
+                  onUpdateCell={(weekIndex, value) => onUpdateCell(row.id, weekIndex, value)}
+                  onRemove={() => onRemoveRow(row.id)}
+                  onToggle={() => onToggleRow(row.id)}
+                  onDuplicate={() => onDuplicateRow(row.id)}
+                  gridColumns={gridColumns}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
 
         {/* Summary row */}
         {rows.length > 0 && (
@@ -82,6 +123,7 @@ export function StaffingGrid({
             className={styles.summaryRow}
             style={{ gridTemplateColumns: gridColumns }}
           >
+            <span className={styles.stickyGrip} />
             <span className={styles.stickyId} />
             <span className={styles.stickyToggle} />
             <span className={styles.stickyTrash} />
