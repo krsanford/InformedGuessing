@@ -1,0 +1,173 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* When open, lift above sticky headers so the popover isn't clipped */
+.wrapper:has(.trigger[aria-expanded="true"]) {
+  z-index: 30;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  opacity: 0;
+}
+
+.trigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Show on row hover / focus-within — parent row classes bubble up */
+*:hover > * > .wrapper .trigger,
+*:focus-within > * > .wrapper .trigger,
+.trigger:focus-visible,
+.trigger[aria-expanded="true"] {
+  opacity: 1;
+}
+
+.trigger:hover {
+  color: var(--primary-500);
+  background: rgba(67, 56, 202, 0.08);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  opacity: 1;
+}
+
+/* Popover */
+.popover {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--surface-overlay);
+  border: 1px solid var(--surface-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.actionButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.actionButton svg,
+.deleteButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.actionButton:hover {
+  color: var(--primary-500);
+  background: rgba(67, 56, 202, 0.08);
+}
+
+.deleteButton:hover {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.actionButton:focus-visible,
+.deleteButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.separator {
+  width: 1px;
+  height: 18px;
+  background: var(--surface-border-strong);
+  flex-shrink: 0;
+}
+
+.stepperButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  line-height: 1;
+}
+
+.stepperButton:hover:not(:disabled) {
+  color: var(--primary-500);
+  border-color: var(--primary-400);
+  background: rgba(67, 56, 202, 0.06);
+}
+
+.stepperButton:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.multiplierLabel {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.multiplierInput {
+  width: 36px;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  text-align: center;
+  color: var(--text-primary);
+  background: var(--surface-input);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xs);
+  -moz-appearance: textfield;
+}
+
+.multiplierInput::-webkit-inner-spin-button,
+.multiplierInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.multiplierInput:focus {
+  outline: none;
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}

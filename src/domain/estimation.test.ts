@@ -14,38 +14,38 @@ import {
 
 // Test data from docs/estimation-math-spec.md "Worksheet Example"
 const TEST_WORK_ITEMS: WorkItem[] = [
-  { id: 1, title: 'Page 1', notes: '', best_case_hours: 80, worst_case_hours: 120, enabled: true },
-  { id: 2, title: 'Page 2', notes: '', best_case_hours: 70, worst_case_hours: 200, enabled: true },
-  { id: 3, title: 'Page 3', notes: '', best_case_hours: 100, worst_case_hours: 320, enabled: true },
-  { id: 4, title: 'Page 4', notes: '', best_case_hours: 40, worst_case_hours: 80, enabled: true },
-  { id: 5, title: 'Page 5', notes: '', best_case_hours: 60, worst_case_hours: 90, enabled: true },
-  { id: 6, title: 'Nav & Footer', notes: '', best_case_hours: 80, worst_case_hours: 160, enabled: true },
-  { id: 7, title: 'Environment & Language Config', notes: '', best_case_hours: 4, worst_case_hours: 16, enabled: true },
-  { id: 8, title: 'Translations', notes: '', best_case_hours: 80, worst_case_hours: 100, enabled: true },
-  { id: 9, title: 'Q&A', notes: '', best_case_hours: 40, worst_case_hours: 100, enabled: true },
-  { id: 10, title: 'Readme, docs', notes: '', best_case_hours: 16, worst_case_hours: 30, enabled: true },
+  { id: 1, title: 'Page 1', notes: '', best_case_hours: 80, worst_case_hours: 120, multiplier: 1, enabled: true },
+  { id: 2, title: 'Page 2', notes: '', best_case_hours: 70, worst_case_hours: 200, multiplier: 1, enabled: true },
+  { id: 3, title: 'Page 3', notes: '', best_case_hours: 100, worst_case_hours: 320, multiplier: 1, enabled: true },
+  { id: 4, title: 'Page 4', notes: '', best_case_hours: 40, worst_case_hours: 80, multiplier: 1, enabled: true },
+  { id: 5, title: 'Page 5', notes: '', best_case_hours: 60, worst_case_hours: 90, multiplier: 1, enabled: true },
+  { id: 6, title: 'Nav & Footer', notes: '', best_case_hours: 80, worst_case_hours: 160, multiplier: 1, enabled: true },
+  { id: 7, title: 'Environment & Language Config', notes: '', best_case_hours: 4, worst_case_hours: 16, multiplier: 1, enabled: true },
+  { id: 8, title: 'Translations', notes: '', best_case_hours: 80, worst_case_hours: 100, multiplier: 1, enabled: true },
+  { id: 9, title: 'Q&A', notes: '', best_case_hours: 40, worst_case_hours: 100, multiplier: 1, enabled: true },
+  { id: 10, title: 'Readme, docs', notes: '', best_case_hours: 16, worst_case_hours: 30, multiplier: 1, enabled: true },
 ]
 
 describe('estimation - validation', () => {
   describe('validateWorkItem', () => {
     it('accepts valid work item', () => {
-      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true })).toBeNull()
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 20, multiplier: 1, enabled: true })).toBeNull()
     })
 
     it('rejects negative best case', () => {
-      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: -5, worst_case_hours: 20, enabled: true })).toBe(
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: -5, worst_case_hours: 20, multiplier: 1, enabled: true })).toBe(
         'Best case hours cannot be negative'
       )
     })
 
     it('rejects worst case less than best case', () => {
-      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20, enabled: true })).toBe(
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20, multiplier: 1, enabled: true })).toBe(
         'Worst case hours cannot be less than best case hours'
       )
     })
 
     it('accepts equal best and worst case (zero range)', () => {
-      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 10, enabled: true })).toBeNull()
+      expect(validateWorkItem({ id: 1, title: '', notes: '', best_case_hours: 10, worst_case_hours: 10, multiplier: 1, enabled: true })).toBeNull()
     })
   })
 
@@ -135,7 +135,7 @@ describe('estimation - individual work item calculations', () => {
 
   describe('calculateWorkItem', () => {
     it('calculates all metrics for Page 1', () => {
-      const item = { id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, enabled: true }
+      const item = { id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, multiplier: 1, enabled: true }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
       expect(result.expected_hours).toBeCloseTo(104, 2)
@@ -144,7 +144,7 @@ describe('estimation - individual work item calculations', () => {
     })
 
     it('calculates all metrics for Page 3', () => {
-      const item = { id: 3, title: '', notes: '', best_case_hours: 100, worst_case_hours: 320, enabled: true }
+      const item = { id: 3, title: '', notes: '', best_case_hours: 100, worst_case_hours: 320, multiplier: 1, enabled: true }
       const result = calculateWorkItem(item, DEFAULT_CONSTANTS)
 
       expect(result.expected_hours).toBeCloseTo(232, 2)
@@ -173,7 +173,7 @@ describe('estimation - portfolio calculations', () => {
   })
 
   it('handles single work item portfolio', () => {
-    const singleItem = [{ id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, enabled: true }]
+    const singleItem = [{ id: 1, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, multiplier: 1, enabled: true }]
     const result = calculatePortfolio(singleItem, DEFAULT_CONSTANTS)
 
     expect(result.total_expected_hours).toBeCloseTo(104, 2)
@@ -192,8 +192,8 @@ describe('estimation - portfolio calculations', () => {
 
   it('handles zero range items (best = worst)', () => {
     const items = [
-      { id: 1, title: '', notes: '', best_case_hours: 100, worst_case_hours: 100, enabled: true },
-      { id: 2, title: '', notes: '', best_case_hours: 50, worst_case_hours: 50, enabled: true },
+      { id: 1, title: '', notes: '', best_case_hours: 100, worst_case_hours: 100, multiplier: 1, enabled: true },
+      { id: 2, title: '', notes: '', best_case_hours: 50, worst_case_hours: 50, multiplier: 1, enabled: true },
     ]
     const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
 
@@ -212,6 +212,7 @@ describe('estimation - root-sum-square effect', () => {
       notes: '',
       best_case_hours: 10,
       worst_case_hours: 20,
+      multiplier: 1,
       enabled: true,
     }))
 
@@ -228,8 +229,8 @@ describe('estimation - root-sum-square effect', () => {
 describe('estimation - edge cases and errors', () => {
   it('skips invalid work item with negative hours', () => {
     const items = [
-      { id: 1, title: '', notes: '', best_case_hours: -10, worst_case_hours: 20, enabled: true },
-      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, enabled: true },
+      { id: 1, title: '', notes: '', best_case_hours: -10, worst_case_hours: 20, multiplier: 1, enabled: true },
+      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, multiplier: 1, enabled: true },
     ]
     const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
     // Only the valid item should contribute
@@ -238,8 +239,8 @@ describe('estimation - edge cases and errors', () => {
 
   it('skips work item where worst < best', () => {
     const items = [
-      { id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20, enabled: true },
-      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, enabled: true },
+      { id: 1, title: '', notes: '', best_case_hours: 30, worst_case_hours: 20, multiplier: 1, enabled: true },
+      { id: 2, title: '', notes: '', best_case_hours: 80, worst_case_hours: 120, multiplier: 1, enabled: true },
     ]
     const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
     // Only the valid item should contribute

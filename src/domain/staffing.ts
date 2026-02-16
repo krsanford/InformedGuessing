@@ -100,7 +100,12 @@ export function roundUpToCost(rawCost: number, increment: number = COST_ROUNDING
  */
 export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number): StaffingGridComputed {
   const enabledRows = rows.filter((r) => r.enabled)
-  const row_totals = rows.map((row) => row.enabled ? calculateRowTotals(row) : { total_hours: 0, total_cost: 0 })
+  const row_totals = rows.map((row) => {
+    if (!row.enabled) return { total_hours: 0, total_cost: 0 }
+    const base = calculateRowTotals(row)
+    const n = row.multiplier ?? 1
+    return n === 1 ? base : { total_hours: base.total_hours * n, total_cost: base.total_cost * n }
+  })
   const week_totals = calculateWeekTotals(enabledRows, weekCount)
   const grand_total_hours = row_totals.reduce((sum, r) => sum + r.total_hours, 0)
   const grand_total_cost_raw = row_totals.reduce((sum, r) => sum + r.total_cost, 0)
@@ -154,6 +159,7 @@ export function createStaffingRow(id: number, weekCount: number): StaffingRow {
     hourly_rate: 0,
     cells: new Array(weekCount).fill(''),
     enabled: true,
+    multiplier: 1,
   }
 }
 
@@ -176,6 +182,7 @@ export function createPrepopulatedRows(
       hourly_rate: 0,
       cells: new Array(weekCount).fill(''),
       enabled: true,
+      multiplier: 1,
     })
   }
 

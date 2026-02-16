@@ -10,6 +10,7 @@ interface StaffingGridProps {
   onUpdateCell: (rowId: number, weekIndex: number, value: string) => void
   onRemoveRow: (rowId: number) => void
   onToggleRow: (rowId: number) => void
+  onDuplicateRow: (rowId: number) => void
 }
 
 function formatCurrency(value: number): string {
@@ -30,6 +31,7 @@ export function StaffingGrid({
   onUpdateCell,
   onRemoveRow,
   onToggleRow,
+  onDuplicateRow,
 }: StaffingGridProps) {
   const gridColumns = buildGridColumns(weekCount)
 
@@ -68,6 +70,7 @@ export function StaffingGrid({
               onUpdateCell={(weekIndex, value) => onUpdateCell(row.id, weekIndex, value)}
               onRemove={() => onRemoveRow(row.id)}
               onToggle={() => onToggleRow(row.id)}
+              onDuplicate={() => onDuplicateRow(row.id)}
               gridColumns={gridColumns}
             />
           ))}

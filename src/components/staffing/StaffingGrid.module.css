@@ -2,7 +2,6 @@
   background: var(--surface-raised);
   border: 1px solid var(--surface-border-strong);
   border-radius: var(--radius-md);
-  overflow: hidden;
   position: relative;
   box-shadow: var(--shadow-md);
 }
@@ -33,6 +32,7 @@
   background: var(--gradient-table-header);
   border-bottom: 1px solid var(--surface-border-strong);
   min-width: fit-content;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .headerCell,
@@ -123,6 +123,7 @@
   background: var(--gradient-table-header);
   border-top: 2px solid var(--surface-border-strong);
   min-width: fit-content;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .summaryLabel {

@@ -97,23 +97,24 @@ describe('App - UI Integration Tests', () => {
     expect(variance).toBeInTheDocument()
   })
 
-  it('removes work item when remove button is clicked', async () => {
+  it('removes work item via context menu', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
+
     // Add two more items (starts with 1)
     await user.click(screen.getByText('+ Add Work Item'))
     await user.click(screen.getByText('+ Add Work Item'))
-    
-    // Should have 3 remove buttons
-    const removeButtons = screen.getAllByLabelText(/remove work item/i)
-    expect(removeButtons).toHaveLength(3)
-    
-    // Remove first item
-    await user.click(removeButtons[0])
-    
-    // Should have 2 remove buttons left
-    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(2)
+
+    // Should have 3 action menus
+    const actionButtons = screen.getAllByLabelText(/actions for work item/i)
+    expect(actionButtons).toHaveLength(3)
+
+    // Open context menu for first item and click Delete
+    await user.click(actionButtons[0])
+    await user.click(screen.getByLabelText('Delete'))
+
+    // Should have 2 action menus left
+    expect(screen.getAllByLabelText(/actions for work item/i)).toHaveLength(2)
   })
 
   it('calculates and displays portfolio results', async () => {
@@ -155,8 +156,8 @@ describe('App - UI Integration Tests', () => {
     expect(screen.getByLabelText('Title for work item 3')).toBeInTheDocument()
     expect(screen.getByLabelText('Title for work item 4')).toBeInTheDocument()
     
-    // Should show 4 remove buttons
-    expect(screen.getAllByLabelText(/remove work item/i)).toHaveLength(4)
+    // Should show 4 action menus
+    expect(screen.getAllByLabelText(/actions for work item/i)).toHaveLength(4)
   })
 
   it('displays advanced settings open by default with correct values', () => {
@@ -238,9 +239,10 @@ describe('App - UI Integration Tests', () => {
     await user.click(screen.getByText('+ Add Work Item'))
     await user.click(screen.getByText('+ Add Work Item'))
 
-    // Delete the second item
-    const removeButtons = screen.getAllByLabelText(/remove work item/i)
-    await user.click(removeButtons[1])
+    // Delete the second item via context menu
+    const actionButtons = screen.getAllByLabelText(/actions for work item/i)
+    await user.click(actionButtons[1])
+    await user.click(screen.getByLabelText('Delete'))
 
     // Remaining rows should be renumbered 1 and 2 (not 1 and 3)
     expect(screen.getByLabelText('Title for work item 1')).toBeInTheDocument()

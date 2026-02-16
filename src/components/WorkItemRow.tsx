@@ -1,14 +1,15 @@
 import { validateWorkItem } from '../domain/estimation'
 import type { WorkItemCalculated } from '../domain/estimation'
-import { TrashIcon } from './icons'
+import { RowContextMenu } from './RowContextMenu'
 import styles from './WorkItemRow.module.css'
 
 interface WorkItemRowProps {
   item: WorkItemCalculated
   rowNumber: number
-  onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours', value: string) => void
+  onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours' | 'multiplier', value: string) => void
   onRemove: () => void
   onToggle: () => void
+  onDuplicate: () => void
 }
 
 function NumberStepper({
@@ -58,9 +59,10 @@ function NumberStepper({
   )
 }
 
-export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle }: WorkItemRowProps) {
+export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
   const disabled = !item.enabled
+  const mult = item.multiplier ?? 1
 
   return (
     <div
@@ -85,26 +87,29 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle }: W
         </span>
       </label>
 
-      <button
-        onClick={onRemove}
-        className={styles.removeButton}
-        aria-label={`Remove work item ${rowNumber}`}
-      >
-        <TrashIcon />
-      </button>
-
-      <label htmlFor={`title-${item.id}`} className="sr-only">
-        Title for item {rowNumber}
-      </label>
-      <input
-        id={`title-${item.id}`}
-        type="text"
-        value={item.title}
-        onChange={(e) => onUpdate('title', e.target.value)}
-        className={styles.titleInput}
-        placeholder="Feature or task name"
-        aria-label={`Title for work item ${rowNumber}`}
+      <RowContextMenu
+        multiplier={mult}
+        onDelete={onRemove}
+        onDuplicate={onDuplicate}
+        onMultiplierChange={(v) => onUpdate('multiplier', String(v))}
+        ariaLabel={`Actions for work item ${rowNumber}`}
       />
+
+      <div className={styles.titleCell}>
+        {mult > 1 && <span className={styles.multiplierBadge}>×{mult}</span>}
+        <label htmlFor={`title-${item.id}`} className="sr-only">
+          Title for item {rowNumber}
+        </label>
+        <input
+          id={`title-${item.id}`}
+          type="text"
+          value={item.title}
+          onChange={(e) => onUpdate('title', e.target.value)}
+          className={styles.titleInput}
+          placeholder="Feature or task name"
+          aria-label={`Title for work item ${rowNumber}`}
+        />
+      </div>
 
       <label htmlFor={`notes-${item.id}`} className="sr-only">
         Notes for item {rowNumber}

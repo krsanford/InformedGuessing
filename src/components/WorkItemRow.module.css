@@ -64,7 +64,7 @@
 }
 
 .toggleInput:checked + .toggleTrack {
-  background: var(--primary-500);
+  background: var(--primary-300);
 }
 
 .toggleInput:focus-visible + .toggleTrack {
@@ -111,6 +111,30 @@
   line-height: 1;
   justify-self: center;
   cursor: default;
+}
+
+/* Title cell with multiplier badge */
+.titleCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.multiplierBadge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: white;
+  background: var(--primary-500);
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  user-select: none;
 }
 
 /* Text inputs */
@@ -263,43 +287,6 @@
   font-weight: 600;
 }
 
-/* Remove button */
-.removeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-xs);
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all var(--duration-fast) ease;
-  opacity: 0;
-  justify-self: center;
-}
-
-.row:hover .removeButton,
-.row:focus-within .removeButton,
-.removeButton:focus-visible {
-  opacity: 1;
-}
-
-.removeButton:hover {
-  color: var(--error);
-  background: rgba(239, 68, 68, 0.08);
-}
-
-.removeButton:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-  opacity: 1;
-}
-
-.removeButton svg {
-  width: 14px;
-  height: 14px;
-}
 
 /* Responsive: tablet */
 @media (max-width: 1024px) {
@@ -319,10 +306,6 @@
   .divider,
   .computed {
     display: none;
-  }
-
-  .removeButton {
-    opacity: 1;
   }
 
   .stepperButtons {

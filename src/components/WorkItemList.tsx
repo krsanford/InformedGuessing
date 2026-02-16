@@ -6,14 +6,15 @@ interface WorkItemListProps {
   items: WorkItemCalculated[]
   onUpdate: (
     id: WorkItem['id'],
-    field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours',
+    field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours' | 'multiplier',
     value: string
   ) => void
   onRemove: (id: WorkItem['id']) => void
   onToggle: (id: WorkItem['id']) => void
+  onDuplicate: (id: WorkItem['id']) => void
 }
 
-export function WorkItemList({ items, onUpdate, onRemove, onToggle }: WorkItemListProps) {
+export function WorkItemList({ items, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemListProps) {
   if (items.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -46,6 +47,7 @@ export function WorkItemList({ items, onUpdate, onRemove, onToggle }: WorkItemLi
             onUpdate={(field, value) => onUpdate(item.id, field, value)}
             onRemove={() => onRemove(item.id)}
             onToggle={() => onToggle(item.id)}
+            onDuplicate={() => onDuplicate(item.id)}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import type { StaffingRow as StaffingRowType, StaffingRowComputed } from '../../types'
 import { StaffingCell } from './StaffingCell'
-import { TrashIcon } from '../icons'
+import { RowContextMenu } from '../RowContextMenu'
 import styles from './StaffingRow.module.css'
 
 interface StaffingRowProps {
@@ -12,6 +12,7 @@ interface StaffingRowProps {
   onUpdateCell: (weekIndex: number, value: string) => void
   onRemove: () => void
   onToggle: () => void
+  onDuplicate: () => void
   gridColumns: string
 }
 
@@ -27,9 +28,11 @@ export const StaffingRow = memo(function StaffingRow({
   onUpdateCell,
   onRemove,
   onToggle,
+  onDuplicate,
   gridColumns,
 }: StaffingRowProps) {
   const disabled = !row.enabled
+  const mult = row.multiplier ?? 1
 
   return (
     <div
@@ -56,17 +59,20 @@ export const StaffingRow = memo(function StaffingRow({
         </span>
       </label>
 
-      {/* Remove button - sticky */}
-      <button
-        onClick={onRemove}
-        className={`${styles.removeButton} ${styles.stickyTrash}`}
-        aria-label={`Remove staffing row ${rowNumber}`}
-      >
-        <TrashIcon />
-      </button>
+      {/* Context menu - sticky */}
+      <div className={`${styles.stickyTrash}`}>
+        <RowContextMenu
+          multiplier={mult}
+          onDelete={onRemove}
+          onDuplicate={onDuplicate}
+          onMultiplierChange={(v) => onUpdateRow({ multiplier: v })}
+          ariaLabel={`Actions for staffing row ${rowNumber}`}
+        />
+      </div>
 
       {/* Discipline - sticky */}
       <div className={styles.stickyDiscipline}>
+        {mult > 1 && <span className={styles.multiplierBadge}>×{mult}</span>}
         <input
           type="text"
           value={row.discipline}

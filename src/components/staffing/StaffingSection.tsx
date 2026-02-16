@@ -230,6 +230,9 @@ export function StaffingSection({
               onToggleRow={(rowId) =>
                 dispatch({ type: 'STAFFING_TOGGLE_ROW', rowId })
               }
+              onDuplicateRow={(rowId) =>
+                dispatch({ type: 'DUPLICATE_STAFFING_ROW', rowId })
+              }
             />
           )}
 

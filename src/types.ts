@@ -10,6 +10,7 @@ export interface StaffingRow {
   hourly_rate: number
   cells: string[]
   enabled: boolean
+  multiplier: number
 }
 
 export interface StaffingState {
@@ -63,4 +64,6 @@ export type AppAction =
   | { type: 'STAFFING_UPDATE_CELL'; rowId: number; weekIndex: number; value: string }
   | { type: 'STAFFING_SET_WEEK_COUNT'; weekCount: number }
   | { type: 'STAFFING_TOGGLE_ROW'; rowId: number }
+  | { type: 'DUPLICATE_WORK_ITEM'; id: number }
+  | { type: 'DUPLICATE_STAFFING_ROW'; rowId: number }
   | { type: 'STAFFING_INIT_FROM_ESTIMATE'; weekCount: number; impliedPeople: number; totalEffortHours: number; hoursPerWeek: number }

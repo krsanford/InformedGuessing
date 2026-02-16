@@ -76,11 +76,16 @@ function App() {
 
   const handleFieldUpdate = (
     id: WorkItem['id'],
-    field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours',
+    field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours' | 'multiplier',
     value: string
   ) => {
     if (field === 'best_case_hours' || field === 'worst_case_hours') {
       handleNumberInput(id, field, value)
+    } else if (field === 'multiplier') {
+      const v = parseInt(value, 10)
+      if (!isNaN(v) && v >= 1) {
+        dispatch({ type: 'UPDATE_WORK_ITEM', id, updates: { multiplier: v } })
+      }
     } else {
       dispatch({ type: 'UPDATE_WORK_ITEM', id, updates: { [field]: value } })
     }
@@ -109,6 +114,7 @@ function App() {
             onUpdate={handleFieldUpdate}
             onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
             onToggle={(id) => dispatch({ type: 'TOGGLE_WORK_ITEM', id })}
+            onDuplicate={(id) => dispatch({ type: 'DUPLICATE_WORK_ITEM', id })}
           />
         </details>
 

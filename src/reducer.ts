@@ -17,6 +17,7 @@ export const initialState: AppState = {
       best_case_hours: 0,
       worst_case_hours: 0,
       enabled: true,
+      multiplier: 1,
     },
   ],
   constants: DEFAULT_CONSTANTS,
@@ -38,6 +39,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
             best_case_hours: 0,
             worst_case_hours: 0,
             enabled: true,
+            multiplier: 1,
           },
         ],
         nextId: state.nextId + 1,
@@ -64,6 +66,16 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           item.id === action.id ? { ...item, enabled: !item.enabled } : item
         ),
       }
+
+    case 'DUPLICATE_WORK_ITEM': {
+      const sourceIndex = state.workItems.findIndex((item) => item.id === action.id)
+      if (sourceIndex === -1) return state
+      const source = state.workItems[sourceIndex]
+      const clone = { ...source, id: state.nextId, multiplier: source.multiplier ?? 1 }
+      const newItems = [...state.workItems]
+      newItems.splice(sourceIndex + 1, 0, clone)
+      return { ...state, workItems: newItems, nextId: state.nextId + 1 }
+    }
 
     case 'UPDATE_CONSTANTS':
       return {
@@ -99,6 +111,19 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           nextRowId: state.staffing.nextRowId + 1,
         },
       }
+
+    case 'DUPLICATE_STAFFING_ROW': {
+      const srcIdx = state.staffing.rows.findIndex((r) => r.id === action.rowId)
+      if (srcIdx === -1) return state
+      const src = state.staffing.rows[srcIdx]
+      const dup = { ...src, id: state.staffing.nextRowId, cells: [...src.cells], multiplier: src.multiplier ?? 1 }
+      const newRows = [...state.staffing.rows]
+      newRows.splice(srcIdx + 1, 0, dup)
+      return {
+        ...state,
+        staffing: { ...state.staffing, rows: newRows, nextRowId: state.staffing.nextRowId + 1 },
+      }
+    }
 
     case 'STAFFING_REMOVE_ROW':
       return {

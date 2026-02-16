@@ -49,6 +49,7 @@
 .stickyId         { left: 0; justify-content: center; }
 .stickyToggle     { left: 40px; justify-content: center; }
 .stickyTrash      { left: 72px; justify-content: center; }
+.stickyTrash:has([aria-expanded="true"]) { z-index: 30; }
 .stickyDiscipline { left: 104px; }
 .stickyRate       { left: 264px; }
 .stickyHours      { left: 344px; justify-content: flex-end; }
@@ -98,7 +99,7 @@
 }
 
 .toggleInput:checked + .toggleTrack {
-  background: var(--primary-500);
+  background: var(--primary-300);
 }
 
 .toggleInput:focus-visible + .toggleTrack {
@@ -235,39 +236,19 @@
   font-weight: 600;
 }
 
-/* Remove button */
-.removeButton {
-  display: flex;
+/* Multiplier badge */
+.multiplierBadge {
+  flex-shrink: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-xs);
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all var(--duration-fast) ease;
-  opacity: 0;
-}
-
-.row:hover .removeButton,
-.row:focus-within .removeButton,
-.removeButton:focus-visible {
-  opacity: 1;
-}
-
-.removeButton:hover {
-  color: var(--error);
-  background: rgba(239, 68, 68, 0.08);
-}
-
-.removeButton:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-  opacity: 1;
-}
-
-.removeButton svg {
-  width: 14px;
-  height: 14px;
+  padding: 1px 5px;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: white;
+  background: var(--primary-500);
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  user-select: none;
 }

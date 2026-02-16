@@ -22,6 +22,7 @@ export interface WorkItem {
   best_case_hours: number;
   worst_case_hours: number;
   enabled: boolean;
+  multiplier: number;
 }
 
 export interface WorkItemCalculated extends WorkItem {
@@ -243,9 +244,18 @@ export function calculatePortfolio(
   }
 
   // Calculate valid work items, skip invalid ones
+  // Multiplier scales as N independent copies: expected×N, variance×N
   const calculatedItems: WorkItemCalculated[] = items
     .filter((item) => item.enabled && validateWorkItem(item) === null)
-    .map((item) => calculateWorkItem(item, constants));
+    .map((item) => {
+      const calc = calculateWorkItem(item, constants);
+      const n = item.multiplier ?? 1;
+      return n === 1 ? calc : {
+        ...calc,
+        expected_hours: calc.expected_hours * n,
+        variance: calc.variance * n,
+      };
+    });
 
   // Portfolio aggregation
   const total_expected_hours = calculateTotalExpectedHours(calculatedItems);
