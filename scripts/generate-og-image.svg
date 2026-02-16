@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#312E81"/>
+      <stop offset="50%" stop-color="#4338CA"/>
+      <stop offset="100%" stop-color="#5B21B6"/>
+    </linearGradient>
+    <linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4338CA"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="48" y2="0" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="0" x2="0" y2="48" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    </pattern>
+    <!-- Hex/triangle lines -->
+    <pattern id="hex" width="48" height="83" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+      <line x1="0" y1="0" x2="48" y2="83" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+      <line x1="48" y1="0" x2="0" y2="83" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#hex)"/>
+
+  <!-- Decorative dots -->
+  <circle cx="100" cy="100" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="164" cy="100" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="100" cy="164" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="164" cy="164" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="1036" cy="466" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="1100" cy="466" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="1036" cy="530" r="2" fill="rgba(217,119,6,0.3)"/>
+  <circle cx="1100" cy="530" r="2" fill="rgba(217,119,6,0.3)"/>
+
+  <!-- Logo icon -->
+  <g transform="translate(100, 200)">
+    <rect width="80" height="80" rx="18" fill="url(#logo-bg)"/>
+    <path
+      d="M60 31.25 L38.75 31.25 C23.75 31.25, 18.75 41.25, 18.75 48.75 C18.75 58.75, 26.25 65, 37.5 65 C48.75 65, 56.25 57.5, 56.25 48.75 C56.25 40, 48.75 32.5, 38.75 31.25"
+      stroke="white"
+      stroke-width="6.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  </g>
+
+  <!-- Title -->
+  <text x="200" y="248" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="700" fill="white" letter-spacing="-1">Rough Math</text>
+
+  <!-- Subtitle -->
+  <text x="102" y="330" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" fill="rgba(255,255,255,0.7)" font-weight="400">Two-point estimation with real statistics.</text>
+  <text x="102" y="370" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" fill="rgba(255,255,255,0.7)" font-weight="400">Turn best/worst case guesses into confident timelines.</text>
+
+  <!-- Mini visualizations row -->
+  <g transform="translate(102, 410)">
+
+    <!-- 1. Bell curve / distribution -->
+    <g>
+      <rect width="200" height="100" rx="12" fill="rgba(255,255,255,0.07)"/>
+      <!-- Filled bell curve -->
+      <path d="M 20,85 C 20,85 40,80 55,70 C 70,55 80,35 100,20 C 120,35 130,55 145,70 C 160,80 180,85 180,85 Z"
+            fill="rgba(139,92,246,0.4)" stroke="none"/>
+      <path d="M 20,85 C 20,85 40,80 55,70 C 70,55 80,35 100,20 C 120,35 130,55 145,70 C 160,80 180,85 180,85"
+            fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+      <!-- Mean line -->
+      <line x1="100" y1="18" x2="100" y2="88" stroke="rgba(217,119,6,0.6)" stroke-width="1.5" stroke-dasharray="4,3"/>
+    </g>
+
+    <!-- 2. Box plot / range bars (3 items) -->
+    <g transform="translate(220, 0)">
+      <rect width="200" height="100" rx="12" fill="rgba(255,255,255,0.07)"/>
+      <!-- Item 1 -->
+      <line x1="30" y1="28" x2="170" y2="28" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="50" y1="28" x2="140" y2="28" stroke="rgba(139,92,246,0.5)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="85" cy="28" r="4" fill="#D97706"/>
+      <!-- Item 2 -->
+      <line x1="30" y1="50" x2="170" y2="50" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="60" y1="50" x2="120" y2="50" stroke="rgba(139,92,246,0.5)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="82" cy="50" r="4" fill="#D97706"/>
+      <!-- Item 3 -->
+      <line x1="30" y1="72" x2="170" y2="72" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="40" y1="72" x2="155" y2="72" stroke="rgba(139,92,246,0.5)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="90" cy="72" r="4" fill="#D97706"/>
+    </g>
+
+    <!-- 3. Stacked effort bars -->
+    <g transform="translate(440, 0)">
+      <rect width="200" height="100" rx="12" fill="rgba(255,255,255,0.07)"/>
+      <!-- Bar 1 - expected -->
+      <rect x="25" y="20" width="80" height="16" rx="4" fill="rgba(99,102,241,0.6)"/>
+      <!-- Bar 1 - buffer -->
+      <rect x="105" y="20" width="30" height="16" rx="4" fill="rgba(217,119,6,0.5)"/>
+      <!-- Bar 2 -->
+      <rect x="25" y="46" width="95" height="16" rx="4" fill="rgba(99,102,241,0.6)"/>
+      <rect x="120" y="46" width="40" height="16" rx="4" fill="rgba(217,119,6,0.5)"/>
+      <!-- Bar 3 -->
+      <rect x="25" y="72" width="105" height="16" rx="4" fill="rgba(99,102,241,0.6)"/>
+      <rect x="130" y="72" width="45" height="16" rx="4" fill="rgba(217,119,6,0.5)"/>
+    </g>
+
+    <!-- 4. Dollar/clock icons hint -->
+    <g transform="translate(660, 0)">
+      <rect width="120" height="100" rx="12" fill="rgba(255,255,255,0.07)"/>
+      <!-- Clock icon -->
+      <circle cx="42" cy="40" r="16" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <line x1="42" y1="30" x2="42" y2="40" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="42" y1="40" x2="50" y2="44" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+      <!-- Dollar icon -->
+      <text x="82" y="48" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" fill="rgba(217,119,6,0.5)" font-weight="600" text-anchor="middle">$</text>
+      <!-- Arrow between them -->
+      <line x1="30" y1="68" x2="100" y2="68" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+      <polyline points="94,63 100,68 94,73" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+  </g>
+
+  <!-- URL -->
+  <text x="102" y="560" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="22" fill="rgba(255,255,255,0.4)" font-weight="400">roughmath.com</text>
+</svg>
