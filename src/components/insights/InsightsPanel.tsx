@@ -39,16 +39,14 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
   const showViz = hasData && hasRanges
 
   return (
-    <details className={styles.container} open>
-      <summary className={styles.sectionLabel}>Insights</summary>
-
-      {!showViz && (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyText}>
-            Add work items with best/worst case estimates to see visualizations
-          </p>
-        </div>
-      )}
+    <details className={`${styles.container} ${!showViz ? styles.disabled : ''}`}>
+      <summary
+        className={styles.sectionLabel}
+        onClick={showViz ? undefined : (e) => e.preventDefault()}
+      >
+        Insights
+        {!showViz && <span className={styles.hint}>add estimates to unlock</span>}
+      </summary>
 
       {showViz && <div className={styles.grid}>
         <div className={styles.vizCard}>

@@ -44,6 +44,31 @@
   color: var(--primary-700);
 }
 
+/* Disabled state — no data to show */
+.disabled > .sectionLabel {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.disabled > .sectionLabel:hover {
+  background: var(--primary-50);
+  color: var(--text-accent);
+}
+
+.disabled > .sectionLabel::before {
+  display: none;
+}
+
+.hint {
+  font-weight: 400;
+  font-size: 0.6875rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-left: calc(var(--space) * 0.5);
+}
+
 /* Visualization cards */
 .vizCard {
   background: var(--surface-raised);
