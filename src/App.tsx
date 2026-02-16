@@ -48,8 +48,8 @@ function App() {
   }
 
   const staffingGridComputed = useMemo(
-    () => calculateStaffingGrid(state.staffing.rows, state.staffing.week_count, state.constants.cost_rounding_increment),
-    [state.staffing.rows, state.staffing.week_count, state.constants.cost_rounding_increment]
+    () => calculateStaffingGrid(state.staffing.rows, state.staffing.week_count),
+    [state.staffing.rows, state.staffing.week_count]
   )
 
   const staffingComparison = useMemo(
@@ -192,6 +192,7 @@ function App() {
         staffingComputed={staffingGridComputed}
         staffingWeeks={state.staffing.week_count}
         staffingPeople={state.staffing.rows.filter((r) => r.enabled).length}
+        gapDecomposition={gapDecomposition}
       />
     </div>
   )

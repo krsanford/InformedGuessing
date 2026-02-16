@@ -5,12 +5,10 @@ import {
   validateStaffingRow,
   calculateRowTotals,
   calculateWeekTotals,
-  roundUpToCost,
   calculateStaffingGrid,
   calculateStaffingComparison,
   createStaffingRow,
   resizeRowCells,
-  COST_ROUNDING_INCREMENT,
 } from './staffing'
 import type { StaffingRow } from '../types'
 
@@ -220,44 +218,6 @@ describe('staffing - week totals', () => {
 })
 
 // ============================================================================
-// Cost Rounding
-// ============================================================================
-
-describe('staffing - cost rounding', () => {
-  it('rounds $1 up to $5,000', () => {
-    expect(roundUpToCost(1)).toBe(5000)
-  })
-
-  it('rounds $5,000 exactly to $5,000', () => {
-    expect(roundUpToCost(5000)).toBe(5000)
-  })
-
-  it('rounds $5,001 up to $10,000', () => {
-    expect(roundUpToCost(5001)).toBe(10000)
-  })
-
-  it('returns 0 for 0', () => {
-    expect(roundUpToCost(0)).toBe(0)
-  })
-
-  it('returns 0 for negative', () => {
-    expect(roundUpToCost(-100)).toBe(0)
-  })
-
-  it('rounds $174,200 to $175,000', () => {
-    expect(roundUpToCost(174200)).toBe(175000)
-  })
-
-  it('uses default increment of $5,000', () => {
-    expect(COST_ROUNDING_INCREMENT).toBe(5000)
-  })
-
-  it('supports custom increment', () => {
-    expect(roundUpToCost(7500, 10000)).toBe(10000)
-  })
-})
-
-// ============================================================================
 // Full Grid Calculation
 // ============================================================================
 
@@ -279,8 +239,7 @@ describe('staffing - grid calculations', () => {
 
     // Grand totals
     expect(grid.grand_total_hours).toBe(1160)
-    expect(grid.grand_total_cost_raw).toBe(164500)
-    expect(grid.grand_total_cost).toBe(165000)  // rounded up to nearest $5K
+    expect(grid.grand_total_cost).toBe(164500)
   })
 
   it('handles empty grid', () => {
@@ -288,7 +247,6 @@ describe('staffing - grid calculations', () => {
     expect(grid.row_totals).toEqual([])
     expect(grid.week_totals).toEqual([])
     expect(grid.grand_total_hours).toBe(0)
-    expect(grid.grand_total_cost_raw).toBe(0)
     expect(grid.grand_total_cost).toBe(0)
   })
 })

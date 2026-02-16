@@ -162,13 +162,3 @@
   color: var(--text-accent);
   font-weight: 800;
 }
-
-/* Raw cost footnote */
-.costFootnote {
-  text-align: right;
-  padding: calc(var(--space) * 0.5) calc(var(--space) * 1.5);
-  font-size: 0.625rem;
-  color: var(--text-dim);
-  font-family: var(--font-mono);
-  border-top: 1px solid var(--surface-border);
-}

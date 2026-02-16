@@ -63,9 +63,8 @@ export function importSession(json: string): AppState {
     throw new Error('Missing constants object')
   }
   const c = s.constants as Record<string, unknown>
-  if (typeof c.cost_rounding_increment !== 'number' || c.cost_rounding_increment <= 0) {
-    c.cost_rounding_increment = 1000
-  }
+  // Strip legacy field from old exports
+  delete c.cost_rounding_increment
 
   // Validate nextId
   if (typeof s.nextId !== 'number') {

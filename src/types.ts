@@ -29,7 +29,6 @@ export interface StaffingGridComputed {
   week_totals: number[]
   grand_total_hours: number
   grand_total_cost: number
-  grand_total_cost_raw: number
 }
 
 export interface StaffingComparison {

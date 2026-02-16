@@ -101,12 +101,6 @@ export function StaffingGrid({
           </div>
         )}
 
-        {/* Raw cost footnote */}
-        {rows.length > 0 && gridComputed.grand_total_cost !== gridComputed.grand_total_cost_raw && (
-          <div className={styles.costFootnote}>
-            {formatCurrency(gridComputed.grand_total_cost_raw)} before rounding
-          </div>
-        )}
       </div>
     </div>
   )

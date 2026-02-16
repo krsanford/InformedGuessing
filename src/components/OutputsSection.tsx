@@ -1,4 +1,5 @@
 import type { PortfolioResults } from '../domain/estimation'
+import type { GapDecomposition } from '../domain/coordination'
 import type { StaffingGridComputed } from '../types'
 import { AnimatedNumber } from './AnimatedNumber'
 import styles from './OutputsSection.module.css'
@@ -12,9 +13,10 @@ interface OutputsSectionProps {
   staffingComputed: StaffingGridComputed | null
   staffingWeeks: number
   staffingPeople: number
+  gapDecomposition: GapDecomposition | null
 }
 
-export function OutputsSection({ results, staffingComputed, staffingWeeks, staffingPeople }: OutputsSectionProps) {
+export function OutputsSection({ results, staffingComputed, staffingWeeks, staffingPeople, gapDecomposition }: OutputsSectionProps) {
   const hasStaffing = staffingComputed !== null && staffingComputed.grand_total_hours > 0
 
   // Derive implied team size from estimate
@@ -47,7 +49,7 @@ export function OutputsSection({ results, staffingComputed, staffingWeeks, staff
               <div className={styles.metric}>
                 <span className={styles.metricLabel}>Effort</span>
                 <span className={styles.valueTeal}>
-                  <AnimatedNumber value={results.total_effort_hours} /><span className={styles.unit}> h</span>
+                  <AnimatedNumber value={Math.ceil(gapDecomposition ? gapDecomposition.adjusted_effort_hours : results.total_effort_hours)} decimals={0} /><span className={styles.unit}> h</span>
                 </span>
                 <span className={styles.detail}>
                   <AnimatedNumber value={results.total_expected_hours} /> <span className={styles.detailSpread}>±<AnimatedNumber value={results.portfolio_range_spread} /></span>
@@ -57,41 +59,37 @@ export function OutputsSection({ results, staffingComputed, staffingWeeks, staff
             </div>
           </div>
 
-          {/* Plan side — only when staffing data exists */}
-          {hasStaffing && (
-            <>
-              <span className={styles.divider} aria-hidden="true" />
-              <div className={styles.panel}>
-                <span className={styles.panelLabel}>Plan</span>
-                <div className={styles.metricsRow}>
-                  <div className={styles.metric}>
-                    <span className={styles.metricLabel}>Duration</span>
-                    <span className={styles.valueHero}>
-                      {staffingWeeks}<span className={styles.unit}> wk</span>
-                    </span>
-                  </div>
-                  <div className={styles.metric}>
-                    <span className={styles.metricLabel}>Team</span>
-                    <span className={styles.valueHero}>
-                      {staffingPeople}<span className={styles.unit}> {staffingPeople === 1 ? 'person' : 'people'}</span>
-                    </span>
-                  </div>
-                  <div className={styles.metric}>
-                    <span className={styles.metricLabel}>Hours</span>
-                    <span className={styles.valueTeal}>
-                      <AnimatedNumber value={staffingComputed.grand_total_hours} /><span className={styles.unit}> h</span>
-                    </span>
-                  </div>
-                  <div className={styles.metric}>
-                    <span className={styles.metricLabel}>Cost</span>
-                    <span className={styles.valueHot}>
-                      {formatCurrency(staffingComputed.grand_total_cost)}
-                    </span>
-                  </div>
-                </div>
+          {/* Plan side — always visible */}
+          <span className={styles.divider} aria-hidden="true" />
+          <div className={styles.panel}>
+            <span className={styles.panelLabel}>Plan</span>
+            <div className={styles.metricsRow}>
+              <div className={styles.metric}>
+                <span className={styles.metricLabel}>Duration</span>
+                <span className={hasStaffing ? styles.valueHero : styles.valueMuted}>
+                  {hasStaffing ? <>{staffingWeeks}<span className={styles.unit}> wk</span></> : '—'}
+                </span>
               </div>
-            </>
-          )}
+              <div className={styles.metric}>
+                <span className={styles.metricLabel}>Team</span>
+                <span className={hasStaffing ? styles.valueHero : styles.valueMuted}>
+                  {hasStaffing ? <>{staffingPeople}<span className={styles.unit}> {staffingPeople === 1 ? 'person' : 'people'}</span></> : '—'}
+                </span>
+              </div>
+              <div className={styles.metric}>
+                <span className={styles.metricLabel}>Hours</span>
+                <span className={hasStaffing ? styles.valueTeal : styles.valueMuted}>
+                  {hasStaffing && staffingComputed ? <><AnimatedNumber value={Math.ceil(staffingComputed.grand_total_hours)} decimals={0} /><span className={styles.unit}> h</span></> : '—'}
+                </span>
+              </div>
+              <div className={styles.metric}>
+                <span className={styles.metricLabel}>Cost</span>
+                <span className={hasStaffing ? styles.valueHot : styles.valueMuted}>
+                  {hasStaffing && staffingComputed ? formatCurrency(staffingComputed.grand_total_cost) : '—'}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <span className={styles.empty}>add items to see results</span>

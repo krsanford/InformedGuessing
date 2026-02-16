@@ -6,12 +6,6 @@
 import type { StaffingRow, StaffingRowComputed, StaffingGridComputed, StaffingComparison } from '../types'
 
 // ============================================================================
-// Constants
-// ============================================================================
-
-export const COST_ROUNDING_INCREMENT = 5000
-
-// ============================================================================
 // Cell Parsing
 // ============================================================================
 
@@ -87,18 +81,9 @@ export function calculateWeekTotals(rows: StaffingRow[], weekCount: number): num
 }
 
 /**
- * Round a cost value UP to the nearest increment (default $5,000).
- * Formula: ⌈raw / increment⌉ × increment
- */
-export function roundUpToCost(rawCost: number, increment: number = COST_ROUNDING_INCREMENT): number {
-  if (rawCost <= 0) return 0
-  return Math.ceil(rawCost / increment) * increment
-}
-
-/**
  * Calculate the full grid: all row totals, week totals, grand totals.
  */
-export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number, costRoundingIncrement: number = COST_ROUNDING_INCREMENT): StaffingGridComputed {
+export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number): StaffingGridComputed {
   const enabledRows = rows.filter((r) => r.enabled)
   const row_totals = rows.map((row) => {
     if (!row.enabled) return { total_hours: 0, total_cost: 0 }
@@ -108,15 +93,13 @@ export function calculateStaffingGrid(rows: StaffingRow[], weekCount: number, co
   })
   const week_totals = calculateWeekTotals(enabledRows, weekCount)
   const grand_total_hours = row_totals.reduce((sum, r) => sum + r.total_hours, 0)
-  const grand_total_cost_raw = row_totals.reduce((sum, r) => sum + r.total_cost, 0)
-  const grand_total_cost = roundUpToCost(grand_total_cost_raw, costRoundingIncrement)
+  const grand_total_cost = row_totals.reduce((sum, r) => sum + r.total_cost, 0)
 
   return {
     row_totals,
     week_totals,
     grand_total_hours,
     grand_total_cost,
-    grand_total_cost_raw,
   }
 }
 

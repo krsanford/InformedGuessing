@@ -104,15 +104,6 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         step="0.5"
         onCommit={(v) => onUpdate({ coordination_cost_per_pair: v })}
       />
-      <ConstantField
-        id="cost_rounding_increment"
-        label="Cost Rounding"
-        help="Round total cost up to nearest increment"
-        value={constants.cost_rounding_increment}
-        step="1000"
-        onCommit={(v) => onUpdate({ cost_rounding_increment: v })}
-      />
-
       <button onClick={onReset} className={styles.resetButton}>
         ↺ Reset to Defaults
       </button>

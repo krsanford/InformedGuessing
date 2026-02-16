@@ -8,7 +8,7 @@
   background: var(--surface-base);
   border-top: 1px solid var(--surface-border-strong);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
-  padding: calc(var(--space) * 2) calc(var(--space) * 3);
+  padding: calc(var(--space) * 2.5) calc(var(--space) * 3);
   display: flex;
   justify-content: center;
   animation: statusBarEnter var(--duration-normal) var(--ease-out);
@@ -31,7 +31,7 @@
   align-items: stretch;
   justify-content: center;
   gap: calc(var(--space) * 4);
-  max-width: 1200px;
+  max-width: 800px;
   width: 100%;
 }
 
@@ -47,10 +47,12 @@
   display: flex;
   flex-direction: column;
   gap: calc(var(--space) * 0.75);
+  flex: 1;
+  min-width: 0;
 }
 
 .panelLabel {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -61,7 +63,7 @@
 /* Metrics within a panel */
 .metricsRow {
   display: flex;
-  align-items: flex-end;
+  align-items: first baseline;
   gap: calc(var(--space) * 3);
 }
 
@@ -85,7 +87,7 @@
 /* ── Value tiers ── */
 
 .valueHero {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -95,7 +97,7 @@
 }
 
 .valueTeal {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -105,11 +107,21 @@
 }
 
 .valueHot {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--text-hot);
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.valueMuted {
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  opacity: 0.3;
   white-space: nowrap;
   line-height: 1.1;
 }
@@ -153,13 +165,14 @@
     gap: calc(var(--space) * 2);
   }
 
-  .valueHero {
-    font-size: 1.5rem;
+  .valueHero,
+  .valueMuted {
+    font-size: 1.75rem;
   }
 
   .valueTeal,
   .valueHot {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -176,13 +189,14 @@
     gap: calc(var(--space) * 1.5);
   }
 
-  .valueHero {
-    font-size: 1.25rem;
+  .valueHero,
+  .valueMuted {
+    font-size: 1.5rem;
   }
 
   .valueTeal,
   .valueHot {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 
   .detail {
@@ -211,6 +225,7 @@
   }
 
   .valueHero,
+  .valueMuted,
   .valueTeal,
   .valueHot,
   .detail {
