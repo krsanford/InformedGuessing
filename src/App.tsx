@@ -1,8 +1,8 @@
-import { useReducer, useMemo, useState, useCallback } from 'react'
+import { useReducer, useMemo, useState, useCallback, useEffect } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
 import { calculateStaffingGrid, calculateStaffingComparison } from './domain/staffing'
 import { calculateCoordination, calculateGapDecomposition } from './domain/coordination'
-import { exportSession, importSession, triggerDownload } from './domain/serialization'
+import { exportSession, importSession, triggerDownload, saveToStorage, loadFromStorage } from './domain/serialization'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
@@ -14,8 +14,12 @@ import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
 function App() {
-  const [state, dispatch] = useReducer(appReducer, initialState)
+  const [state, dispatch] = useReducer(appReducer, initialState, () => loadFromStorage() ?? initialState)
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  useEffect(() => {
+    saveToStorage(state)
+  }, [state])
 
   const itemsWithCalculations = state.workItems.map((item) => ({
     ...item,
@@ -91,6 +95,12 @@ function App() {
       dispatch({ type: 'LOAD_SESSION', session })
     } catch (err) {
       alert(`Import failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
+  }, [])
+
+  const handleReset = useCallback(() => {
+    if (window.confirm('Clear all data and start fresh?')) {
+      dispatch({ type: 'LOAD_SESSION', session: initialState })
     }
   }, [])
 
@@ -171,6 +181,7 @@ function App() {
         onSettingsToggle={() => setSettingsOpen((o) => !o)}
         onExport={handleExport}
         onImport={handleImport}
+        onReset={handleReset}
         settingsContent={
           <AdvancedVariables
             constants={state.constants}

@@ -2,7 +2,7 @@ import { type ReactNode, useRef } from 'react'
 import type { PortfolioResults } from '../domain/estimation'
 import type { StaffingGridComputed } from '../types'
 import { AnimatedNumber } from './AnimatedNumber'
-import { GearIcon, DownloadIcon, UploadIcon } from './icons'
+import { GearIcon, DownloadIcon, UploadIcon, ResetIcon } from './icons'
 import styles from './OutputsSection.module.css'
 
 function formatCurrency(value: number): string {
@@ -17,9 +17,10 @@ interface OutputsSectionProps {
   settingsContent: ReactNode
   onExport: () => void
   onImport: (json: string) => void
+  onReset: () => void
 }
 
-export function OutputsSection({ results, staffingComputed, settingsOpen, onSettingsToggle, settingsContent, onExport, onImport }: OutputsSectionProps) {
+export function OutputsSection({ results, staffingComputed, settingsOpen, onSettingsToggle, settingsContent, onExport, onImport, onReset }: OutputsSectionProps) {
   const hasStaffing = staffingComputed !== null && staffingComputed.grand_total_hours > 0
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -79,6 +80,14 @@ export function OutputsSection({ results, staffingComputed, settingsOpen, onSett
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
+        <button
+          onClick={onReset}
+          className={styles.settingsToggle}
+          aria-label="Reset all data"
+          title="Reset"
+        >
+          <ResetIcon />
+        </button>
 
         <span className={styles.label}>Estimate</span>
         {results ? (

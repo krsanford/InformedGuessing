@@ -81,6 +81,28 @@ export function importSession(json: string): AppState {
   return state as AppState
 }
 
+export const STORAGE_KEY = 'rough-math-state'
+
+export function saveToStorage(state: AppState): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, exportSession(state))
+  } catch {
+    // Storage full or unavailable
+  }
+}
+
+export function loadFromStorage(): AppState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return importSession(raw)
+  } catch {
+    // Corrupt or incompatible data — wipe it and start fresh
+    localStorage.removeItem(STORAGE_KEY)
+    return null
+  }
+}
+
 export function triggerDownload(json: string, filename: string) {
   const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
