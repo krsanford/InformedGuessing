@@ -21,6 +21,18 @@ function App() {
     ...calculateWorkItem(item, state.constants),
   }))
 
+  // Expand multiplied items into N copies for visualizations
+  const expandedItems = itemsWithCalculations.flatMap((item) => {
+    const n = item.multiplier ?? 1
+    if (n === 1) return [item]
+    return Array.from({ length: n }, (_, i) => ({
+      ...item,
+      id: item.id * 1000 + i, // unique id per copy
+      title: item.title ? `${item.title} (${i + 1}/${n})` : `Item ${item.id} (${i + 1}/${n})`,
+      multiplier: 1,
+    }))
+  })
+
   let results = null
   try {
     if (state.workItems.length > 0) {
@@ -119,7 +131,7 @@ function App() {
         </details>
 
         <InsightsPanel
-          items={itemsWithCalculations}
+          items={expandedItems}
           results={results}
           constants={state.constants}
         />
