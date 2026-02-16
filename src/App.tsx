@@ -1,7 +1,8 @@
-import { useReducer, useMemo, useState } from 'react'
+import { useReducer, useMemo, useState, useCallback } from 'react'
 import { calculatePortfolio, calculateWorkItem } from './domain/estimation'
 import { calculateStaffingGrid, calculateStaffingComparison } from './domain/staffing'
 import { calculateCoordination, calculateGapDecomposition } from './domain/coordination'
+import { exportSession, importSession, triggerDownload } from './domain/serialization'
 import { appReducer, initialState } from './reducer'
 import { AppHeader } from './components/AppHeader'
 import { WorkItemList } from './components/WorkItemList'
@@ -79,6 +80,20 @@ function App() {
     [results, coordinationResult, staffingGridComputed.grand_total_hours]
   )
 
+  const handleExport = useCallback(() => {
+    const json = exportSession(state)
+    triggerDownload(json, 'rough-math-export.json')
+  }, [state])
+
+  const handleImport = useCallback((json: string) => {
+    try {
+      const session = importSession(json)
+      dispatch({ type: 'LOAD_SESSION', session })
+    } catch (err) {
+      alert(`Import failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
+  }, [])
+
   const handleNumberInput = (id: WorkItem['id'], field: 'best_case_hours' | 'worst_case_hours', value: string) => {
     const numValue = parseFloat(value)
     if (!isNaN(numValue) && numValue >= 0) {
@@ -154,6 +169,8 @@ function App() {
         staffingComputed={staffingGridComputed}
         settingsOpen={settingsOpen}
         onSettingsToggle={() => setSettingsOpen((o) => !o)}
+        onExport={handleExport}
+        onImport={handleImport}
         settingsContent={
           <AdvancedVariables
             constants={state.constants}

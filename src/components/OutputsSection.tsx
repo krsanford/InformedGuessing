@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useRef } from 'react'
 import type { PortfolioResults } from '../domain/estimation'
 import type { StaffingGridComputed } from '../types'
 import { AnimatedNumber } from './AnimatedNumber'
-import { GearIcon } from './icons'
+import { GearIcon, DownloadIcon, UploadIcon } from './icons'
 import styles from './OutputsSection.module.css'
 
 function formatCurrency(value: number): string {
@@ -15,10 +15,29 @@ interface OutputsSectionProps {
   settingsOpen: boolean
   onSettingsToggle: () => void
   settingsContent: ReactNode
+  onExport: () => void
+  onImport: (json: string) => void
 }
 
-export function OutputsSection({ results, staffingComputed, settingsOpen, onSettingsToggle, settingsContent }: OutputsSectionProps) {
+export function OutputsSection({ results, staffingComputed, settingsOpen, onSettingsToggle, settingsContent, onExport, onImport }: OutputsSectionProps) {
   const hasStaffing = staffingComputed !== null && staffingComputed.grand_total_hours > 0
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        if (window.confirm('This will replace all current data. Continue?')) {
+          onImport(reader.result)
+        }
+      }
+    }
+    reader.readAsText(file)
+    // Reset so the same file can be re-selected
+    e.target.value = ''
+  }
 
   return (
     <div className={styles.footer}>
@@ -37,6 +56,29 @@ export function OutputsSection({ results, staffingComputed, settingsOpen, onSett
         >
           <GearIcon />
         </button>
+        <button
+          onClick={onExport}
+          className={styles.settingsToggle}
+          aria-label="Export session"
+          title="Export JSON"
+        >
+          <DownloadIcon />
+        </button>
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className={styles.settingsToggle}
+          aria-label="Import session"
+          title="Import JSON"
+        >
+          <UploadIcon />
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
 
         <span className={styles.label}>Estimate</span>
         {results ? (
