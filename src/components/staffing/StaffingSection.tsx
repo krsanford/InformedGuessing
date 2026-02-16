@@ -11,6 +11,7 @@ interface StaffingSectionProps {
   estimateDurationWeeks: number | null
   gapDecomposition: GapDecomposition | null
   impliedPeople: number
+  baseEffortHours: number | null
 }
 
 export function StaffingSection({
@@ -21,6 +22,7 @@ export function StaffingSection({
   estimateDurationWeeks,
   gapDecomposition,
   impliedPeople,
+  baseEffortHours,
 }: StaffingSectionProps) {
   // Don't render until there's an estimate or the user has started staffing
   if (staffing.rows.length === 0 && staffing.week_count === 0 && estimateDurationWeeks === null) {
@@ -70,6 +72,33 @@ export function StaffingSection({
           + Add Role
         </button>
       </summary>
+
+      {!hasData && staffing.week_count === 0 && baseEffortHours === null && (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>
+            Create your estimate, then initialize the staffing grid and add roles.
+          </p>
+        </div>
+      )}
+
+      {/* Estimate summary — shown before staffing grid has data */}
+      {!hasData && baseEffortHours !== null && (
+        <div className={styles.comparison}>
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Implied Team</span>
+            <span className={styles.comparisonValue}>
+              {impliedPeople}
+            </span>
+          </div>
+          <span className={styles.comparisonSep} aria-hidden="true" />
+          <div className={styles.comparisonItem}>
+            <span className={styles.comparisonLabel}>Base Estimate</span>
+            <span className={styles.comparisonValue}>
+              {Math.round(baseEffortHours)}h
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Initialize from estimate prompt */}
       {staffing.week_count === 0 && estimateDurationWeeks !== null && estimateDurationWeeks > 0 && (

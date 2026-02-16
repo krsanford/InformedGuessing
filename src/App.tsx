@@ -125,6 +125,7 @@ function App() {
           estimateDurationWeeks={results?.duration_weeks ?? null}
           gapDecomposition={gapDecomposition}
           impliedPeople={impliedPeople}
+          baseEffortHours={results?.total_effort_hours ?? null}
         />
       </main>
 
