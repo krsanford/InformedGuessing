@@ -70,6 +70,14 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRow
         <span aria-label={`Work item ${rowNumber}`}>{rowNumber}</span>
       </span>
 
+      <button
+        onClick={onRemove}
+        className={styles.removeButton}
+        aria-label={`Remove work item ${rowNumber}`}
+      >
+        <TrashIcon />
+      </button>
+
       <label htmlFor={`title-${item.id}`} className="sr-only">
         Title for item {rowNumber}
       </label>
@@ -137,13 +145,6 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove }: WorkItemRow
         {item.variance.toFixed(2)}
       </span>
 
-      <button
-        onClick={onRemove}
-        className={styles.removeButton}
-        aria-label={`Remove work item ${rowNumber}`}
-      >
-        <TrashIcon />
-      </button>
     </div>
   )
 }

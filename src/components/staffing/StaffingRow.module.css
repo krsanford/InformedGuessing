@@ -8,6 +8,7 @@
   animation: rowEnter var(--duration-normal) var(--ease-out) both;
   animation-delay: calc(var(--index) * 20ms);
   background: var(--surface-raised);
+  border-left: 3px solid transparent;
 }
 
 /* Solid opaque backgrounds so sticky columns fully mask scrolled content */
@@ -21,7 +22,7 @@
 
 .row:focus-within {
   background: #F7F6FD;
-  box-shadow: inset 3px 0 0 var(--primary-500);
+  border-left-color: var(--primary-500);
 }
 
 /* ============================================================
@@ -180,11 +181,9 @@
 
 /* Remove button */
 .removeButton {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
   padding: 0;
   background: transparent;
   border: none;

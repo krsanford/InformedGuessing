@@ -1,11 +1,12 @@
 .row {
   display: grid;
-  grid-template-columns: 40px 1fr 0.5fr 88px 88px 1px 72px 72px 72px 36px;
+  grid-template-columns: 28px 32px 1fr 0.5fr 88px 88px 1px 72px 72px 72px;
   align-items: center;
   gap: 0;
   min-height: 44px;
-  padding: 0 calc(var(--space) * 1.5);
+  padding: 0 calc(var(--space) * 1.5) 0 0;
   border-bottom: 1px solid var(--surface-border);
+  border-left: 3px solid transparent;
   transition: background var(--duration-fast) ease;
   animation: rowEnter var(--duration-normal) var(--ease-out) both;
   animation-delay: calc(var(--index) * 20ms);
@@ -21,11 +22,11 @@
 
 .row:focus-within {
   background: var(--surface-row-hover);
-  box-shadow: inset 3px 0 0 var(--primary-500);
+  border-left-color: var(--primary-500);
 }
 
 .rowWarning {
-  box-shadow: inset 3px 0 0 var(--warning);
+  border-left-color: var(--warning);
 }
 
 /* ID column */
@@ -207,11 +208,9 @@
 
 /* Remove button */
 .removeButton {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
   padding: 0;
   background: transparent;
   border: none;
@@ -248,14 +247,14 @@
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .row {
-    grid-template-columns: 32px 1fr 0.4fr 80px 80px 1px 64px 64px 64px 32px;
+    grid-template-columns: 24px 28px 1fr 0.4fr 80px 80px 1px 64px 64px 64px;
   }
 }
 
 /* Responsive: mobile */
 @media (max-width: 768px) {
   .row {
-    grid-template-columns: 28px 1fr 72px 72px 28px;
+    grid-template-columns: 28px 28px 1fr 72px 72px;
     padding: 0 calc(var(--space) * 1);
   }
 

@@ -24,7 +24,8 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
   return (
     <div className={styles.table}>
       <div className={styles.headerRow} aria-hidden="true">
-        <span className={styles.headerCell}>#</span>
+        <span className={styles.headerCellId}>#</span>
+        <span className={styles.headerCellAction} />
         <span className={styles.headerCell}>Title</span>
         <span className={styles.headerCellNotes}>Notes</span>
         <span className={styles.headerCellNum}>Best</span>
@@ -33,7 +34,6 @@ export function WorkItemList({ items, onUpdate, onRemove }: WorkItemListProps) {
         <span className={styles.headerCellComputed}>Exp</span>
         <span className={styles.headerCellComputed}>Range</span>
         <span className={styles.headerCellComputed}>Var</span>
-        <span className={styles.headerCellAction} />
       </div>
       <div role="list" aria-label="Work items">
         {items.map((item, index) => (
