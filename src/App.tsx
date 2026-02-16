@@ -154,6 +154,7 @@ function App() {
             <button
               onClick={(e) => { e.preventDefault(); dispatch({ type: 'ADD_WORK_ITEM' }) }}
               className={styles.addButton}
+              data-tip="Add a new feature or task to estimate"
             >
               + Add Work Item
             </button>

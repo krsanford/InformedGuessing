@@ -96,7 +96,7 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onD
       />
 
       <div className={styles.titleCell}>
-        {mult > 1 && <span className={styles.multiplierBadge}>×{mult}</span>}
+        {mult > 1 && <span className={styles.multiplierBadge} title={`This item is counted ${mult} times in all calculations`}>×{mult}</span>}
         <label htmlFor={`title-${item.id}`} className="sr-only">
           Title for item {rowNumber}
         </label>
@@ -155,13 +155,13 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onD
         <span className={styles.divider} aria-hidden="true" />
       )}
 
-      <span className={styles.computed} aria-label={`Expected hours: ${item.expected_hours.toFixed(2)}`}>
+      <span className={styles.computed} aria-label={`Expected hours: ${item.expected_hours.toFixed(2)}`} title={`Expected: ${item.expected_hours.toFixed(1)}h — weighted average of best (${item.best_case_hours}h) and worst (${item.worst_case_hours}h)`}>
         {item.expected_hours.toFixed(2)}
       </span>
-      <span className={styles.computed} aria-label={`Range spread: ${item.range_spread_hours.toFixed(2)} hours`}>
+      <span className={styles.computed} aria-label={`Range spread: ${item.range_spread_hours.toFixed(2)} hours`} title={`Range: ±${item.range_spread_hours.toFixed(1)}h of uncertainty around the expected value`}>
         {item.range_spread_hours.toFixed(2)}
       </span>
-      <span className={styles.computed} aria-label={`Variance: ${item.variance.toFixed(2)}`}>
+      <span className={styles.computed} aria-label={`Variance: ${item.variance.toFixed(2)}`} title={`Variance: ${item.variance.toFixed(1)} — this item's contribution to portfolio risk`}>
         {item.variance.toFixed(2)}
       </span>
 

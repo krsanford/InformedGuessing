@@ -13,6 +13,7 @@ function ConstantField({
   id,
   label,
   help,
+  tip,
   value,
   step,
   onCommit,
@@ -20,6 +21,7 @@ function ConstantField({
   id: string
   label: string
   help: string
+  tip?: string
   value: number
   step: string
   onCommit: (v: number) => void
@@ -42,7 +44,7 @@ function ConstantField({
   }
 
   return (
-    <div className={styles.field}>
+    <div className={styles.field} {...(tip ? { 'data-tip': tip, 'data-tip-pos': 'bottom-start' } : {})}>
       <label htmlFor={id} className={styles.fieldLabel}>
         {label}
         <span className={styles.fieldHelp}>{help}</span>
@@ -68,6 +70,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="expected_case_position"
         label="Expected Case Position"
         help="Position between best (0) and worst (1) case"
+        tip="Where the expected value falls between best and worst. 0 = optimistic, 1 = pessimistic. Default 0.4 means slightly optimistic."
         value={constants.expected_case_position}
         step="0.1"
         onCommit={(v) => onUpdate({ expected_case_position: v })}
@@ -76,6 +79,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="range_spread_divisor"
         label="Range Spread Divisor"
         help="Confidence interval width (higher = tighter)"
+        tip="Divides the best–worst range to compute standard deviation. Higher = tighter confidence intervals. Default 3.3 approximates a 95% range."
         value={constants.range_spread_divisor}
         step="0.1"
         onCommit={(v) => onUpdate({ range_spread_divisor: v })}
@@ -84,6 +88,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="billable_hours_per_week"
         label="Billable Hours per Week"
         help="Productive dev hours available per week"
+        tip="Productive hours per person per week. Converts hours into staff-weeks and calendar duration. Typical: 30–40h."
         value={constants.billable_hours_per_week}
         step="1"
         onCommit={(v) => onUpdate({ billable_hours_per_week: v })}
@@ -92,6 +97,7 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="duration_scaling_power"
         label="Duration Scaling Power"
         help="Coordination overhead factor"
+        tip="Exponent for effort → duration. 0.33 (cube root) means doubling effort adds ~26% more calendar time. Lower = more parallelizable."
         value={constants.duration_scaling_power}
         step="0.1"
         onCommit={(v) => onUpdate({ duration_scaling_power: v })}
@@ -100,11 +106,12 @@ export function AdvancedVariables({ constants, onUpdate, onReset }: AdvancedVari
         id="coordination_cost_per_pair"
         label="Coordination Cost / Pair"
         help="Hours of overhead per pair of people per week"
+        tip="Weekly overhead for each pair working together — standups, code reviews, handoffs. More people = quadratically more overhead (Brooks's Law)."
         value={constants.coordination_cost_per_pair}
         step="0.5"
         onCommit={(v) => onUpdate({ coordination_cost_per_pair: v })}
       />
-      <button onClick={onReset} className={styles.resetButton}>
+      <button onClick={onReset} className={styles.resetButton} data-tip="Restore all parameters to their default values">
         ↺ Reset to Defaults
       </button>
     </div>

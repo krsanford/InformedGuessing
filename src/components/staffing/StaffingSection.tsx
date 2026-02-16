@@ -94,14 +94,14 @@ export function StaffingSection({
       {!hasData && baseEffortHours !== null && (
         <div className={styles.comparison}>
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Implied Team</span>
+            <span className={styles.comparisonLabel} data-tip="Team size derived from estimate (effort / duration)" data-tip-pos="bottom-start">Implied Team</span>
             <span className={styles.comparisonValue}>
               {impliedPeople}
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Base Estimate</span>
+            <span className={styles.comparisonLabel} data-tip="Raw effort from your estimates before coordination overhead" data-tip-pos="bottom">Base Estimate</span>
             <span className={styles.comparisonValue}>
               {Math.round(baseEffortHours)}h
             </span>
@@ -113,42 +113,42 @@ export function StaffingSection({
       {gapDecomposition && hasData && (
         <div className={styles.comparison}>
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Implied Team</span>
+            <span className={styles.comparisonLabel} data-tip="Team size derived from estimate (effort / duration)" data-tip-pos="bottom-start">Implied Team</span>
             <span className={styles.comparisonValue}>
               {impliedPeople}
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Base Estimate</span>
+            <span className={styles.comparisonLabel} data-tip="Raw effort hours from your estimates before any overhead" data-tip-pos="bottom">Base Estimate</span>
             <span className={styles.comparisonValue}>
               {Math.round(gapDecomposition.base_effort_hours)}h
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Coordination</span>
+            <span className={styles.comparisonLabel} data-tip="Extra hours for meetings, handoffs, and context switching (Brooks's Law)" data-tip-pos="bottom">Coordination</span>
             <span className={styles.comparisonCoordination}>
               +{Math.round(gapDecomposition.coordination_overhead_hours)}h
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Adjusted</span>
+            <span className={styles.comparisonLabel} data-tip="Base effort + coordination overhead = what you actually need" data-tip-pos="bottom">Adjusted</span>
             <span className={styles.comparisonValue}>
               {Math.round(gapDecomposition.adjusted_effort_hours)}h
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Staffed</span>
+            <span className={styles.comparisonLabel} data-tip="Total billable hours allocated in your staffing grid" data-tip-pos="bottom">Staffed</span>
             <span className={styles.comparisonValue}>
               {Math.round(gapDecomposition.staffed_hours)}h
             </span>
           </div>
           <span className={styles.comparisonSep} aria-hidden="true" />
           <div className={styles.comparisonItem}>
-            <span className={styles.comparisonLabel}>Buffer</span>
+            <span className={styles.comparisonLabel} data-tip="Staffed minus Adjusted. Positive = safety margin. Negative = under-staffed." data-tip-pos="bottom-end">Buffer</span>
             <span className={
               gapDecomposition.buffer_status === 'short'
                 ? styles.comparisonShort

@@ -31,12 +31,12 @@ export function WorkItemList({ items, onUpdate, onRemove, onToggle, onDuplicate 
         <span className={styles.headerCellAction} />
         <span className={styles.headerCell}>Title</span>
         <span className={styles.headerCellNotes}>Notes</span>
-        <span className={styles.headerCellNum}>Best</span>
-        <span className={styles.headerCellNum}>Worst</span>
+        <span className={styles.headerCellNum} title="Optimistic estimate — if everything goes right">Best</span>
+        <span className={styles.headerCellNum} title="Pessimistic estimate — if everything goes wrong">Worst</span>
         <span className={styles.headerDivider} />
-        <span className={styles.headerCellComputed}>Exp</span>
-        <span className={styles.headerCellComputed}>Range</span>
-        <span className={styles.headerCellComputed}>Var</span>
+        <span className={styles.headerCellComputed} title="Expected hours: weighted average of best and worst case">Exp</span>
+        <span className={styles.headerCellComputed} title="Uncertainty spread in hours (worst − best, scaled by divisor)">Range</span>
+        <span className={styles.headerCellComputed} title="Statistical variance — drives portfolio risk calculations">Var</span>
       </div>
       <div role="list" aria-label="Work items">
         {items.map((item, index) => (

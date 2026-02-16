@@ -30,28 +30,28 @@ export function OutputsSection({ results, staffingComputed, staffingWeeks, staff
         <div className={styles.panels}>
           {/* Estimate side */}
           <div className={styles.panel}>
-            <span className={styles.panelLabel}>Estimate</span>
+            <span className={styles.panelLabel} data-tip="Statistical estimate derived from your best/worst inputs">Estimate</span>
             <div className={styles.metricsRow}>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Duration</span>
+                <span className={styles.metricLabel} data-tip="Calendar weeks to completion based on effort and team parallelization">Duration</span>
                 <span className={styles.valueHero}>
                   {results.duration_weeks}<span className={styles.unit}> wk</span>
                 </span>
               </div>
               {estimateTeam !== null && (
                 <div className={styles.metric}>
-                  <span className={styles.metricLabel}>Team</span>
+                  <span className={styles.metricLabel} data-tip="Implied team size needed to finish within the estimated duration">Team</span>
                   <span className={styles.valueHero}>
                     {estimateTeam}<span className={styles.unit}> {estimateTeam === 1 ? 'person' : 'people'}</span>
                   </span>
                 </div>
               )}
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Effort</span>
+                <span className={styles.metricLabel} data-tip="Total effort in hours, including coordination overhead if staffed">Effort</span>
                 <span className={styles.valueTeal}>
                   <AnimatedNumber value={Math.ceil(gapDecomposition ? gapDecomposition.adjusted_effort_hours : results.total_effort_hours)} decimals={0} /><span className={styles.unit}> h</span>
                 </span>
-                <span className={styles.detail}>
+                <span className={styles.detail} data-tip="Expected ± uncertainty range, and total person-weeks of effort">
                   <AnimatedNumber value={results.total_expected_hours} /> <span className={styles.detailSpread}>±<AnimatedNumber value={results.portfolio_range_spread} /></span>
                   {' '}(<AnimatedNumber value={results.total_effort_staff_weeks} /> staff-wk)
                 </span>
@@ -62,28 +62,28 @@ export function OutputsSection({ results, staffingComputed, staffingWeeks, staff
           {/* Plan side — always visible */}
           <span className={styles.divider} aria-hidden="true" />
           <div className={styles.panel}>
-            <span className={styles.panelLabel}>Plan</span>
+            <span className={styles.panelLabel} data-tip="Actuals from your staffing grid below">Plan</span>
             <div className={styles.metricsRow}>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Duration</span>
+                <span className={styles.metricLabel} data-tip="Number of weeks in your staffing grid">Duration</span>
                 <span className={hasStaffing ? styles.valueHero : styles.valueMuted}>
                   {hasStaffing ? <>{staffingWeeks}<span className={styles.unit}> wk</span></> : '—'}
                 </span>
               </div>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Team</span>
+                <span className={styles.metricLabel} data-tip="Number of people allocated in the staffing plan">Team</span>
                 <span className={hasStaffing ? styles.valueHero : styles.valueMuted}>
                   {hasStaffing ? <>{staffingPeople}<span className={styles.unit}> {staffingPeople === 1 ? 'person' : 'people'}</span></> : '—'}
                 </span>
               </div>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Hours</span>
+                <span className={styles.metricLabel} data-tip="Total billable hours from the staffing grid">Hours</span>
                 <span className={hasStaffing ? styles.valueTeal : styles.valueMuted}>
                   {hasStaffing && staffingComputed ? <><AnimatedNumber value={Math.ceil(staffingComputed.grand_total_hours)} decimals={0} /><span className={styles.unit}> h</span></> : '—'}
                 </span>
               </div>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Cost</span>
+                <span className={styles.metricLabel} data-tip="Total cost: hours x hourly rates from the staffing grid">Cost</span>
                 <span className={hasStaffing ? styles.valueHot : styles.valueMuted}>
                   {hasStaffing && staffingComputed ? formatCurrency(staffingComputed.grand_total_cost) : '—'}
                 </span>

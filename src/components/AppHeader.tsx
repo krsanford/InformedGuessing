@@ -53,7 +53,8 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
               onClick={onSettingsToggle}
               className={`${styles.actionBtn} ${settingsOpen ? styles.actionBtnActive : ''}`}
               aria-label="Toggle advanced settings"
-              title="Advanced Settings"
+              data-tip="Adjust calculation parameters like confidence divisors and scaling"
+              data-tip-pos="bottom-end"
             >
               <GearIcon />
             </button>
@@ -61,7 +62,8 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
               onClick={onExport}
               className={styles.actionBtn}
               aria-label="Export session"
-              title="Export JSON"
+              data-tip="Download your estimates and staffing as a JSON file"
+              data-tip-pos="bottom-end"
             >
               <DownloadIcon />
             </button>
@@ -69,7 +71,8 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
               onClick={() => fileInputRef.current?.click()}
               className={styles.actionBtn}
               aria-label="Import session"
-              title="Import JSON"
+              data-tip="Load a previously exported session (replaces current data)"
+              data-tip-pos="bottom-end"
             >
               <UploadIcon />
             </button>
@@ -84,7 +87,8 @@ export function AppHeader({ settingsOpen, onSettingsToggle, onExport, onImport, 
               onClick={onReset}
               className={styles.actionBtn}
               aria-label="Reset all data"
-              title="Reset"
+              data-tip="Clear everything and start fresh"
+              data-tip-pos="bottom-end"
             >
               <ResetIcon />
             </button>

@@ -43,6 +43,8 @@ export function InsightsPanel({ items, results, constants }: InsightsPanelProps)
       <summary
         className={styles.sectionLabel}
         onClick={showViz ? undefined : (e) => e.preventDefault()}
+        data-tip="Statistical visualizations of your estimates — requires items with different best/worst values"
+        data-tip-pos="bottom-start"
       >
         Insights
         {!showViz && <span className={styles.hint}>add estimates to unlock</span>}

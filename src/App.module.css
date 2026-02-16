@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding-bottom: 88px; /* space for fixed results bar */
+  padding-bottom: 100px; /* space for fixed results bar */
 }
 
 .main {

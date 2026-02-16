@@ -8,7 +8,7 @@
   background: var(--surface-base);
   border-top: 1px solid var(--surface-border-strong);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
-  padding: calc(var(--space) * 2.5) calc(var(--space) * 3);
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
   display: flex;
   justify-content: center;
   animation: statusBarEnter var(--duration-normal) var(--ease-out);

@@ -18,7 +18,6 @@
     repeating-linear-gradient(-60deg, transparent, transparent 23px, rgba(251, 191, 36, 0.045) 23px, rgba(251, 191, 36, 0.045) 24px),
     var(--gradient-header);
   padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
-  overflow: hidden;
   border-bottom: none;
   box-shadow: 0 2px 12px rgba(55, 48, 163, 0.20);
 }

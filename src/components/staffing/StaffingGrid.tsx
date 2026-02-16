@@ -47,10 +47,10 @@ export function StaffingGrid({
           <span className={`${styles.headerCell} ${styles.stickyId}`}>#</span>
           <span className={`${styles.headerCellAction} ${styles.stickyToggle}`} />
           <span className={`${styles.headerCellAction} ${styles.stickyTrash}`} />
-          <span className={`${styles.headerCell} ${styles.stickyDiscipline}`}>Discipline</span>
-          <span className={`${styles.headerCellNum} ${styles.stickyRate}`}>$/hr</span>
-          <span className={`${styles.headerCellComputed} ${styles.stickyHours}`}>Hours</span>
-          <span className={`${styles.headerCellComputed} ${styles.stickyCost}`}>Cost</span>
+          <span className={`${styles.headerCell} ${styles.stickyDiscipline}`} title="Role title or discipline (e.g. Senior Backend Dev, Designer)">Discipline</span>
+          <span className={`${styles.headerCellNum} ${styles.stickyRate}`} title="Hourly billing rate for this role">$/hr</span>
+          <span className={`${styles.headerCellComputed} ${styles.stickyHours}`} title="Total billable hours for this role across all weeks">Hours</span>
+          <span className={`${styles.headerCellComputed} ${styles.stickyCost}`} title="Total cost for this role (hours x hourly rate)">Cost</span>
           {Array.from({ length: weekCount }, (_, i) => (
             <span key={i} className={styles.headerCellWeek}>
               W{i + 1}
@@ -87,10 +87,10 @@ export function StaffingGrid({
             <span className={styles.stickyTrash} />
             <span className={`${styles.summaryLabel} ${styles.stickyDiscipline}`}>Totals</span>
             <span className={styles.stickyRate} />
-            <span className={`${styles.summaryTotal} ${styles.stickyHours}`}>
+            <span className={`${styles.summaryTotal} ${styles.stickyHours}`} title="Sum of all role hours across all weeks">
               {gridComputed.grand_total_hours}
             </span>
-            <span className={`${styles.summaryCost} ${styles.stickyCost}`}>
+            <span className={`${styles.summaryCost} ${styles.stickyCost}`} title="Total project cost across all roles">
               {formatCurrency(gridComputed.grand_total_cost)}
             </span>
             {gridComputed.week_totals.map((total, i) => (
