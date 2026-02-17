@@ -6,12 +6,15 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
+  type DragOverEvent,
 } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
+import { useState, useCallback, useMemo } from 'react'
 import type { WorkItem, WorkItemCalculated, WorkItemGroup } from '../domain/estimation'
 import { calculateGroupSubtotals } from '../domain/estimation'
 import { WorkItemRow } from './WorkItemRow'
@@ -60,8 +63,51 @@ export function WorkItemList({
   onDuplicateGroup,
 }: WorkItemListProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor)
+  )
+
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [overId, setOverId] = useState<string | null>(null)
+
+  // Custom collision detection: require pointer to be clearly centered on a
+  // group header to target it (add-to-group). On the edges, prefer the adjacent
+  // item so that reordering near group boundaries isn't finicky.
+  const collisionDetection = useCallback(
+    (args: Parameters<typeof closestCenter>[0]) => {
+      const collisions = closestCenter(args)
+      if (!args.pointerCoordinates || collisions.length < 2) return collisions
+
+      const topId = String(collisions[0].id)
+      if (!topId.startsWith('group-')) return collisions
+
+      // Don't intervene when dragging a group — group↔group is fine
+      if (String(args.active.id).startsWith('group-')) return collisions
+
+      const rect = args.droppableRects.get(collisions[0].id)
+      if (!rect) return collisions
+
+      // Only target group header if pointer is in center 40% of the header
+      const insetY = rect.height * 0.3
+      const py = args.pointerCoordinates.y
+      if (py >= rect.top + insetY && py <= rect.bottom - insetY) return collisions
+
+      // Pointer on edge — prefer the closest non-group target if it's nearby
+      const nextBest = collisions.find((c) => !String(c.id).startsWith('group-'))
+      if (nextBest) {
+        const nextRect = args.droppableRects.get(nextBest.id)
+        if (nextRect) {
+          const groupDist = Math.abs(py - (rect.top + rect.height / 2))
+          const itemDist = Math.abs(py - (nextRect.top + nextRect.height / 2))
+          if (itemDist <= groupDist * 1.5) {
+            return [nextBest, ...collisions.filter((c) => c.id !== nextBest.id)]
+          }
+        }
+      }
+
+      return collisions
+    },
+    []
   )
 
   // Build interleaved render order: walk items array, inject group headers
@@ -125,7 +171,32 @@ export function WorkItemList({
     entry.type === 'group-header' ? `group-${entry.group!.id}` : `item-${entry.item!.id}`
   )
 
+  // Determine whether drop indicator shows above or below the target
+  const dropPosition = useMemo((): 'before' | 'after' | null => {
+    if (!activeId || !overId || activeId === overId) return null
+    const activeIndex = sortableIds.indexOf(activeId)
+    const overIndex = sortableIds.indexOf(overId)
+    if (activeIndex === -1 || overIndex === -1) return null
+    return activeIndex < overIndex ? 'after' : 'before'
+  }, [activeId, overId, sortableIds])
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(String(event.active.id))
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    setOverId(event.over ? String(event.over.id) : null)
+  }
+
+  function handleDragCancel() {
+    setActiveId(null)
+    setOverId(null)
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setActiveId(null)
+    setOverId(null)
+
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -201,9 +272,12 @@ export function WorkItemList({
       </div>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={collisionDetection}
         modifiers={[restrictToVerticalAxis]}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <SortableContext
           items={sortableIds}
@@ -219,6 +293,7 @@ export function WorkItemList({
                     key={`group-${group.id}`}
                     group={group}
                     subtotals={subtotals}
+                    isDropTarget={overId === `group-${group.id}` && activeId != null && !activeId.startsWith('group-')}
                     onToggle={() => onToggleGroup(group.id)}
                     onToggleCollapse={() => onToggleGroupCollapse(group.id)}
                     onUpdateName={(name) => onUpdateGroup(group.id, { name })}
@@ -232,6 +307,8 @@ export function WorkItemList({
 
               const item = entry.item!
               const group = item.groupId != null ? groupMap.get(item.groupId) : undefined
+              const itemSortableId = `item-${item.id}`
+              const isItemDrop = overId === itemSortableId && activeId != null && activeId !== itemSortableId
               return (
                 <WorkItemRow
                   key={item.id}
@@ -240,6 +317,8 @@ export function WorkItemList({
                   grouped={entry.grouped}
                   lastInGroup={entry.lastInGroup}
                   groupEnabled={group?.enabled}
+                  isDropTarget={isItemDrop}
+                  dropPosition={isItemDrop ? dropPosition : null}
                   onUpdate={(field, value) => onUpdate(item.id, field, value)}
                   onRemove={() => onRemove(item.id)}
                   onToggle={() => onToggle(item.id)}

@@ -200,6 +200,14 @@
   font-weight: 600;
 }
 
+/* Drop target highlight — shown when an item is dragged onto this group header */
+.dropTarget {
+  background: color-mix(in srgb, var(--primary-500) 10%, var(--surface-overlay)) !important;
+  outline: 2px dashed var(--primary-400);
+  outline-offset: -2px;
+  border-radius: var(--radius-xs);
+}
+
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .groupHeader {

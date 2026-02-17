@@ -8,6 +8,7 @@ import styles from './GroupHeader.module.css'
 interface GroupHeaderProps {
   group: WorkItemGroup
   subtotals: GroupSubtotals
+  isDropTarget?: boolean
   onToggle: () => void
   onToggleCollapse: () => void
   onUpdateName: (name: string) => void
@@ -20,6 +21,7 @@ interface GroupHeaderProps {
 export function GroupHeader({
   group,
   subtotals,
+  isDropTarget,
   onToggle,
   onToggleCollapse,
   onUpdateName,
@@ -48,7 +50,7 @@ export function GroupHeader({
   return (
     <div
       ref={setNodeRef}
-      className={`${styles.groupHeader} ${!group.enabled ? styles.disabled : ''} ${isDragging ? styles.dragging : ''} ${group.collapsed ? styles.collapsed : ''}`}
+      className={`${styles.groupHeader} ${!group.enabled ? styles.disabled : ''} ${isDragging ? styles.dragging : ''} ${group.collapsed ? styles.collapsed : ''} ${isDropTarget ? styles.dropTarget : ''}`}
       style={style}
       role="row"
     >

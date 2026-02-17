@@ -298,7 +298,39 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const oldIndex = state.groups.findIndex((g) => g.id === action.activeId)
       const newIndex = state.groups.findIndex((g) => g.id === action.overId)
       if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return state
-      return { ...state, groups: arrayMove(state.groups, oldIndex, newIndex) }
+
+      const newGroups = arrayMove(state.groups, oldIndex, newIndex)
+
+      // Also reorder work items so the visual order matches. The UI renders
+      // group headers based on where items appear, not the groups array order.
+      const activeItems = state.workItems.filter((w) => w.groupId === action.activeId)
+      if (activeItems.length === 0) {
+        return { ...state, groups: newGroups }
+      }
+
+      const remaining = state.workItems.filter((w) => w.groupId !== action.activeId)
+      const movingUp = oldIndex > newIndex
+
+      let insertAt: number
+      if (movingUp) {
+        // Insert before the first item of the target group
+        insertAt = remaining.findIndex((w) => w.groupId === action.overId)
+      } else {
+        // Insert after the last item of the target group
+        let lastIdx = -1
+        for (let i = 0; i < remaining.length; i++) {
+          if (remaining[i].groupId === action.overId) lastIdx = i
+        }
+        insertAt = lastIdx + 1
+      }
+
+      if (insertAt === -1) {
+        return { ...state, groups: newGroups }
+      }
+
+      const newItems = [...remaining]
+      newItems.splice(insertAt, 0, ...activeItems)
+      return { ...state, groups: newGroups, workItems: newItems }
     }
 
     case 'MOVE_ITEM_TO_GROUP':
@@ -351,8 +383,15 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const remaining = state.workItems.filter((w) => w.groupId !== action.groupId)
       const targetIdx = remaining.findIndex((w) => w.id === action.targetItemId)
       if (targetIdx === -1) return state
+
+      // Determine direction: if the group was originally above the target,
+      // insert after the target (dragging down). Otherwise insert before.
+      const firstGroupIdx = state.workItems.findIndex((w) => w.groupId === action.groupId)
+      const targetOrigIdx = state.workItems.findIndex((w) => w.id === action.targetItemId)
+      const draggingDown = firstGroupIdx < targetOrigIdx
+
       const newItems = [...remaining]
-      newItems.splice(targetIdx, 0, ...groupItems)
+      newItems.splice(draggingDown ? targetIdx + 1 : targetIdx, 0, ...groupItems)
       return { ...state, workItems: newItems }
     }
 

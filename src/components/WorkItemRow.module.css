@@ -325,6 +325,28 @@
 }
 
 
+/* Drop indicator lines */
+.dropBefore::before,
+.dropAfter::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--primary-500);
+  border-radius: 1px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.dropBefore::before {
+  top: -1px;
+}
+
+.dropAfter::after {
+  bottom: -1px;
+}
+
 /* Responsive: tablet */
 @media (max-width: 1024px) {
   .row {

@@ -981,6 +981,52 @@ describe('appReducer', () => {
       expect(state.groups.map((g) => g.id)).toEqual([2, 3, 1])
     })
 
+    it('also reorders work items to match group order', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 1
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 2
+      // Add items to groups
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 1 }) // item in group 1
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 2 }) // item in group 2
+      const g1ItemId = state.workItems.find((w) => w.groupId === 1)!.id
+      const g2ItemId = state.workItems.find((w) => w.groupId === 2)!.id
+
+      // Move group 1 after group 2
+      state = appReducer(state, { type: 'REORDER_GROUPS', activeId: 1, overId: 2 })
+      expect(state.groups.map((g) => g.id)).toEqual([2, 1])
+      // Items should reflect the new order: group 2's items before group 1's
+      const g2Idx = state.workItems.findIndex((w) => w.id === g2ItemId)
+      const g1Idx = state.workItems.findIndex((w) => w.id === g1ItemId)
+      expect(g2Idx).toBeLessThan(g1Idx)
+    })
+
+    it('moves work items before target group when moving up', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 1
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 2
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 1 })
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 2 })
+      const g1ItemId = state.workItems.find((w) => w.groupId === 1)!.id
+      const g2ItemId = state.workItems.find((w) => w.groupId === 2)!.id
+
+      // Move group 2 before group 1
+      state = appReducer(state, { type: 'REORDER_GROUPS', activeId: 2, overId: 1 })
+      expect(state.groups.map((g) => g.id)).toEqual([2, 1])
+      const g2Idx = state.workItems.findIndex((w) => w.id === g2ItemId)
+      const g1Idx = state.workItems.findIndex((w) => w.id === g1ItemId)
+      expect(g2Idx).toBeLessThan(g1Idx)
+    })
+
+    it('handles empty active group gracefully', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 1
+      state = appReducer(state, { type: 'ADD_GROUP' }) // group 2
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 2 })
+      // Group 1 is empty — should still reorder groups array
+      state = appReducer(state, { type: 'REORDER_GROUPS', activeId: 1, overId: 2 })
+      expect(state.groups.map((g) => g.id)).toEqual([2, 1])
+    })
+
     it('is a no-op for same activeId and overId', () => {
       let state = appReducer(initialState, { type: 'ADD_GROUP' })
       const result = appReducer(state, { type: 'REORDER_GROUPS', activeId: 1, overId: 1 })
@@ -1045,12 +1091,31 @@ describe('appReducer', () => {
   })
 
   describe('MOVE_GROUP_BLOCK', () => {
-    it('moves group items before target item', () => {
+    it('moves group items before target when dragging up', () => {
       let state = stateWithThreeItems()
       state = appReducer(state, { type: 'ADD_GROUP' })
       state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 3, groupId: 1 })
-      // Items: [1, 2, 3(g1)] → move group 1 block before item 1 → [3(g1), 1, 2]
+      // Items: [1, 2, 3(g1)] → drag group up to item 1 → [3(g1), 1, 2]
       state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 1 })
+      expect(state.workItems.map((w) => w.id)).toEqual([3, 1, 2])
+    })
+
+    it('moves group items after target when dragging down', () => {
+      let state = stateWithThreeItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      // Items: [1(g1), 2, 3] → drag group down to item 2 → [2, 1(g1), 3]
+      state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 2 })
+      expect(state.workItems.map((w) => w.id)).toEqual([2, 1, 3])
+    })
+
+    it('moves multi-item group down past one item', () => {
+      let state = stateWithThreeItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 2, groupId: 1 })
+      // Items: [1(g1), 2(g1), 3] → drag group down to item 3 → [3, 1(g1), 2(g1)]
+      state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 3 })
       expect(state.workItems.map((w) => w.id)).toEqual([3, 1, 2])
     })
 

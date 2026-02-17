@@ -12,6 +12,8 @@ interface WorkItemRowProps {
   grouped?: boolean
   lastInGroup?: boolean
   groupEnabled?: boolean
+  isDropTarget?: boolean
+  dropPosition?: 'before' | 'after' | null
   onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours' | 'multiplier', value: string) => void
   onRemove: () => void
   onToggle: () => void
@@ -65,7 +67,7 @@ function NumberStepper({
   )
 }
 
-export function WorkItemRow({ item, rowNumber, grouped, lastInGroup, groupEnabled, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemRowProps) {
+export function WorkItemRow({ item, rowNumber, grouped, lastInGroup, groupEnabled, isDropTarget, dropPosition, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
   const disabled = !item.enabled || groupEnabled === false
   const mult = item.multiplier ?? 1
@@ -95,7 +97,7 @@ export function WorkItemRow({ item, rowNumber, grouped, lastInGroup, groupEnable
   return (
     <div
       ref={setNodeRef}
-      className={`${styles.row} ${warning ? styles.rowWarning : ''} ${disabled ? styles.rowDisabled : ''} ${isDragging ? styles.rowDragging : ''}`}
+      className={`${styles.row} ${warning ? styles.rowWarning : ''} ${disabled ? styles.rowDisabled : ''} ${isDragging ? styles.rowDragging : ''} ${isDropTarget && dropPosition === 'before' ? styles.dropBefore : ''} ${isDropTarget && dropPosition === 'after' ? styles.dropAfter : ''}`}
       role="listitem"
       style={style}
     >
