@@ -15,6 +15,8 @@ const sampleState: AppState = {
     coordination_cost_per_pair: 1,
   },
   nextId: 3,
+  groups: [],
+  nextGroupId: 1,
   staffing: {
     rows: [
       { id: 1, discipline: 'Dev', hourly_rate: 150, cells: ['40', '40', ''], enabled: true, multiplier: 2 },
@@ -123,6 +125,51 @@ describe('serialization', () => {
         enabled: true,
         multiplier: 1,
       })
+    })
+
+    it('backfills missing groups with empty array', () => {
+      const json = JSON.stringify({
+        version: 1,
+        state: {
+          workItems: [],
+          constants: { expected_case_position: 0.6, range_spread_divisor: 2.6, billable_hours_per_week: 36, duration_scaling_power: 3.2, coordination_cost_per_pair: 1 },
+          nextId: 1,
+        },
+      })
+      const result = importSession(json)
+      expect(result.groups).toEqual([])
+      expect(result.nextGroupId).toBe(1)
+    })
+
+    it('preserves groups when present', () => {
+      const json = JSON.stringify({
+        version: 1,
+        state: {
+          workItems: [{ id: 1, best_case_hours: 5, worst_case_hours: 10, groupId: 1 }],
+          constants: { expected_case_position: 0.6, range_spread_divisor: 2.6, billable_hours_per_week: 36, duration_scaling_power: 3.2, coordination_cost_per_pair: 1 },
+          nextId: 2,
+          groups: [{ id: 1, name: 'Test', color: 'indigo', enabled: true, collapsed: false }],
+          nextGroupId: 2,
+        },
+      })
+      const result = importSession(json)
+      expect(result.groups).toHaveLength(1)
+      expect(result.groups[0].name).toBe('Test')
+      expect(result.workItems[0].groupId).toBe(1)
+    })
+
+    it('round-trips state with groups', () => {
+      const stateWithGroups = {
+        ...sampleState,
+        groups: [{ id: 1, name: 'Backend', color: 'indigo' as const, enabled: true, collapsed: false, multiplier: 1 }],
+        nextGroupId: 2,
+        workItems: sampleState.workItems.map((w, i) => ({ ...w, groupId: i === 0 ? 1 : undefined })),
+      }
+      const json = exportSession(stateWithGroups)
+      const result = importSession(json)
+      expect(result.groups).toEqual(stateWithGroups.groups)
+      expect(result.workItems[0].groupId).toBe(1)
+      expect(result.workItems[1].groupId).toBeUndefined()
     })
   })
 })

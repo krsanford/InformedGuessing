@@ -29,8 +29,10 @@ function App() {
   }))
 
   // Expand multiplied items into N copies for visualizations
+  const groupMap = new Map(state.groups.map((g) => [g.id, g]))
   const expandedItems = itemsWithCalculations.flatMap((item) => {
-    const n = item.multiplier ?? 1
+    const groupMult = item.groupId != null ? (groupMap.get(item.groupId)?.multiplier ?? 1) : 1
+    const n = (item.multiplier ?? 1) * groupMult
     if (n === 1) return [item]
     return Array.from({ length: n }, (_, i) => ({
       ...item,
@@ -43,7 +45,7 @@ function App() {
   let results = null
   try {
     if (state.workItems.length > 0) {
-      results = calculatePortfolio(state.workItems, state.constants)
+      results = calculatePortfolio(state.workItems, state.constants, state.groups)
     }
   } catch {
     // Invalid inputs — results stay null, outputs show empty state
@@ -153,6 +155,9 @@ function App() {
           <summary className={styles.sectionToggle}>
             <span className={styles.sectionLabel}>Work Items</span>
             <span className={styles.count}>{state.workItems.length}</span>
+            {state.groups.length > 0 && (
+              <span className={styles.count}>{state.groups.length} group{state.groups.length !== 1 ? 's' : ''}</span>
+            )}
             <span className={styles.toolbarSpacer} />
             <button
               onClick={(e) => { e.preventDefault(); dispatch({ type: 'ADD_WORK_ITEM' }) }}
@@ -161,15 +166,32 @@ function App() {
             >
               + Add Work Item
             </button>
+            <button
+              onClick={(e) => { e.preventDefault(); dispatch({ type: 'ADD_GROUP' }) }}
+              className={styles.addGroupButton}
+              data-tip="Create a new group to organize work items"
+            >
+              + Add Group
+            </button>
           </summary>
 
           <WorkItemList
             items={itemsWithCalculations}
+            groups={state.groups}
             onUpdate={handleFieldUpdate}
             onRemove={(id) => dispatch({ type: 'REMOVE_WORK_ITEM', id })}
             onToggle={(id) => dispatch({ type: 'TOGGLE_WORK_ITEM', id })}
             onDuplicate={(id) => dispatch({ type: 'DUPLICATE_WORK_ITEM', id })}
             onReorder={(activeId, overId) => dispatch({ type: 'REORDER_WORK_ITEMS', activeId, overId })}
+            onToggleGroup={(groupId) => dispatch({ type: 'TOGGLE_GROUP', groupId })}
+            onToggleGroupCollapse={(groupId) => dispatch({ type: 'TOGGLE_GROUP_COLLAPSE', groupId })}
+            onUpdateGroup={(groupId, updates) => dispatch({ type: 'UPDATE_GROUP', groupId, updates })}
+            onRemoveGroup={(groupId) => dispatch({ type: 'REMOVE_GROUP', groupId })}
+            onReorderGroups={(activeId, overId) => dispatch({ type: 'REORDER_GROUPS', activeId, overId })}
+            onMoveItemToGroup={(itemId, groupId) => dispatch({ type: 'MOVE_ITEM_TO_GROUP', itemId, groupId })}
+            onAddItemToGroup={(groupId) => dispatch({ type: 'ADD_WORK_ITEM_TO_GROUP', groupId })}
+            onMoveGroupBlock={(groupId, targetItemId) => dispatch({ type: 'MOVE_GROUP_BLOCK', groupId, targetItemId })}
+            onDuplicateGroup={(groupId) => dispatch({ type: 'DUPLICATE_GROUP', groupId })}
           />
         </details>
 

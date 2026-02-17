@@ -23,6 +23,35 @@ export interface WorkItem {
   worst_case_hours: number;
   enabled: boolean;
   multiplier: number;
+  groupId?: number;
+}
+
+export const GROUP_COLOR_PALETTE = [
+  { key: 'indigo', value: '#4338CA' },
+  { key: 'amber',  value: '#D97706' },
+  { key: 'teal',   value: '#0F766E' },
+  { key: 'rose',   value: '#E11D48' },
+  { key: 'sky',    value: '#0284C7' },
+  { key: 'lime',   value: '#65A30D' },
+] as const
+
+export type GroupColorKey = typeof GROUP_COLOR_PALETTE[number]['key']
+
+export interface WorkItemGroup {
+  id: number
+  name: string
+  color: GroupColorKey
+  enabled: boolean
+  collapsed: boolean
+  multiplier: number
+}
+
+export interface GroupSubtotals {
+  total_expected_hours: number
+  total_variance: number
+  portfolio_range_spread: number
+  item_count: number
+  enabled_item_count: number
 }
 
 export interface WorkItemCalculated extends WorkItem {
@@ -231,11 +260,33 @@ export function calculateDurationWeeks(
 // ============================================================================
 
 /**
+ * Calculate subtotals for a specific group
+ */
+export function calculateGroupSubtotals(
+  items: WorkItemCalculated[],
+  groupId: number,
+  groupMultiplier: number = 1
+): GroupSubtotals {
+  const groupItems = items.filter((item) => item.groupId === groupId)
+  const enabledItems = groupItems.filter((item) => item.enabled)
+  const total_expected_hours = enabledItems.reduce((s, i) => s + i.expected_hours * (i.multiplier ?? 1), 0) * groupMultiplier
+  const total_variance = enabledItems.reduce((s, i) => s + i.variance * (i.multiplier ?? 1), 0) * groupMultiplier
+  return {
+    total_expected_hours,
+    total_variance,
+    portfolio_range_spread: Math.sqrt(total_variance),
+    item_count: groupItems.length,
+    enabled_item_count: enabledItems.length,
+  }
+}
+
+/**
  * Calculate all portfolio results from work items and constants
  */
 export function calculatePortfolio(
   items: WorkItem[],
-  constants: EstimationConstants
+  constants: EstimationConstants,
+  groups?: WorkItemGroup[]
 ): PortfolioResults {
   // Validate constants
   const constantsError = validateConstants(constants);
@@ -243,13 +294,27 @@ export function calculatePortfolio(
     throw new Error(`Invalid constants: ${constantsError}`);
   }
 
+  // Build group lookup for enabled check
+  const groupMap = new Map<number, WorkItemGroup>()
+  if (groups) {
+    for (const g of groups) groupMap.set(g.id, g)
+  }
+
   // Calculate valid work items, skip invalid ones
   // Multiplier scales as N independent copies: expected×N, variance×N
   const calculatedItems: WorkItemCalculated[] = items
-    .filter((item) => item.enabled && validateWorkItem(item) === null)
+    .filter((item) => {
+      if (!item.enabled) return false
+      if (item.groupId != null) {
+        const group = groupMap.get(item.groupId)
+        if (group && !group.enabled) return false
+      }
+      return validateWorkItem(item) === null
+    })
     .map((item) => {
       const calc = calculateWorkItem(item, constants);
-      const n = item.multiplier ?? 1;
+      const groupMult = item.groupId != null ? (groupMap.get(item.groupId)?.multiplier ?? 1) : 1
+      const n = (item.multiplier ?? 1) * groupMult;
       return n === 1 ? calc : {
         ...calc,
         expected_hours: calc.expected_hours * n,

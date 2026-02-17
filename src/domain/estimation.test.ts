@@ -6,9 +6,11 @@ import {
   calculateVariance,
   calculateWorkItem,
   calculatePortfolio,
+  calculateGroupSubtotals,
   validateWorkItem,
   validateConstants,
   type WorkItem,
+  type WorkItemGroup,
   type EstimationConstants,
 } from './estimation'
 
@@ -287,5 +289,74 @@ describe('estimation - different constants', () => {
 
     // Higher power = longer duration
     expect(result.duration_weeks).toBeGreaterThan(11)
+  })
+})
+
+describe('calculatePortfolio with groups', () => {
+  it('excludes items in disabled groups', () => {
+    const items: WorkItem[] = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true, multiplier: 1, groupId: 1 },
+      { id: 2, title: 'B', notes: '', best_case_hours: 5, worst_case_hours: 15, enabled: true, multiplier: 1 },
+    ]
+    const groups: WorkItemGroup[] = [{ id: 1, name: 'G', color: 'indigo', enabled: false, collapsed: false, multiplier: 1 }]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS, groups)
+    const resultOnlyUngrouped = calculatePortfolio([items[1]], DEFAULT_CONSTANTS)
+    expect(result.total_expected_hours).toBeCloseTo(resultOnlyUngrouped.total_expected_hours)
+  })
+
+  it('includes items in enabled groups', () => {
+    const items: WorkItem[] = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true, multiplier: 1, groupId: 1 },
+    ]
+    const groups: WorkItemGroup[] = [{ id: 1, name: 'G', color: 'indigo', enabled: true, collapsed: false, multiplier: 1 }]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS, groups)
+    expect(result.total_expected_hours).toBeGreaterThan(0)
+  })
+
+  it('works without groups parameter (backward compatible)', () => {
+    const items: WorkItem[] = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true, multiplier: 1 },
+    ]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS)
+    expect(result.total_expected_hours).toBeGreaterThan(0)
+  })
+
+  it('excludes disabled items even in enabled groups', () => {
+    const items: WorkItem[] = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: false, multiplier: 1, groupId: 1 },
+    ]
+    const groups: WorkItemGroup[] = [{ id: 1, name: 'G', color: 'indigo', enabled: true, collapsed: false, multiplier: 1 }]
+    const result = calculatePortfolio(items, DEFAULT_CONSTANTS, groups)
+    expect(result.total_expected_hours).toBe(0)
+  })
+})
+
+describe('calculateGroupSubtotals', () => {
+  it('computes subtotals for a specific group', () => {
+    const items = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true, multiplier: 1, groupId: 1,
+        expected_hours: 16, range_spread_hours: 3.846, variance: 14.79 },
+      { id: 2, title: 'B', notes: '', best_case_hours: 5, worst_case_hours: 15, enabled: true, multiplier: 1, groupId: 1,
+        expected_hours: 11, range_spread_hours: 3.846, variance: 14.79 },
+      { id: 3, title: 'C', notes: '', best_case_hours: 8, worst_case_hours: 12, enabled: true, multiplier: 1,
+        expected_hours: 10.4, range_spread_hours: 1.538, variance: 2.37 },
+    ]
+    const subtotals = calculateGroupSubtotals(items, 1)
+    expect(subtotals.item_count).toBe(2)
+    expect(subtotals.enabled_item_count).toBe(2)
+    expect(subtotals.total_expected_hours).toBeCloseTo(27, 0)
+  })
+
+  it('excludes disabled items from totals but counts them', () => {
+    const items = [
+      { id: 1, title: 'A', notes: '', best_case_hours: 10, worst_case_hours: 20, enabled: true, multiplier: 1, groupId: 1,
+        expected_hours: 16, range_spread_hours: 3.846, variance: 14.79 },
+      { id: 2, title: 'B', notes: '', best_case_hours: 5, worst_case_hours: 15, enabled: false, multiplier: 1, groupId: 1,
+        expected_hours: 11, range_spread_hours: 3.846, variance: 14.79 },
+    ]
+    const subtotals = calculateGroupSubtotals(items, 1)
+    expect(subtotals.item_count).toBe(2)
+    expect(subtotals.enabled_item_count).toBe(1)
+    expect(subtotals.total_expected_hours).toBeCloseTo(16, 0)
   })
 })

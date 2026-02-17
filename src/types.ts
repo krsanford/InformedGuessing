@@ -1,4 +1,4 @@
-import type { WorkItem, EstimationConstants } from './domain/estimation'
+import type { WorkItem, EstimationConstants, WorkItemGroup } from './domain/estimation'
 
 // ============================================================================
 // Staffing Plan Types
@@ -47,6 +47,8 @@ export interface AppState {
   constants: EstimationConstants
   nextId: number
   staffing: StaffingState
+  groups: WorkItemGroup[]
+  nextGroupId: number
 }
 
 export type AppAction =
@@ -68,3 +70,13 @@ export type AppAction =
   | { type: 'STAFFING_INIT_FROM_ESTIMATE'; weekCount: number; impliedPeople: number; totalEffortHours: number; hoursPerWeek: number }
   | { type: 'REORDER_WORK_ITEMS'; activeId: number; overId: number }
   | { type: 'REORDER_STAFFING_ROWS'; activeId: number; overId: number }
+  | { type: 'ADD_GROUP' }
+  | { type: 'REMOVE_GROUP'; groupId: number }
+  | { type: 'UPDATE_GROUP'; groupId: number; updates: Partial<Omit<WorkItemGroup, 'id'>> }
+  | { type: 'TOGGLE_GROUP'; groupId: number }
+  | { type: 'TOGGLE_GROUP_COLLAPSE'; groupId: number }
+  | { type: 'REORDER_GROUPS'; activeId: number; overId: number }
+  | { type: 'MOVE_ITEM_TO_GROUP'; itemId: number; groupId: number | undefined }
+  | { type: 'ADD_WORK_ITEM_TO_GROUP'; groupId: number }
+  | { type: 'MOVE_GROUP_BLOCK'; groupId: number; targetItemId: number }
+  | { type: 'DUPLICATE_GROUP'; groupId: number }

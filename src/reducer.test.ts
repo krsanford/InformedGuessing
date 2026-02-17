@@ -24,6 +24,8 @@ function stateWithTwoItems(): AppState {
       week_count: 2,
       nextRowId: 3,
     },
+    groups: [],
+    nextGroupId: 1,
   }
 }
 
@@ -38,6 +40,8 @@ function stateWithThreeItems(): AppState {
     constants: DEFAULT_CONSTANTS,
     nextId: 4,
     staffing: { rows: [], week_count: 0, nextRowId: 1 },
+    groups: [],
+    nextGroupId: 1,
   }
 }
 
@@ -338,6 +342,8 @@ describe('appReducer', () => {
         constants: { ...DEFAULT_CONSTANTS, expected_case_position: 0.7 },
         nextId: 11,
         staffing: { rows: [], week_count: 5, nextRowId: 1 },
+        groups: [],
+        nextGroupId: 1,
       }
       const state = appReducer(initialState, { type: 'LOAD_SESSION', session })
       expect(state.workItems).toEqual(session.workItems)
@@ -366,6 +372,8 @@ describe('appReducer', () => {
           week_count: 1,
           nextRowId: 2,
         },
+        groups: [],
+        nextGroupId: 1,
       }
       const state = appReducer(initialState, { type: 'LOAD_SESSION', session })
       expect(state.staffing.rows).toHaveLength(1)
@@ -864,6 +872,276 @@ describe('appReducer', () => {
       const originalIds = base.workItems.map((w) => w.id)
       appReducer(base, { type: 'REORDER_WORK_ITEMS', activeId: 1, overId: 3 })
       expect(base.workItems.map((w) => w.id)).toEqual(originalIds)
+    })
+  })
+
+  // -------------------------------------------------------------------------
+  // Group Actions
+  // -------------------------------------------------------------------------
+
+  describe('ADD_GROUP', () => {
+    it('creates a new group with auto-name and increments nextGroupId', () => {
+      const state = appReducer(initialState, { type: 'ADD_GROUP' })
+      expect(state.groups).toHaveLength(1)
+      expect(state.groups[0].id).toBe(1)
+      expect(state.groups[0].name).toBe('Group 1')
+      expect(state.groups[0].enabled).toBe(true)
+      expect(state.groups[0].collapsed).toBe(false)
+      expect(state.nextGroupId).toBe(2)
+    })
+
+    it('assigns cycling colors from the palette', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      expect(state.groups[0].color).toBe('indigo')
+      expect(state.groups[1].color).toBe('amber')
+    })
+
+    it('does not modify workItems', () => {
+      const state = appReducer(initialState, { type: 'ADD_GROUP' })
+      expect(state.workItems).toBe(initialState.workItems)
+    })
+  })
+
+  describe('REMOVE_GROUP', () => {
+    it('removes the group and ungroups its member items', () => {
+      let state: AppState = {
+        ...stateWithTwoItems(),
+        groups: [{ id: 1, name: 'G1', color: 'indigo', enabled: true, collapsed: false, multiplier: 1 }],
+        nextGroupId: 2,
+      }
+      state = { ...state, workItems: state.workItems.map((w, i) => i === 0 ? { ...w, groupId: 1 } : w) }
+      const result = appReducer(state, { type: 'REMOVE_GROUP', groupId: 1 })
+      expect(result.groups).toHaveLength(0)
+      expect(result.workItems[0].groupId).toBeUndefined()
+      expect(result.workItems[1].groupId).toBeUndefined()
+    })
+
+    it('is a no-op for nonexistent groupId', () => {
+      const state = appReducer(initialState, { type: 'REMOVE_GROUP', groupId: 999 })
+      expect(state.groups).toEqual(initialState.groups)
+    })
+  })
+
+  describe('UPDATE_GROUP', () => {
+    it('merges partial updates into the group', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'UPDATE_GROUP', groupId: 1, updates: { name: 'Backend' } })
+      expect(state.groups[0].name).toBe('Backend')
+      expect(state.groups[0].color).toBe('indigo') // unchanged
+    })
+
+    it('does not modify other groups', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'UPDATE_GROUP', groupId: 1, updates: { name: 'Changed' } })
+      expect(state.groups[1].name).toBe('Group 2')
+    })
+  })
+
+  describe('TOGGLE_GROUP', () => {
+    it('flips enabled true to false', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'TOGGLE_GROUP', groupId: 1 })
+      expect(state.groups[0].enabled).toBe(false)
+    })
+
+    it('flips enabled false to true', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'TOGGLE_GROUP', groupId: 1 })
+      state = appReducer(state, { type: 'TOGGLE_GROUP', groupId: 1 })
+      expect(state.groups[0].enabled).toBe(true)
+    })
+  })
+
+  describe('TOGGLE_GROUP_COLLAPSE', () => {
+    it('flips collapsed false to true', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'TOGGLE_GROUP_COLLAPSE', groupId: 1 })
+      expect(state.groups[0].collapsed).toBe(true)
+    })
+
+    it('flips collapsed true to false', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'TOGGLE_GROUP_COLLAPSE', groupId: 1 })
+      state = appReducer(state, { type: 'TOGGLE_GROUP_COLLAPSE', groupId: 1 })
+      expect(state.groups[0].collapsed).toBe(false)
+    })
+  })
+
+  describe('REORDER_GROUPS', () => {
+    it('moves a group forward', () => {
+      let state = initialState
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'REORDER_GROUPS', activeId: 1, overId: 3 })
+      expect(state.groups.map((g) => g.id)).toEqual([2, 3, 1])
+    })
+
+    it('is a no-op for same activeId and overId', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      const result = appReducer(state, { type: 'REORDER_GROUPS', activeId: 1, overId: 1 })
+      expect(result).toBe(state)
+    })
+
+    it('is a no-op for nonexistent IDs', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      const result = appReducer(state, { type: 'REORDER_GROUPS', activeId: 99, overId: 1 })
+      expect(result).toBe(state)
+    })
+  })
+
+  describe('MOVE_ITEM_TO_GROUP', () => {
+    it('sets groupId on the target item', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      expect(state.workItems[0].groupId).toBe(1)
+    })
+
+    it('clears groupId to undefined when moving to ungrouped', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: undefined })
+      expect(state.workItems[0].groupId).toBeUndefined()
+    })
+
+    it('does not modify other items', () => {
+      const state = stateWithTwoItems()
+      const withGroup = appReducer(state, { type: 'ADD_GROUP' })
+      const result = appReducer(withGroup, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      expect(result.workItems[1].groupId).toBeUndefined()
+    })
+  })
+
+  describe('ADD_WORK_ITEM_TO_GROUP', () => {
+    it('adds item with groupId set', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 1 })
+      const newItem = state.workItems[state.workItems.length - 1]
+      expect(newItem.groupId).toBe(1)
+      expect(newItem.enabled).toBe(true)
+    })
+
+    it('increments nextId', () => {
+      let state = appReducer(initialState, { type: 'ADD_GROUP' })
+      const before = state.nextId
+      state = appReducer(state, { type: 'ADD_WORK_ITEM_TO_GROUP', groupId: 1 })
+      expect(state.nextId).toBe(before + 1)
+    })
+  })
+
+  describe('DUPLICATE_WORK_ITEM preserves groupId', () => {
+    it('cloned item inherits source groupId', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      state = appReducer(state, { type: 'DUPLICATE_WORK_ITEM', id: 1 })
+      const clone = state.workItems[1] // inserted after source
+      expect(clone.groupId).toBe(1)
+    })
+  })
+
+  describe('MOVE_GROUP_BLOCK', () => {
+    it('moves group items before target item', () => {
+      let state = stateWithThreeItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 3, groupId: 1 })
+      // Items: [1, 2, 3(g1)] → move group 1 block before item 1 → [3(g1), 1, 2]
+      state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 1 })
+      expect(state.workItems.map((w) => w.id)).toEqual([3, 1, 2])
+    })
+
+    it('no-op when group has no items', () => {
+      let state = stateWithThreeItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      const before = state.workItems.map((w) => w.id)
+      state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 1 })
+      expect(state.workItems.map((w) => w.id)).toEqual(before)
+    })
+
+    it('no-op when target item not found', () => {
+      let state = stateWithThreeItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      const before = state.workItems.map((w) => w.id)
+      state = appReducer(state, { type: 'MOVE_GROUP_BLOCK', groupId: 1, targetItemId: 999 })
+      expect(state.workItems.map((w) => w.id)).toEqual(before)
+    })
+  })
+
+  describe('DUPLICATE_GROUP', () => {
+    it('creates a copy of the group with (copy) suffix', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      state = appReducer(state, { type: 'DUPLICATE_GROUP', groupId: 1 })
+
+      expect(state.groups).toHaveLength(2)
+      expect(state.groups[1].name).toBe('Group 1 (copy)')
+      expect(state.groups[1].id).toBe(2)
+      expect(state.nextGroupId).toBe(3)
+    })
+
+    it('clones all items in the group', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 2, groupId: 1 })
+      state = appReducer(state, { type: 'DUPLICATE_GROUP', groupId: 1 })
+
+      const clonedGroupItems = state.workItems.filter((w) => w.groupId === 2)
+      expect(clonedGroupItems).toHaveLength(2)
+      expect(state.nextId).toBe(5) // 3 + 2 cloned items
+    })
+
+    it('inserts new group after source group', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'DUPLICATE_GROUP', groupId: 1 })
+
+      expect(state.groups.map((g) => g.id)).toEqual([1, 3, 2])
+    })
+
+    it('no-op when group not found', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      const before = { groups: state.groups.length, items: state.workItems.length }
+      state = appReducer(state, { type: 'DUPLICATE_GROUP', groupId: 999 })
+      expect(state.groups.length).toBe(before.groups)
+      expect(state.workItems.length).toBe(before.items)
+    })
+  })
+
+  describe('LOAD_SESSION with groups', () => {
+    it('backfills missing groups to empty array', () => {
+      const sessionWithoutGroups = {
+        workItems: [],
+        constants: DEFAULT_CONSTANTS,
+        nextId: 1,
+        staffing: { rows: [], week_count: 0, nextRowId: 1 },
+      } as unknown as AppState
+      const state = appReducer(initialState, { type: 'LOAD_SESSION', session: sessionWithoutGroups })
+      expect(state.groups).toEqual([])
+      expect(state.nextGroupId).toBe(1)
+    })
+
+    it('preserves groups when present', () => {
+      const session: AppState = {
+        workItems: [],
+        constants: DEFAULT_CONSTANTS,
+        nextId: 1,
+        staffing: { rows: [], week_count: 0, nextRowId: 1 },
+        groups: [{ id: 1, name: 'Test', color: 'indigo', enabled: true, collapsed: false, multiplier: 1 }],
+        nextGroupId: 2,
+      }
+      const state = appReducer(initialState, { type: 'LOAD_SESSION', session })
+      expect(state.groups).toHaveLength(1)
+      expect(state.groups[0].name).toBe('Test')
+      expect(state.nextGroupId).toBe(2)
     })
   })
 })

@@ -1,4 +1,5 @@
-import { DEFAULT_CONSTANTS } from './domain/estimation'
+import { DEFAULT_CONSTANTS, GROUP_COLOR_PALETTE } from './domain/estimation'
+import type { GroupColorKey, WorkItemGroup } from './domain/estimation'
 import { createStaffingRow, createPrepopulatedRows, resizeRowCells } from './domain/staffing'
 import type { AppState, AppAction, StaffingState } from './types'
 
@@ -7,6 +8,12 @@ function arrayMove<T>(array: T[], fromIndex: number, toIndex: number): T[] {
   const [removed] = result.splice(fromIndex, 1)
   result.splice(toIndex, 0, removed)
   return result
+}
+
+function nextGroupColor(groups: WorkItemGroup[]): GroupColorKey {
+  const usedColors = new Set(groups.map((g) => g.color))
+  const available = GROUP_COLOR_PALETTE.find((c) => !usedColors.has(c.key))
+  return available ? available.key : GROUP_COLOR_PALETTE[groups.length % GROUP_COLOR_PALETTE.length].key
 }
 
 const DEFAULT_STAFFING: StaffingState = {
@@ -30,6 +37,8 @@ export const initialState: AppState = {
   constants: DEFAULT_CONSTANTS,
   nextId: 2,
   staffing: DEFAULT_STAFFING,
+  groups: [],
+  nextGroupId: 1,
 }
 
 export function appReducer(state: AppState, action: AppAction): AppState {
@@ -78,7 +87,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const sourceIndex = state.workItems.findIndex((item) => item.id === action.id)
       if (sourceIndex === -1) return state
       const source = state.workItems[sourceIndex]
-      const clone = { ...source, id: state.nextId, multiplier: source.multiplier ?? 1 }
+      const clone = { ...source, id: state.nextId, multiplier: source.multiplier ?? 1, groupId: source.groupId }
       const newItems = [...state.workItems]
       newItems.splice(sourceIndex + 1, 0, clone)
       return { ...state, workItems: newItems, nextId: state.nextId + 1 }
@@ -100,6 +109,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...action.session,
         staffing: action.session.staffing ?? DEFAULT_STAFFING,
+        groups: action.session.groups ?? [],
+        nextGroupId: action.session.nextGroupId ?? 1,
       }
 
     // ========================================================================
@@ -226,6 +237,148 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         staffing: { ...state.staffing, rows: arrayMove(state.staffing.rows, oldIndex, newIndex) },
+      }
+    }
+
+    // ========================================================================
+    // Group Actions
+    // ========================================================================
+
+    case 'ADD_GROUP':
+      return {
+        ...state,
+        groups: [
+          ...state.groups,
+          {
+            id: state.nextGroupId,
+            name: `Group ${state.nextGroupId}`,
+            color: nextGroupColor(state.groups),
+            enabled: true,
+            collapsed: false,
+            multiplier: 1,
+          },
+        ],
+        nextGroupId: state.nextGroupId + 1,
+      }
+
+    case 'REMOVE_GROUP':
+      return {
+        ...state,
+        groups: state.groups.filter((g) => g.id !== action.groupId),
+        workItems: state.workItems.map((item) =>
+          item.groupId === action.groupId ? { ...item, groupId: undefined } : item
+        ),
+      }
+
+    case 'UPDATE_GROUP':
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.groupId ? { ...g, ...action.updates } : g
+        ),
+      }
+
+    case 'TOGGLE_GROUP':
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.groupId ? { ...g, enabled: !g.enabled } : g
+        ),
+      }
+
+    case 'TOGGLE_GROUP_COLLAPSE':
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.groupId ? { ...g, collapsed: !g.collapsed } : g
+        ),
+      }
+
+    case 'REORDER_GROUPS': {
+      const oldIndex = state.groups.findIndex((g) => g.id === action.activeId)
+      const newIndex = state.groups.findIndex((g) => g.id === action.overId)
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return state
+      return { ...state, groups: arrayMove(state.groups, oldIndex, newIndex) }
+    }
+
+    case 'MOVE_ITEM_TO_GROUP':
+      return {
+        ...state,
+        workItems: state.workItems.map((item) =>
+          item.id === action.itemId ? { ...item, groupId: action.groupId } : item
+        ),
+      }
+
+    case 'ADD_WORK_ITEM_TO_GROUP': {
+      const newItem = {
+        id: state.nextId,
+        title: '',
+        notes: '',
+        best_case_hours: 0,
+        worst_case_hours: 0,
+        enabled: true,
+        multiplier: 1,
+        groupId: action.groupId,
+      }
+      // Find the first member, then the end of its contiguous block
+      let firstMemberIdx = -1
+      for (let i = 0; i < state.workItems.length; i++) {
+        if (state.workItems[i].groupId === action.groupId) {
+          firstMemberIdx = i
+          break
+        }
+      }
+      const newItems = [...state.workItems]
+      if (firstMemberIdx >= 0) {
+        let insertAfter = firstMemberIdx
+        for (let i = firstMemberIdx + 1; i < state.workItems.length; i++) {
+          if (state.workItems[i].groupId === action.groupId) {
+            insertAfter = i
+          } else {
+            break
+          }
+        }
+        newItems.splice(insertAfter + 1, 0, newItem)
+      } else {
+        newItems.push(newItem)
+      }
+      return { ...state, workItems: newItems, nextId: state.nextId + 1 }
+    }
+
+    case 'MOVE_GROUP_BLOCK': {
+      const groupItems = state.workItems.filter((w) => w.groupId === action.groupId)
+      if (groupItems.length === 0) return state
+      const remaining = state.workItems.filter((w) => w.groupId !== action.groupId)
+      const targetIdx = remaining.findIndex((w) => w.id === action.targetItemId)
+      if (targetIdx === -1) return state
+      const newItems = [...remaining]
+      newItems.splice(targetIdx, 0, ...groupItems)
+      return { ...state, workItems: newItems }
+    }
+
+    case 'DUPLICATE_GROUP': {
+      const sourceGroup = state.groups.find((g) => g.id === action.groupId)
+      if (!sourceGroup) return state
+      const newGroupId = state.nextGroupId
+      const sourceItems = state.workItems.filter((w) => w.groupId === action.groupId)
+      const clonedItems = sourceItems.map((item, i) => ({
+        ...item,
+        id: state.nextId + i,
+        groupId: newGroupId,
+      }))
+      const groupInsertIdx = state.groups.findIndex((g) => g.id === action.groupId)
+      const newGroups = [...state.groups]
+      newGroups.splice(groupInsertIdx + 1, 0, {
+        ...sourceGroup,
+        id: newGroupId,
+        name: `${sourceGroup.name} (copy)`,
+      })
+      return {
+        ...state,
+        groups: newGroups,
+        nextGroupId: state.nextGroupId + 1,
+        workItems: [...state.workItems, ...clonedItems],
+        nextId: state.nextId + clonedItems.length,
       }
     }
 

@@ -9,6 +9,9 @@ import styles from './WorkItemRow.module.css'
 interface WorkItemRowProps {
   item: WorkItemCalculated
   rowNumber: number
+  grouped?: boolean
+  lastInGroup?: boolean
+  groupEnabled?: boolean
   onUpdate: (field: 'title' | 'notes' | 'best_case_hours' | 'worst_case_hours' | 'multiplier', value: string) => void
   onRemove: () => void
   onToggle: () => void
@@ -62,9 +65,9 @@ function NumberStepper({
   )
 }
 
-export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemRowProps) {
+export function WorkItemRow({ item, rowNumber, grouped, lastInGroup, groupEnabled, onUpdate, onRemove, onToggle, onDuplicate }: WorkItemRowProps) {
   const warning = validateWorkItem(item)
-  const disabled = !item.enabled
+  const disabled = !item.enabled || groupEnabled === false
   const mult = item.multiplier ?? 1
 
   const {
@@ -74,7 +77,7 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onD
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item.id })
+  } = useSortable({ id: `item-${item.id}` })
 
   const style: React.CSSProperties = {
     '--index': rowNumber,
@@ -83,6 +86,10 @@ export function WorkItemRow({ item, rowNumber, onUpdate, onRemove, onToggle, onD
     opacity: isDragging ? 0.5 : undefined,
     zIndex: isDragging ? 10 : undefined,
     position: 'relative',
+    paddingLeft: grouped ? '12px' : undefined,
+    marginBottom: lastInGroup ? '6px' : undefined,
+    borderBottomWidth: lastInGroup ? '2px' : undefined,
+    borderBottomColor: lastInGroup ? 'var(--surface-border-strong)' : undefined,
   } as React.CSSProperties
 
   return (

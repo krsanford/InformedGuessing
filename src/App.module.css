@@ -78,7 +78,8 @@
 
 /* Hide toolbar items when section is collapsed */
 .section:not([open]) .toolbarSpacer,
-.section:not([open]) .addButton {
+.section:not([open]) .addButton,
+.section:not([open]) .addGroupButton {
   display: none;
 }
 
@@ -148,6 +149,43 @@
 }
 
 .addButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.addGroupButton {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.5);
+  padding: calc(var(--space) * 0.625) calc(var(--space) * 1.5);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1.5px dashed var(--surface-border-strong);
+  border-radius: calc(var(--radius-sm) * 0.75);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  font-family: inherit;
+  white-space: nowrap;
+  height: 100%;
+  margin-left: calc(var(--space) * 0.5);
+}
+
+.addGroupButton:hover {
+  color: var(--primary-700);
+  border-color: var(--primary-400);
+  border-style: solid;
+  background: var(--primary-50);
+}
+
+.addGroupButton:active {
+  transform: scale(0.98);
+}
+
+.addGroupButton:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }

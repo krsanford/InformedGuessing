@@ -25,8 +25,7 @@ function makeItem(overrides: Partial<WorkItemCalculated> & { id: number }): Work
   const expected = best + pos * (worst - best)
   const spread = (worst - best) / div
   return {
-    id: overrides.id,
-    title: overrides.title ?? `Item ${overrides.id}`,
+    title: `Item ${overrides.id}`,
     notes: '',
     best_case_hours: best,
     worst_case_hours: worst,

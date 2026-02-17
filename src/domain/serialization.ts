@@ -81,6 +81,27 @@ export function importSession(json: string): AppState {
     if (typeof st.nextRowId !== 'number') st.nextRowId = 1
   }
 
+  // Backfill groups
+  if (!Array.isArray(s.groups)) {
+    s.groups = []
+  }
+  if (typeof s.nextGroupId !== 'number') {
+    s.nextGroupId = 1
+  }
+
+  // Backfill multiplier on groups
+  for (const group of s.groups as Record<string, unknown>[]) {
+    if (typeof group.multiplier !== 'number' || group.multiplier < 1) group.multiplier = 1
+  }
+
+  // Backfill groupId on work items
+  for (const item of s.workItems) {
+    const wi = item as Record<string, unknown>
+    if (wi.groupId !== undefined && typeof wi.groupId !== 'number') {
+      wi.groupId = undefined
+    }
+  }
+
   return state as AppState
 }
 

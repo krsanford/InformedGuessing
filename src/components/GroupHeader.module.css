@@ -1,0 +1,221 @@
+.groupHeader {
+  display: grid;
+  grid-template-columns: 20px 28px 28px 32px 1fr auto 1px 72px 72px 72px;
+  align-items: center;
+  gap: 0;
+  min-height: 48px;
+  padding: 0 calc(var(--space) * 1.5) 0 0;
+  background: var(--surface-overlay);
+  border-bottom: 1px solid var(--surface-border-strong);
+  margin-top: calc(var(--space) * 0.5);
+  transition: background var(--duration-fast) ease;
+}
+
+.groupHeader:hover {
+  background: var(--surface-row-hover);
+}
+
+.disabled {
+  opacity: 0.45;
+}
+
+.dragging {
+  background: var(--surface-raised) !important;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-xs);
+}
+
+/* Drag handle */
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: grab;
+  touch-action: none;
+  transition: color var(--duration-fast) ease;
+}
+
+.dragHandle:hover {
+  color: var(--text-muted);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Chevron */
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.chevron:hover {
+  color: var(--text-primary);
+}
+
+/* Toggle — matches WorkItemRow toggle */
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 24px;
+  height: 14px;
+  background: var(--text-dim);
+  border-radius: 7px;
+  transition: background var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: var(--primary-300);
+}
+
+.toggleInput:focus-visible + .toggleTrack {
+  box-shadow: var(--focus-ring);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--duration-fast) ease;
+}
+
+.toggleInput:checked + .toggleTrack .toggleThumb {
+  transform: translateX(10px);
+}
+
+/* Name cell with multiplier badge */
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.multiplierBadge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: white;
+  background: var(--primary-500);
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  user-select: none;
+}
+
+/* Name input */
+.nameInput {
+  width: 100%;
+  padding: calc(var(--space) * 0.75) calc(var(--space) * 1);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  transition: all var(--duration-fast) ease;
+}
+
+.nameInput:hover {
+  background: var(--surface-overlay);
+  border-color: var(--surface-border);
+}
+
+.nameInput:focus {
+  outline: none;
+  background: var(--surface-input);
+  border-color: var(--primary-400);
+  box-shadow: var(--glow-sm);
+}
+
+/* Item count badge */
+.itemCount {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--surface-border);
+  white-space: nowrap;
+}
+
+/* Divider */
+.divider {
+  width: 1px;
+  height: 16px;
+  background: var(--surface-border-strong);
+  justify-self: center;
+}
+
+/* Computed values — matches WorkItemRow .computed */
+.computed {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-computed);
+  padding: 0 calc(var(--space) * 0.75);
+  white-space: nowrap;
+}
+
+.collapsed .computed {
+  font-weight: 600;
+}
+
+/* Responsive: tablet */
+@media (max-width: 1024px) {
+  .groupHeader {
+    grid-template-columns: 20px 28px 28px 32px 1fr auto 1px 64px 64px 64px;
+  }
+}
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+  .groupHeader {
+    grid-template-columns: 20px 28px 28px 32px 1fr auto;
+    padding: 0 calc(var(--space) * 1);
+  }
+
+  .divider,
+  .computed {
+    display: none;
+  }
+}

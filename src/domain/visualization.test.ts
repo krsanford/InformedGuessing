@@ -427,7 +427,6 @@ describe('computeDiversificationData', () => {
 
   it('benefitPct is positive when diversification helps (the usual case)', () => {
     const items = [ITEM_A, ITEM_B, ITEM_C]
-    const naiveSum = items.reduce((sum, item) => sum + item.range_spread_hours, 0)
     const actualSigma = Math.sqrt(TOTAL_VARIANCE_ABC)
     const results = makeResults({ portfolio_range_spread: actualSigma })
 
