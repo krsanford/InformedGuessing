@@ -1,6 +1,6 @@
 /**
  * Pure Gaussian (normal distribution) math functions for visualizations.
- * No React dependency — used by domain/visualization.ts and DistributionCurve.
+ * No React dependency — used by domain/visualization.ts.
  */
 
 const SQRT_2PI = Math.sqrt(2 * Math.PI)

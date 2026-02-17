@@ -8,6 +8,7 @@ import {
   calculateStaffingGrid,
   calculateStaffingComparison,
   createStaffingRow,
+  createPrepopulatedRows,
   resizeRowCells,
 } from './staffing'
 import type { StaffingRow } from '../types'
@@ -334,5 +335,121 @@ describe('staffing - row management', () => {
     expect(resized[0].cells).toEqual(['36', 'PTO', '36', '', ''])
     expect(resized[0].discipline).toBe('Dev')
     expect(resized[0].hourly_rate).toBe(150)
+  })
+})
+
+// ============================================================================
+// Pre-populated Rows (createPrepopulatedRows)
+// ============================================================================
+
+describe('staffing - createPrepopulatedRows', () => {
+  it('creates the correct number of rows for impliedPeople', () => {
+    const rows = createPrepopulatedRows(1, 10, 3, 1000, 36)
+    expect(rows).toHaveLength(3)
+  })
+
+  it('assigns sequential IDs starting from startId', () => {
+    const rows = createPrepopulatedRows(5, 10, 3, 1000, 36)
+    expect(rows[0].id).toBe(5)
+    expect(rows[1].id).toBe(6)
+    expect(rows[2].id).toBe(7)
+  })
+
+  it('creates rows with correct weekCount cells', () => {
+    const rows = createPrepopulatedRows(1, 12, 2, 500, 36)
+    expect(rows[0].cells).toHaveLength(12)
+    expect(rows[1].cells).toHaveLength(12)
+  })
+
+  it('initializes rows as enabled with multiplier 1 and empty discipline/rate', () => {
+    const rows = createPrepopulatedRows(1, 5, 2, 200, 36)
+    for (const row of rows) {
+      expect(row.enabled).toBe(true)
+      expect(row.multiplier).toBe(1)
+      expect(row.discipline).toBe('')
+      expect(row.hourly_rate).toBe(0)
+    }
+  })
+
+  it('distributes hours evenly across people, week by week', () => {
+    // 2 people, 36h/week, 144 total hours = 2 weeks exactly
+    const rows = createPrepopulatedRows(1, 5, 2, 144, 36)
+    // Week 1: both get 36
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[1].cells[0]).toBe('36')
+    // Week 2: both get 36
+    expect(rows[0].cells[1]).toBe('36')
+    expect(rows[1].cells[1]).toBe('36')
+    // Weeks 3-5: empty (all hours allocated)
+    expect(rows[0].cells[2]).toBe('')
+    expect(rows[1].cells[2]).toBe('')
+  })
+
+  it('handles partial last allocation with rounding', () => {
+    // 1 person, 36h/week, 50 total hours = 36 + 14
+    const rows = createPrepopulatedRows(1, 5, 1, 50, 36)
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[0].cells[1]).toBe('14')
+    expect(rows[0].cells[2]).toBe('')
+  })
+
+  it('rounds remainder to nearest integer', () => {
+    // 1 person, 36h/week, 50.7 total hours → 36 + Math.round(14.7) = 36 + 15
+    const rows = createPrepopulatedRows(1, 5, 1, 50.7, 36)
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[0].cells[1]).toBe('15')
+  })
+
+  it('fills week-by-week: all people in week 1 before moving to week 2', () => {
+    // 3 people, 36h/week, 180 total = fills week 1 fully (3×36=108), then 72 more in week 2
+    const rows = createPrepopulatedRows(1, 5, 3, 180, 36)
+    // Week 1: all three get 36
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[1].cells[0]).toBe('36')
+    expect(rows[2].cells[0]).toBe('36')
+    // Week 2: first two get 36, third gets 0 (remaining after p0+p1 is 0)
+    expect(rows[0].cells[1]).toBe('36')
+    expect(rows[1].cells[1]).toBe('36')
+    expect(rows[2].cells[1]).toBe('')
+  })
+
+  it('handles zero totalEffortHours', () => {
+    const rows = createPrepopulatedRows(1, 5, 2, 0, 36)
+    expect(rows).toHaveLength(2)
+    expect(rows[0].cells.every(c => c === '')).toBe(true)
+    expect(rows[1].cells.every(c => c === '')).toBe(true)
+  })
+
+  it('handles single person', () => {
+    // 1 person, 36h/week, 108h = exactly 3 weeks
+    const rows = createPrepopulatedRows(1, 5, 1, 108, 36)
+    expect(rows).toHaveLength(1)
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[0].cells[1]).toBe('36')
+    expect(rows[0].cells[2]).toBe('36')
+    expect(rows[0].cells[3]).toBe('')
+    expect(rows[0].cells[4]).toBe('')
+  })
+
+  it('stops allocation when weekCount is exhausted even if hours remain', () => {
+    // 1 person, 36h/week, 500h total, only 3 weeks available = 108h allocated, rest lost
+    const rows = createPrepopulatedRows(1, 3, 1, 500, 36)
+    expect(rows[0].cells).toHaveLength(3)
+    expect(rows[0].cells[0]).toBe('36')
+    expect(rows[0].cells[1]).toBe('36')
+    expect(rows[0].cells[2]).toBe('36')
+    // total allocated = 108, not 500
+    const totalAllocated = rows[0].cells.reduce((s, c) => s + (c ? parseFloat(c) : 0), 0)
+    expect(totalAllocated).toBe(108)
+  })
+
+  it('calculates correct totals when used with calculateStaffingGrid', () => {
+    // 3 people, 36h/week, 10 weeks, 1000h total
+    const rows = createPrepopulatedRows(1, 10, 3, 1000, 36)
+    const grid = calculateStaffingGrid(rows, 10)
+    // Should allocate all 1000 hours (or as close as rounding allows)
+    // 3 people × 36h × ~9.26 weeks = ~1000h
+    expect(grid.grand_total_hours).toBeGreaterThanOrEqual(990)
+    expect(grid.grand_total_hours).toBeLessThanOrEqual(1000)
   })
 })

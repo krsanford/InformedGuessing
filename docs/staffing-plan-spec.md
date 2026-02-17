@@ -24,7 +24,7 @@ The estimation module might say "892 hours over 11 weeks." But you can't simply 
 **Output:**
 1. Total hours per role and per week
 2. Total cost per role (hours × hourly rate)
-3. Grand total cost, **rounded up** to the nearest $5,000
+3. Grand total cost
 4. Comparison against the estimation output: staffed hours vs. estimated effort
 
 **The transformation:**
@@ -34,8 +34,8 @@ Estimation output:  892 hours effort, 11 weeks duration
          ↓
 Staffing plan:      4 roles × 15 weeks = grid of planned hours
          ↓
-Reality check:      1,160 staffed hours (+30% over estimate)
-                    $164,500 → rounds to $165,000
+Reality check:      1,160 staffed hours (+9% over estimate)
+                    $164,500
 ```
 
 ### Relationship to the Estimate
@@ -173,42 +173,11 @@ Week 1 total: 86 hours
 
 **Formulas:**
 ```
-grand_total_hours    = Σ row_total_hours_i         for all rows
-grand_total_cost_raw = Σ row_total_cost_i          for all rows
-grand_total_cost     = roundUp(grand_total_cost_raw, $5,000)
+grand_total_hours = Σ row_total_hours_i    for all rows
+grand_total_cost  = Σ row_total_cost_i     for all rows
 ```
 
 **Why grand totals matter:** These are the numbers that go into budgets and executive summaries. The total hours show the full scope of team commitment. The total cost is what finance needs to approve.
-
----
-
-### Cost Rounding
-
-**Formula:**
-```
-rounded_cost = ⌈raw_cost / 5000⌉ × 5000
-```
-
-Where ⌈⌉ denotes ceiling (round up to next integer).
-
-**Examples:**
-```
-$174,200  →  $175,000
-$175,000  →  $175,000  (exact multiple stays)
-$175,001  →  $180,000
-$1        →  $5,000
-$0        →  $0
-```
-
-**Why round up?**
-
-Precision creates false confidence. A budget of "$174,237.50" implies we know the cost to the penny. We don't — this is an estimate built on estimates. Rounding up to the nearest $5,000:
-1. **Communicates that this is an estimate**, not a quote
-2. **Provides a small implicit buffer** for the inevitable things we missed
-3. **Simplifies communication** with stakeholders
-4. **Always rounds up**, never down — we'd rather have a small surplus than a deficit
-
-**Why $5,000?** This is appropriate for mid-size projects ($50K-$500K range). The rounding increment is small enough to be meaningful but large enough to clearly signal "this is a round number, not a precise calculation."
 
 ---
 
@@ -274,8 +243,7 @@ The staffing plan extends to **15 weeks** (4 more than the 11-week estimate) to 
 
 ```
 Grand total hours:     1,160
-Grand total cost raw:  $164,500
-Grand total cost:      $165,000  (rounded up to nearest $5,000)
+Grand total cost:      $164,500
 ```
 
 ### Comparison to Estimate
@@ -302,7 +270,7 @@ Walking through the staffing decisions that created the 30% delta:
 
 6. **The project runs 15 weeks, not 11**: Even though the estimation model says 11 weeks of effort, the calendar time extends to 15 weeks once you account for the PI Planning gap, PTO, and the QA tail.
 
-**Bottom line:** The estimate says "you need 892 hours of productive work." The staffing plan says "fielding a team that can deliver 892 hours of productive work will cost 1,160 hours and $165,000."
+**Bottom line:** The estimate says "you need 1,066 hours of productive work." The staffing plan says "fielding a team that can deliver 1,066 hours of productive work will cost 1,160 hours and $164,500."
 
 ---
 
@@ -351,8 +319,7 @@ Users can adjust the week count using +/- controls. When the week count changes:
 - **Row total hours**: Integer or 1 decimal place if fractional
 - **Row total cost**: Dollar format with comma separators ($75,600)
 - **Grand total hours**: Integer or 1 decimal place
-- **Grand total cost (rounded)**: Dollar format with comma separators, prominently displayed ($165,000)
-- **Grand total cost (raw)**: Shown as secondary/smaller text for transparency
+- **Grand total cost**: Dollar format with comma separators ($164,500)
 
 All numeric displays use **monospace/tabular-nums** font for alignment.
 
@@ -424,10 +391,10 @@ Pure functions, no React dependency. Follows the same pattern as `estimation.ts`
 | `validateStaffingRow` | `(row: StaffingRow) → string \| null` | Validate row, return error or null |
 | `calculateRowTotals` | `(row: StaffingRow) → StaffingRowComputed` | Hours and cost per row |
 | `calculateWeekTotals` | `(rows: StaffingRow[], weekCount: number) → number[]` | Hours per week column |
-| `roundUpToCost` | `(raw: number, increment?: number) → number` | Round up to nearest $5,000 |
 | `calculateStaffingGrid` | `(rows: StaffingRow[], weekCount: number) → StaffingGridComputed` | All grid calculations |
 | `calculateStaffingComparison` | `(estimated: number, staffed: number) → StaffingComparison` | Estimate vs. staffed delta |
 | `createStaffingRow` | `(id: number, weekCount: number) → StaffingRow` | New row with empty cells |
+| `createPrepopulatedRows` | `(startId, weekCount, impliedPeople, totalEffortHours, hoursPerWeek) → StaffingRow[]` | Create pre-filled rows distributing effort across team |
 | `resizeRowCells` | `(rows: StaffingRow[], newWeekCount: number) → StaffingRow[]` | Pad/truncate cells |
 
 ### State Management
@@ -449,7 +416,10 @@ AppState.staffing: {
 - `STAFFING_UPDATE_ROW` — update discipline or hourly_rate
 - `STAFFING_UPDATE_CELL` — update single cell by row ID + week index
 - `STAFFING_SET_WEEK_COUNT` — resize all rows
-- `STAFFING_INIT_FROM_ESTIMATE` — set week count from estimate duration
+- `STAFFING_TOGGLE_ROW` — enable/disable row for calculations
+- `STAFFING_INIT_FROM_ESTIMATE` — initialize grid with pre-populated rows from estimate
+- `DUPLICATE_STAFFING_ROW` — clone a row with new ID
+- `REORDER_STAFFING_ROWS` — drag-and-drop reordering
 
 ### Component Hierarchy
 
@@ -471,11 +441,15 @@ App.tsx
 The grid uses CSS Grid with dynamic column count (set via inline style since week count is variable):
 
 ```
-grid-template-columns: 40px 160px 80px repeat(N, 56px) 72px 88px 36px
-                       #    name   rate  ...weeks...    hours cost  trash
+grid-template-columns: 20px 40px 32px 32px 160px 80px 72px 88px repeat(N, 56px)
+                       grip  #   toggle menu  name  rate  hours cost  ...weeks...
 ```
 
-The # and discipline columns are `position: sticky` for horizontal scrolling.
+The left-side columns (grip through cost) are sticky for horizontal scrolling. Each row has:
+- **Drag handle** (GripIcon) for reordering
+- **Row number** indicator
+- **Enable toggle** (checkbox) to include/exclude from calculations
+- **Context menu** (ellipsis) for delete, duplicate, and multiplier actions
 
 ---
 
@@ -503,8 +477,7 @@ const testRows: StaffingRow[] = [
 // Associate Dev: 504h, $63,000
 // QA: 140h, $17,500
 // Grand total hours: 1,160
-// Grand total cost raw: $164,500
-// Grand total cost rounded: $165,000
+// Grand total cost: $164,500
 // Week 1 total: 86h
 // Week 7 total: 0h (PI Plan for all)
 ```
@@ -515,8 +488,7 @@ const testRows: StaffingRow[] = [
 3. Row validation
 4. Row total calculations (pure numeric, mixed with annotations)
 5. Week total calculations
-6. Cost rounding (boundary cases: $0, exact multiples, $1 over)
-7. Full grid calculation with worked example data
+6. Full grid calculation with worked example data
 8. Estimate comparison (delta hours and percent, zero-estimate edge case)
 9. Row management (create, resize up, resize down)
 

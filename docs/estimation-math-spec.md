@@ -18,7 +18,7 @@ This specification implements a **two-point estimation model** inspired by Steve
 - Ability to calculate buffer sizes and confidence levels
 - Data to track estimation accuracy over time
 
-**Practical benefit:** When a manager asks "how long will this take?", you can say "We expect 828 hours with ±109 hours range spread, so we should plan for 937 hours to have 84% confidence of delivery." This is actionable information for resource planning.
+**Practical benefit:** When a manager asks "how long will this take?", you can say "We expect 958 hours with ±109 hours range spread, so we should plan for 1,066 hours to have 84% confidence of delivery." This is actionable information for resource planning.
 
 **Key principle**: Estimation risk doesn't disappear when you ignore it. By quantifying it, you can manage it.
 
@@ -46,22 +46,22 @@ Instead of guessing a single number ("this feature will take 80 hours"), you pro
 ```
 Input:     10 work items, each with best/worst case hours
   ↓
-Calculate: Expected = 828 hours (most likely total)
+Calculate: Expected = 958 hours (most likely total)
            Range spread = ±109 hours (our "margin of error")
   ↓
-Add buffer: Planning effort = 937 hours (expected + 1× range spread = 84% confidence)
+Add buffer: Planning effort = 1,066 hours (expected + 1× range spread = 84% confidence)
   ↓
-Convert:    937 hours ÷ 36 hours/week = 26 staff-weeks
+Convert:    1,066 hours ÷ 36 hours/week = 29.6 staff-weeks
   ↓
-Scale:      Duration = 11 calendar weeks (accounts for coordination)
+Scale:      Duration = 10 calendar weeks (accounts for coordination)
 ```
 
 **What range spread means in practice:**
 
-If range spread is ±109 hours on an expected 828 hours:
-- 828 hours (expected) = 50% confidence target
-- 937 hours (expected + 1× range spread) ≈ 84% confidence
-- 1046 hours (expected + 2× range spread) ≈ 97% confidence
+If range spread is ±109 hours on an expected 958 hours:
+- 958 hours (expected) = 50% confidence target
+- 1,066 hours (expected + 1× range spread) ≈ 84% confidence
+- 1,175 hours (expected + 2× range spread) ≈ 97% confidence
 
 These percentages assume outcomes follow a bell curve and your best/worst estimates are calibrated correctly. The model's value is making estimation risk explicit and providing a systematic buffering approach.
 
@@ -77,10 +77,10 @@ These constants encode empirical parameters that vary by organization, team matu
 
 | Name | Default | Unit | Purpose and Rationale |
 |------|---------|------|----------------------|
-| **expected_case_position** | 0.4 | ratio (0-1) | Position of expected value between best and worst case. 0.4 means 40% of the way from best to worst. Adjust based on your team's actual outcomes. Typical range: 0.3-0.5. |
+| **expected_case_position** | 0.6 | ratio (0-1) | Position of expected value between best and worst case. 0.6 means 60% of the way from best to worst — slightly pessimistic, reflecting that most tasks have more ways to go wrong than right. Adjust based on your team's actual outcomes. Typical range: 0.3-0.7. |
 | **range_spread_divisor** | 2.6 | dimensionless | Scales the estimate range (worst - best) to a usable measure. Smaller values (1.5-2.0) = wider spread. Larger values (3.0-4.0) = narrower spread. Calibrate to match actual outcome distributions. |
 | **billable_hours_per_week** | 36 | hours/week | Productive hours per staff member per week. Accounts for meetings, overhead, interruptions. Typical range: 30-40. Measure your actual productive time. |
-| **duration_scaling_power** | 3.5 | dimensionless | Controls how effort scales to calendar duration. Reflects coordination overhead and task dependencies. Higher values = longer durations for same effort. Typical range: 3.0-5.0. |
+| **duration_scaling_power** | 3.2 | dimensionless | Controls how effort scales to calendar duration. Reflects coordination overhead and task dependencies. Higher values = longer durations for same effort. Typical range: 3.0-5.0. |
 
 ---
 
@@ -146,11 +146,11 @@ expected_hours = best_case_hours + expected_case_position × (worst_case_hours -
 
 **Why this formula:**
 
-This is a **weighted interpolation** between best and worst case. With the default `expected_case_position = 0.4`, the expected value sits 40% of the way from best to worst.
+This is a **weighted interpolation** between best and worst case. With the default `expected_case_position = 0.6`, the expected value sits 60% of the way from best to worst.
 
-**Effect on planning:** This formula provides a systematic way to convert a range into a single expected value. The 0.4 position is an empirically chosen value—it's neither the midpoint (0.5) nor the optimistic endpoint (0.0), but closer to middle. Whether this matches reality for your team requires calibration against actual outcomes.
+**Effect on planning:** This formula provides a systematic way to convert a range into a single expected value. The 0.6 position is slightly pessimistic—reflecting the common observation that most tasks have more ways to go wrong than right. Whether this matches reality for your team requires calibration against actual outcomes.
 
-**Calibration:** Track whether your team typically delivers closer to best case, worst case, or in between. Adjust `expected_case_position` accordingly. If you consistently exceed estimates, increase toward 0.45-0.5. If you consistently beat estimates, decrease toward 0.3-0.35.
+**Calibration:** Track whether your team typically delivers closer to best case, worst case, or in between. Adjust `expected_case_position` accordingly. If you consistently exceed estimates, increase toward 0.65-0.7. If you consistently beat estimates, decrease toward 0.4-0.5.
 
 ---
 
@@ -288,9 +288,13 @@ This converts **pure work time** (hours of coding, testing, design) into **calen
 
 **Formula:**
 ```
-duration_weeks = ⌈duration_scaling_power × (total_effort_staff_weeks)^(1/3)⌉
+scaled = duration_scaling_power × (total_effort_staff_weeks)^(1/3)
+single_person = ⌈total_effort_staff_weeks⌉
+duration_weeks = min(⌈scaled⌉, single_person)
 ```
-Where ⌈⌉ denotes ceiling (round up to next integer)
+Where ⌈⌉ denotes ceiling (round up to next integer).
+
+The `min()` cap ensures that the duration estimate never exceeds the time a single person would need working sequentially. Without this cap, for very small projects the cube-root formula could paradoxically suggest a duration longer than one person doing all the work alone.
 
 **Why this formula:**
 
@@ -311,13 +315,13 @@ Adding more people to a project provides **diminishing returns** due to:
 3. **Task dependencies**: Not all work can be parallelized
 4. **Ramp-up time**: New team members need onboarding
 
-**The 3.5 multiplier:**
+**The 3.2 multiplier:**
 
 This adjusts the cube-root relationship to match typical project constraints and coordination overhead patterns.
 
 **Calibration:**
 
-This parameter **requires calibration** to your environment. If projects consistently take longer than estimated, increase to 4.0-5.0. If you effectively parallelize work, decrease to 3.0-3.2. Track actual duration vs. predicted to adjust.
+This parameter **requires calibration** to your environment. If projects consistently take longer than estimated, increase to 3.5-5.0. If you effectively parallelize work, decrease to 2.5-3.0. Track actual duration vs. predicted to adjust.
 
 ---
 
@@ -341,30 +345,30 @@ Using the data from "Worksheet Example" tab with default constants:
 | Documentation & Handoff | Readme, docs | 16 | 30 |
 
 ### Constants
-- expected_case_position = 0.4
+- expected_case_position = 0.6
 - range_spread_divisor = 2.6
 - billable_hours_per_week = 36
-- duration_scaling_power = 3.5
+- duration_scaling_power = 3.2
 
 ### Individual Item Calculations
 
 **Item 1: Page 1 (best=80, worst=120)**
 ```
-expected = 80 + 0.4 × (120 - 80) = 80 + 16 = 96 hours
+expected = 80 + 0.6 × (120 - 80) = 80 + 24 = 104 hours
 range_spread = (120 - 80) / 2.6 = 40 / 2.6 ≈ 15.38 hours
 variance = 15.38² ≈ 236.69
 ```
 
 **Item 2: Page 2 (best=70, worst=200)**
 ```
-expected = 70 + 0.4 × (200 - 70) = 70 + 52 = 122 hours
+expected = 70 + 0.6 × (200 - 70) = 70 + 78 = 148 hours
 range_spread = (200 - 70) / 2.6 = 130 / 2.6 = 50 hours
 variance = 50² = 2500.00
 ```
 
 **Item 3: Page 3 (best=100, worst=320)**
 ```
-expected = 100 + 0.4 × (320 - 100) = 100 + 88 = 188 hours
+expected = 100 + 0.6 × (320 - 100) = 100 + 132 = 232 hours
 range_spread = (320 - 100) / 2.6 = 220 / 2.6 ≈ 84.62 hours
 variance = 84.62² ≈ 7159.76
 ```
@@ -374,8 +378,8 @@ variance = 84.62² ≈ 7159.76
 ### Portfolio Totals
 
 ```
-total_expected = 96 + 122 + 188 + 56 + 72 + 112 + 8.8 + 88 + 64 + 21.6
-total_expected = 828.4 hours
+total_expected = 104 + 148 + 232 + 64 + 78 + 128 + 11.2 + 92 + 76 + 24.4
+total_expected = 957.6 hours
 
 total_variance = 236.69 + 2500.00 + 7159.76 + 236.69 + 133.14 + 946.75 + 21.30 + 59.17 + 532.54 + 28.99
 total_variance = 11855.03
@@ -386,18 +390,17 @@ portfolio_range_spread = √11855.03 ≈ 108.88 hours
 ### Effort Calculation
 
 ```
-total_effort_hours = 828.4 + 108.88 = 937.28 hours
+total_effort_hours = 957.6 + 108.88 = 1066.48 hours
 
-total_effort_staff_weeks = 937.28 / 36 ≈ 26.03 staff weeks
+total_effort_staff_weeks = 1066.48 / 36 ≈ 29.62 staff weeks
 ```
 
 ### Duration Calculation
 
 ```
-duration_weeks = ⌈3.5 × (26.03)^(1/3)⌉
-duration_weeks = ⌈3.5 × 2.964⌉
-duration_weeks = ⌈10.373⌉
-duration_weeks = 11 weeks
+scaled = 3.2 × (29.62)^(1/3) = 3.2 × 3.091 = 9.89
+single_person = ⌈29.62⌉ = 30
+duration_weeks = min(⌈9.89⌉, 30) = min(10, 30) = 10 weeks
 ```
 
 ---
@@ -415,10 +418,11 @@ duration_weeks = 11 weeks
 1. `expected_case_position` must be in range [0, 1]
    - 0 = expected equals best case (extremely optimistic)
    - 1 = expected equals worst case (extremely pessimistic)
-   - Typical range: 0.25-0.5
+   - Typical range: 0.3-0.7
 2. `range_spread_divisor > 0` (typical range: 1.5-4.0)
 3. `billable_hours_per_week > 0` (typical range: 30-40)
 4. `duration_scaling_power > 0` (typical range: 2.5-5.0)
+5. `coordination_cost_per_pair` must be in range [0.5, 8]
 
 ### Rounding and Display
 
@@ -526,18 +530,19 @@ const testWorkItems = [
 ];
 
 const constants = {
-  expected_case_position: 0.4,
+  expected_case_position: 0.6,
   range_spread_divisor: 2.6,
   billable_hours_per_week: 36,
-  duration_scaling_power: 3.5
+  duration_scaling_power: 3.2,
+  coordination_cost_per_pair: 1
 };
 
 // Expected results (verify to 2 decimal places):
-// total_expected_hours ≈ 828.40
+// total_expected_hours ≈ 957.60
 // portfolio_range_spread ≈ 108.88
-// total_effort_hours ≈ 937.28
-// total_effort_staff_weeks ≈ 26.03
-// duration_weeks = 11
+// total_effort_hours ≈ 1066.48
+// total_effort_staff_weeks ≈ 29.62
+// duration_weeks = 10
 ```
 
 ---

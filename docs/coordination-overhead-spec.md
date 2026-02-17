@@ -23,29 +23,28 @@ Once you build a staffing plan, you **do** know all of this. And team compositio
 2. **Adjusted estimate**: Base effort + coordination overhead — what the project actually needs given this team
 3. **Effective productive hours**: Staffed hours minus coordination overhead — actual capacity for productive work
 4. **Gap decomposition**: Breaks the staffing delta into coordination tax vs. remaining buffer
-5. **Team sizing curve**: Visualization showing optimal team size and the penalty for deviating
 
 **The transformation:**
 
 ```
-Base estimate:           937h  (productive work needed)
+Base estimate:          1,066h  (productive work needed)
 Staffing plan:           4 people × 15 weeks
          ↓
-Coordination overhead:  +148h  (computed from team composition)
-Adjusted estimate:     1,085h  (what this team actually needs)
+Coordination overhead:   +24h  (incremental, beyond what's baked into duration)
+Adjusted estimate:     1,090h  (what this team actually needs)
          ↓
 Staffed hours:         1,160h  (from staffing grid)
-Remaining buffer:         75h  (for PTO, ramp-up, continuity)
+Remaining buffer:         70h  (for PTO, ramp-up, continuity)
 ```
 
 ### Why This Matters
 
-Without this model, the staffing delta is opaque: "+223 hours (+24%)". Is that too much? Too little? You can't tell. With coordination overhead computed, the delta decomposes into:
+Without this model, the staffing delta is opaque: "+94 hours (+9%)". Is that too much? Too little? You can't tell. With coordination overhead computed, the delta decomposes into:
 
-- **Structural cost** (coordination overhead): Unavoidable given your team size. The only way to reduce it is fewer people.
+- **Structural cost** (coordination overhead): Unavoidable given your team size. The only way to reduce it is fewer people or better async practices.
 - **Operational buffer** (remaining): Covers PTO, ramp-up, continuity, and unknowns. This is the part you can evaluate as "enough" or "too thin."
 
-This gives stakeholders a concrete answer: "148 hours of our buffer is coordination overhead from having 4 people. The remaining 75 hours covers PTO and ramp-up. If we add a 5th person, coordination rises to 240 hours and we'd be 17 hours short."
+This gives stakeholders a concrete answer: "24 hours of our buffer is incremental coordination overhead. The remaining 70 hours covers PTO and ramp-up."
 
 ---
 
@@ -100,9 +99,9 @@ The coordination cost per pair per week includes:
 - **Context switching**: Mental cost of multi-person coordination (~15 min/week)
 - **Implicit coordination**: Waiting, negotiating shared resources, resolving conflicts
 
-**Default: α = 4 hours per pair per week.** This accounts for both direct communication and indirect coordination friction. It produces an optimal team size of ~9-10 people for typical projects, consistent with widely observed "two-pizza team" guidelines.
+**Default: α = 1 hour per pair per week.** This represents a lightweight baseline — enough to account for standup synchronization and ad-hoc questions, without assuming heavy ceremony. Most small teams (3-5 people) can coordinate effectively with minimal overhead.
 
-**Calibration:** Teams with strong async practices (fewer meetings, good documentation) may use α = 2-3. Teams with heavy ceremony, complex codebases, or cross-timezone coordination may need α = 5-6. Track actual coordination time to calibrate.
+**Calibration:** Teams with strong async practices (fewer meetings, good documentation) may keep α = 0.5-1. Teams with heavier ceremony, complex codebases, or cross-timezone coordination should increase to α = 2-4. Very heavy-process organizations may need α = 5-8. Track actual coordination time to calibrate.
 
 ---
 
@@ -110,7 +109,7 @@ The coordination cost per pair per week includes:
 
 | Name | Default | Unit | Range | Purpose |
 |------|---------|------|-------|---------|
-| **coordination_cost_per_pair** | 4 | hours/pair/week | 0.5–8.0 | Coordination overhead per pair of active team members per week. Higher values model heavier coordination burden. |
+| **coordination_cost_per_pair** | 1 | hours/pair/week | 0.5–8.0 | Coordination overhead per pair of active team members per week. Higher values model heavier coordination burden. |
 
 This constant is added to the existing Advanced Variables panel alongside the four estimation constants.
 
@@ -141,7 +140,7 @@ active_people(w) = count of rows where cell[w] is numeric and > 0
 weekly_coordination(w) = α × active_people(w) × (active_people(w) - 1) / 2
 ```
 
-**Example (Week 1 of worked staffing plan):**
+**Example (Week 1 of worked staffing plan, α = 1):**
 ```
 Scrum Master:    6h  → active
 Lead Dev:       36h  → active
@@ -150,7 +149,7 @@ QA:              8h  → active
 
 active_people = 4
 channels = 4 × 3 / 2 = 6
-weekly_coordination = 4 × 6 = 24 hours
+weekly_coordination = 1 × 6 = 6 hours
 ```
 
 **Example (Week 7 — PI Planning):**
@@ -161,7 +160,7 @@ channels = 0
 weekly_coordination = 0 hours
 ```
 
-**Example (Week 8 — Lead Dev on PTO):**
+**Example (Week 8 — Lead Dev on PTO, α = 1):**
 ```
 Scrum Master:    6h  → active
 Lead Dev:       PTO  → NOT active
@@ -170,7 +169,7 @@ QA:              8h  → active
 
 active_people = 3
 channels = 3 × 2 / 2 = 3
-weekly_coordination = 4 × 3 = 12 hours
+weekly_coordination = 1 × 3 = 3 hours
 ```
 
 ### Total Coordination Overhead
@@ -180,15 +179,37 @@ weekly_coordination = 4 × 3 = 12 hours
 total_coordination_hours = Σ weekly_coordination(w)    for all weeks
 ```
 
-**Worked example (15 weeks, α = 4):**
+**Worked example (15 weeks, α = 1):**
 ```
-Weeks 1-2:   4 people active → 6 channels × 4 = 24h/week × 2 = 48h
-Weeks 3-6:   3 people active (QA=0) → 3 channels × 4 = 12h/week × 4 = 48h
+Weeks 1-2:   4 people active → 6 channels × 1 = 6h/week × 2 = 12h
+Weeks 3-6:   3 people active (QA=0) → 3 channels × 1 = 3h/week × 4 = 12h
 Week 7:      0 people (PI Plan) → 0h
-Weeks 8-9:   3 people (Lead on PTO) → 3 channels × 4 = 12h/week × 2 = 24h
-Weeks 10-15: 4 people active → 6 channels × 4 = 24h/week × 6 = 144h
+Weeks 8-9:   3 people (Lead on PTO) → 3 channels × 1 = 3h/week × 2 = 6h
+Weeks 10-15: 4 people active → 6 channels × 1 = 6h/week × 6 = 36h
 
-total_coordination_hours = 48 + 48 + 0 + 24 + 144 = 264 hours
+total_coordination_hours = 12 + 12 + 0 + 6 + 36 = 66 hours (raw)
+```
+
+#### Incremental Coordination
+
+The cube-root duration formula already bakes in coordination overhead for the "implied" team size (⌈staff_weeks / duration_weeks⌉). To avoid double-counting, the coordination module only charges the **incremental** overhead beyond what's already assumed.
+
+```
+implied_team_size = ⌈29.62 / 10⌉ = 3 people
+baked_in_coordination = α × 3 × 2 / 2 = 1 × 3 = 3h/week
+
+Incremental overhead per week:
+  4 people active: raw=6h - baked=3h = 3h incremental
+  3 people active: raw=3h - baked=3h = 0h incremental
+  0 people active: 0h
+
+Weeks 1-2:   incremental 3h/week × 2 = 6h
+Weeks 3-6:   incremental 0h/week × 4 = 0h
+Week 7:      0h
+Weeks 8-9:   incremental 0h/week × 2 = 0h
+Weeks 10-15: incremental 3h/week × 6 = 18h
+
+total_incremental_coordination = 6 + 0 + 0 + 0 + 18 = 24 hours
 ```
 
 ### Adjusted Estimate
@@ -202,9 +223,9 @@ Where `base_effort_hours` = `total_effort_hours` from the portfolio calculation 
 
 **Worked example:**
 ```
-base_effort_hours = 937h (from estimation module)
-total_coordination_hours = 264h
-adjusted_effort_hours = 937 + 264 = 1,201h
+base_effort_hours = 1,066h (from estimation module)
+total_coordination_hours = 24h (incremental)
+adjusted_effort_hours = 1,066 + 24 = 1,090h
 ```
 
 ### Effective Productive Hours
@@ -219,8 +240,8 @@ Where `staffed_hours` = `grand_total_hours` from the staffing grid.
 **Worked example:**
 ```
 staffed_hours = 1,160h
-total_coordination_hours = 264h
-effective_productive_hours = 1,160 - 264 = 896h
+total_coordination_hours = 24h
+effective_productive_hours = 1,160 - 24 = 1,136h
 ```
 
 ### Gap Decomposition
@@ -239,131 +260,25 @@ buffer_status:
 
 **Worked example:**
 ```
-Base effort:             937h  (the productive work)
-Coordination overhead:  +264h  (structural cost of 3-4 person team)
-Adjusted estimate:     1,201h  (what this team needs)
+Base effort:            1,066h  (the productive work)
+Coordination overhead:    +24h  (incremental cost of team exceeding implied size)
+Adjusted estimate:     1,090h  (what this team needs)
 Staffed:               1,160h  (what the plan provides)
-Remaining buffer:        -41h  (SHORT — under-resourced!)
+Remaining buffer:         +70h  (BUFFERED — comfortable margin)
 ```
 
-**Interpretation:** With α=4 and a 3-4 person team over 15 weeks, the coordination overhead (264h) is substantial. The staffing plan doesn't provide enough total hours to cover both productive work AND coordination. The team would need to either:
-- Extend the timeline (add weeks)
-- Reduce team size (fewer communication channels)
-- Reduce coordination overhead (better async practices → lower α)
-- Accept the risk of overrun
+**Interpretation:** With α=1 and a 3-4 person team over 15 weeks, the incremental coordination overhead (24h) is modest — the team only exceeds the implied team size of 3 during 8 weeks. The staffing plan provides a comfortable 70-hour buffer for PTO, ramp-up, and unknowns.
 
-Note: With α=2 (lighter coordination), the numbers shift:
+Note: With α=4 (heavier coordination), the numbers shift significantly:
 ```
-Coordination overhead:  +156h
-Adjusted estimate:     1,093h
-Remaining buffer:        +67h  (buffered)
+Raw coordination:       264h
+Baked-in (3 people):    -3h/week × 15 = -45h
+Incremental:            219h
+Adjusted estimate:     1,285h
+Remaining buffer:       -125h  (SHORT — under-resourced!)
 ```
 
 The sensitivity to α demonstrates why it should be calibrable.
-
----
-
-## Team Sizing Curve Visualization
-
-### Purpose
-
-Show the fundamental trade-off of team size: too few people and work drags, too many and coordination consumes the gains. This is Brooks's Law made visual and interactive.
-
-### The Model
-
-For N people all working full-time (`billable_hours_per_week`):
-
-```
-effective_weekly_capacity(N) = N × h - α × N × (N - 1) / 2
-duration(N) = base_effort_hours / effective_weekly_capacity(N)
-```
-
-Where:
-- `h` = `billable_hours_per_week` (default 36)
-- `α` = `coordination_cost_per_pair` (default 4)
-- `base_effort_hours` = total effort from estimation (expected + buffer)
-
-### Optimal Team Size
-
-The minimum of the curve occurs at:
-
-```
-N_optimal = floor(h / α + 0.5)
-
-(Evaluated at floor and ceil, pick whichever gives lower duration)
-```
-
-With defaults (h=36, α=4): `N_optimal = floor(9.5) = 9` or `ceil = 10`, evaluate both.
-
-### Maximum Viable Team Size
-
-The team size where coordination consumes ALL capacity:
-
-```
-N_max = floor(2h / α + 1)
-```
-
-Beyond this, effective capacity is zero or negative — the team literally cannot do any productive work.
-
-With defaults: `N_max = floor(19) = 19`
-
-### Curve Data Points
-
-Evaluate `duration(N)` for N = 1, 2, 3, ..., min(N_max, 20):
-
-**Worked example (base_effort = 937h, h = 36, α = 4):**
-
-| N  | Channels | Coord/wk | Effective cap/wk | Duration (weeks) |
-|----|----------|----------|-------------------|-------------------|
-| 1  | 0        | 0h       | 36h               | 26.0              |
-| 2  | 1        | 4h       | 68h               | 13.8              |
-| 3  | 3        | 12h      | 96h               | 9.8               |
-| 4  | 6        | 24h      | 120h              | 7.8               |
-| 5  | 10       | 40h      | 140h              | 6.7               |
-| 6  | 15       | 60h      | 156h              | 6.0               |
-| 7  | 21       | 84h      | 168h              | 5.6               |
-| 8  | 28       | 112h     | 176h              | 5.3               |
-| 9  | 36       | 144h     | 180h              | 5.2               |
-| 10 | 45       | 180h     | 180h              | **5.2** ← optimal |
-| 11 | 55       | 220h     | 176h              | 5.3               |
-| 12 | 66       | 264h     | 168h              | 5.6               |
-| 15 | 105      | 420h     | 120h              | 7.8               |
-| 18 | 153      | 612h     | 36h               | 26.0              |
-
-The curve is symmetric: 1 person and 18 people take the same duration (26 weeks). The sweet spot is 9-10 people. Beyond 15, it degrades rapidly.
-
-### Visualization Design
-
-The Team Sizing Curve renders as a pure SVG chart in the InsightsPanel:
-
-- **X-axis**: Team size (whole numbers, 1 to N_max or 20, whichever is less)
-- **Y-axis**: Calendar duration (weeks)
-- **Curve**: Connected points at each integer N, with filled area under the curve
-- **Optimal zone**: Highlighted region around the minimum (±1 person)
-- **Current team marker**: The user's average active team size from the staffing grid, plotted on the curve
-- **Labels**: Optimal team size, current team size, duration at each
-
-### Current Team Size (from staffing grid)
-
-To plot the user's actual team on the curve:
-
-```
-avg_active_people = Σ active_people(w) / productive_week_count
-
-Where productive_week_count = count of weeks where active_people(w) > 0
-```
-
-This gives the average number of active people across weeks where work is happening. Since the curve uses whole numbers but the average may be fractional, the marker is plotted at the fractional position with the actual duration from the staffing plan.
-
-### Educational Content
-
-The `<details>/<summary>` section for this chart explains:
-
-**Why this matters:** Every person you add to the team creates new communication channels with everyone already there. There's a point where adding people actually makes the project take LONGER because coordination overhead exceeds the productive contribution.
-
-**How to use this:** Find your current team on the curve. If you're to the right of optimal, each person you remove would speed things up AND reduce cost. If you're to the left, adding people helps — but with diminishing returns as you approach optimal.
-
-**Take action:** If your team is significantly larger than optimal, consider whether all roles need to be active simultaneously. Phasing involvement (e.g., UX heavy early, QA heavy late) keeps the instantaneous team size lower while maintaining the same total capacity.
 
 ---
 
@@ -373,16 +288,16 @@ The `<details>/<summary>` section for this chart explains:
 
 A person working fewer hours than `billable_hours_per_week` creates the same number of communication channels but contributes less productive output. Their coordination-to-contribution ratio is worse.
 
-**Example with α = 4:**
+**Example with α = 1:**
 
 | Role | Hours/week | Channels (4-person team) | Coord cost share | Net productive | Coord ratio |
 |------|-----------|--------------------------|-----------------|----------------|-------------|
-| Lead Dev | 36h | 3 | 12h | 24h | 33% overhead |
-| Assoc Dev | 36h | 3 | 12h | 24h | 33% overhead |
-| QA | 20h | 3 | 12h | 8h | 60% overhead |
-| Scrum Master | 6h | 3 | 12h | **-6h** | **200% overhead** |
+| Lead Dev | 36h | 3 | 3h | 33h | 8% overhead |
+| Assoc Dev | 36h | 3 | 3h | 33h | 8% overhead |
+| QA | 20h | 3 | 3h | 17h | 15% overhead |
+| Scrum Master | 6h | 3 | 3h | **3h** | **50% overhead** |
 
-The Scrum Master at 6h/week is a **net-negative contributor** in this model — their coordination cost (12h share) exceeds their productive output (6h). This doesn't mean they shouldn't be on the team (coordination IS their job), but it quantifies the structural cost of having them in the communication graph.
+With α=1, even the Scrum Master at 6h/week remains a net-positive contributor, but their coordination-to-contribution ratio (50%) is much worse than full-time roles (8%). At higher α values (e.g., α=4), part-time roles can become net-negative contributors where coordination cost exceeds productive output.
 
 This insight is surfaced in the gap decomposition and helps stakeholders understand why small part-time allocations can be expensive relative to their contribution.
 
@@ -410,14 +325,11 @@ Estimation Module                    Staffing Plan
      │  • adjusted estimate             │
      │  • effective productive hours    │
      │  • gap decomposition             │
-     │  • team sizing curve data        │
      │                                  │
      └──────────┬──────────────────────┘
                 │
-     ┌──────────┴──────────┐
-     │                      │
-  StaffingSection       InsightsPanel
-  (gap decomposition)   (team sizing curve)
+  StaffingSection
+  (gap decomposition)
 ```
 
 ### Domain Layer (`src/domain/coordination.ts`)
@@ -426,15 +338,10 @@ New pure-function module, following the same patterns as `estimation.ts` and `st
 
 | Function | Signature | Purpose |
 |----------|-----------|---------|
-| `countActivePeople` | `(row_cells: string[], weekIndex: number) → boolean` | Whether a row is active in a given week |
 | `getActivePeoplePerWeek` | `(rows: StaffingRow[], weekCount: number) → number[]` | Active people count per week |
 | `calculateWeeklyCoordination` | `(activePeople: number, alpha: number) → number` | Coordination hours for one week |
-| `calculateTotalCoordination` | `(activePeoplePerWeek: number[], alpha: number) → number` | Sum of coordination across all weeks |
-| `calculateAdjustedEstimate` | `(baseEffort: number, totalCoordination: number) → number` | Base + coordination |
-| `calculateEffectiveProductive` | `(staffedHours: number, totalCoordination: number) → number` | Staffed - coordination |
+| `calculateCoordination` | `(rows, weekCount, alpha, impliedTeamSize) → CoordinationResult` | Full coordination analysis with incremental overhead |
 | `calculateGapDecomposition` | `(baseEffort, totalCoordination, staffedHours) → GapDecomposition` | Full breakdown |
-| `computeTeamSizingCurve` | `(baseEffort, h, alpha) → TeamSizingCurveData` | U-curve data points |
-| `calculateOptimalTeamSize` | `(h, alpha) → number` | Optimal N (whole number) |
 
 ### Types
 
@@ -454,15 +361,6 @@ interface GapDecomposition {
   effective_productive_hours: number
   remaining_buffer_hours: number
   buffer_status: 'buffered' | 'tight' | 'short'
-}
-
-interface TeamSizingCurveData {
-  points: Array<{ n: number; duration: number }>
-  optimal_n: number
-  optimal_duration: number
-  max_viable_n: number
-  current_avg_n: number
-  current_duration: number | null
 }
 ```
 
@@ -486,9 +384,7 @@ No new reducer actions needed — the coordination calculations are derived (com
 
 1. **Gap Decomposition**: Replaces or extends the existing comparison banner in `StaffingSection`. Instead of just "Buffer: +268h (+30%)", shows the full decomposition.
 
-2. **Team Sizing Curve**: New visualization component in `InsightsPanel`, placed in the `secondRow` alongside existing charts. Only renders when both estimation results AND staffing data exist (needs both to be meaningful).
-
-3. **New Constant**: Added to `AdvancedVariables` panel as a fifth field.
+2. **New Constant**: Added to `AdvancedVariables` panel as a fifth field.
 
 ---
 
@@ -506,61 +402,55 @@ Using the worked staffing example data:
 // Weeks 8-9: 3 (Lead on PTO)
 // Weeks 10-15: 4
 
-// With α = 4:
-// Total coordination = 48 + 48 + 0 + 24 + 144 = 264 hours
-// Adjusted estimate = 937 + 264 = 1,201 hours
-// Effective productive = 1,160 - 264 = 896 hours
-// Remaining buffer = 1,160 - 1,201 = -41 hours (short)
+// With α = 1, impliedTeamSize = 3:
+// Incremental coordination = 6 + 0 + 0 + 0 + 18 = 24 hours
+// Adjusted estimate = 1,066 + 24 = 1,090 hours
+// Effective productive = 1,160 - 24 = 1,136 hours
+// Remaining buffer = 1,160 - 1,090 = 70 hours (buffered)
 ```
 
 **Test categories:**
 1. Active people counting (numeric, annotation, empty, zero cells)
 2. Channel calculation (0, 1, 2, many people)
 3. Weekly coordination (single week, various team sizes)
-4. Total coordination (multi-week with varying team sizes)
+4. Total coordination with incremental model (multi-week with varying team sizes)
 5. Adjusted estimate
 6. Effective productive hours
 7. Gap decomposition (buffered, tight, short scenarios)
-8. Team sizing curve (correct shape, optimal N, max N)
-9. Edge cases: empty grid, single person, single week, all annotations
+8. Edge cases: empty grid, single person, single week, all annotations
 
 ---
 
 ## Worked Example Summary
 
-Using the standard staffing plan from the staffing spec with α = 4:
+Using the standard staffing plan from the staffing spec with α = 1 (default):
 
 ```
 BASE ESTIMATE
-  Expected hours:          828h
+  Expected hours:          958h
   Portfolio range spread:  109h
-  Total effort (84%):      937h
-  Staff weeks:             26.0
-  Duration:                11 weeks
+  Total effort (84%):    1,066h
+  Staff weeks:             29.6
+  Duration:                10 weeks
+  Implied team:            3 people
 
 STAFFING PLAN
   4 roles × 15 weeks
   Staffed hours:          1,160h
-  Staffed cost:          $165,000
+  Staffed cost:          $164,500
 
-COORDINATION ANALYSIS
+COORDINATION ANALYSIS (incremental beyond implied team of 3)
   Average active people:    3.6 (varies 0-4 per week)
-  Total coordination:       264h
-  Adjusted estimate:      1,201h
-  Effective productive:     896h
-  Remaining buffer:         -41h (SHORT)
-
-TEAM SIZING CURVE
-  Optimal team size:        9-10 people (for this effort level)
-  Current avg team:         3.7 people
-  Current position:         Left of optimal (understaffed for speed)
-  Max viable team:          19 people
+  Incremental coordination: 24h
+  Adjusted estimate:      1,090h
+  Effective productive:   1,136h
+  Remaining buffer:          70h (BUFFERED)
 
 GAP DECOMPOSITION
-  Base effort:              937h (80.8%)
-  Coordination overhead:    264h (22.8%)
-  Remaining buffer:         -41h (-3.5%)
-  Status:                   Under-resourced by 41 hours
+  Base effort:            1,066h
+  Coordination overhead:     24h
+  Remaining buffer:          70h
+  Status:                    Comfortable margin for PTO and ramp-up
 ```
 
 ---
