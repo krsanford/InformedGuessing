@@ -14,7 +14,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import type { WorkItem, WorkItemCalculated, WorkItemGroup } from '../domain/estimation'
 import { calculateGroupSubtotals } from '../domain/estimation'
 import { WorkItemRow } from './WorkItemRow'
@@ -70,39 +70,47 @@ export function WorkItemList({
   const [activeId, setActiveId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
 
-  // Custom collision detection: require pointer to be clearly centered on a
-  // group header to target it (add-to-group). On the edges, prefer the adjacent
-  // item so that reordering near group boundaries isn't finicky.
+  // Ref so the collision callback always sees current item→group mapping
+  const itemGroupRef = useRef(new Map<string, number | undefined>())
+  itemGroupRef.current = new Map(items.map((item) => [`item-${item.id}`, item.groupId]))
+
+  // Custom collision detection with different strategies for group vs item drags.
   const collisionDetection = useCallback(
     (args: Parameters<typeof closestCenter>[0]) => {
       const collisions = closestCenter(args)
-      if (!args.pointerCoordinates || collisions.length < 2) return collisions
+      if (!args.pointerCoordinates || collisions.length === 0) return collisions
 
+      const activeStr = String(args.active.id)
+
+      // --- GROUP DRAG: only consider other group headers and ungrouped items ---
+      // Items inside groups are "internal" to their group and shouldn't be
+      // collision targets for group-level reordering.
+      if (activeStr.startsWith('group-')) {
+        const filtered = collisions.filter((c) => {
+          const id = String(c.id)
+          if (id === activeStr) return false
+          if (id.startsWith('group-')) return true
+          return itemGroupRef.current.get(id) == null // ungrouped items only
+        })
+        return filtered.length > 0 ? filtered : collisions
+      }
+
+      // --- ITEM DRAG: only target group header if pointer is centered on it ---
       const topId = String(collisions[0].id)
       if (!topId.startsWith('group-')) return collisions
-
-      // Don't intervene when dragging a group — group↔group is fine
-      if (String(args.active.id).startsWith('group-')) return collisions
 
       const rect = args.droppableRects.get(collisions[0].id)
       if (!rect) return collisions
 
-      // Only target group header if pointer is in center 40% of the header
+      // Only allow group header as target if pointer is in the center 40%
       const insetY = rect.height * 0.3
       const py = args.pointerCoordinates.y
       if (py >= rect.top + insetY && py <= rect.bottom - insetY) return collisions
 
-      // Pointer on edge — prefer the closest non-group target if it's nearby
+      // Everywhere else (edge zones, above, below), prefer the nearest item
       const nextBest = collisions.find((c) => !String(c.id).startsWith('group-'))
       if (nextBest) {
-        const nextRect = args.droppableRects.get(nextBest.id)
-        if (nextRect) {
-          const groupDist = Math.abs(py - (rect.top + rect.height / 2))
-          const itemDist = Math.abs(py - (nextRect.top + nextRect.height / 2))
-          if (itemDist <= groupDist * 1.5) {
-            return [nextBest, ...collisions.filter((c) => c.id !== nextBest.id)]
-          }
-        }
+        return [nextBest, ...collisions.filter((c) => c.id !== nextBest.id)]
       }
 
       return collisions
