@@ -412,11 +412,18 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         id: newGroupId,
         name: `${sourceGroup.name} (copy)`,
       })
+      // Insert cloned items right after the last source-group item
+      const newWorkItems = [...state.workItems]
+      const lastSourceIdx = newWorkItems.reduce(
+        (last, w, i) => (w.groupId === action.groupId ? i : last),
+        -1
+      )
+      newWorkItems.splice(lastSourceIdx + 1, 0, ...clonedItems)
       return {
         ...state,
         groups: newGroups,
         nextGroupId: state.nextGroupId + 1,
-        workItems: [...state.workItems, ...clonedItems],
+        workItems: newWorkItems,
         nextId: state.nextId + clonedItems.length,
       }
     }

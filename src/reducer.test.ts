@@ -1171,6 +1171,20 @@ describe('appReducer', () => {
       expect(state.groups.map((g) => g.id)).toEqual([1, 3, 2])
     })
 
+    it('inserts cloned items right after source group items', () => {
+      let state = stateWithTwoItems()
+      state = appReducer(state, { type: 'ADD_GROUP' })
+      state = appReducer(state, { type: 'MOVE_ITEM_TO_GROUP', itemId: 1, groupId: 1 })
+      // workItems order: [item1 (group1), item2 (ungrouped)]
+      state = appReducer(state, { type: 'DUPLICATE_GROUP', groupId: 1 })
+
+      // Cloned item should appear right after item1, before item2
+      const ids = state.workItems.map((w) => w.id)
+      const groupIds = state.workItems.map((w) => w.groupId)
+      expect(ids).toEqual([1, 3, 2])
+      expect(groupIds).toEqual([1, 2, undefined])
+    })
+
     it('no-op when group not found', () => {
       let state = stateWithTwoItems()
       state = appReducer(state, { type: 'ADD_GROUP' })
