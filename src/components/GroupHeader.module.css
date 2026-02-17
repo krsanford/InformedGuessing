@@ -166,6 +166,14 @@
   box-shadow: var(--glow-sm);
 }
 
+/* Item count + add button group */
+.itemCountGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
 /* Item count badge */
 .itemCount {
   font-size: 0.6875rem;
@@ -175,6 +183,38 @@
   border-radius: var(--radius-full);
   border: 1px solid var(--surface-border);
   white-space: nowrap;
+}
+
+/* Inline add-item button */
+.addItemButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary-400);
+  background: none;
+  border: 1.5px solid var(--primary-300);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color var(--duration-fast) ease,
+              background var(--duration-fast) ease,
+              border-color var(--duration-fast) ease;
+}
+
+.addItemButton:hover {
+  color: #FFFFFF;
+  background: var(--primary-700);
+  border-color: var(--primary-700);
+}
+
+.addItemButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* Divider */

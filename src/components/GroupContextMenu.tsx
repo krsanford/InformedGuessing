@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { EllipsisIcon, TrashIcon, DuplicateIcon, PlusIcon } from './icons'
+import { EllipsisIcon, TrashIcon, DuplicateIcon } from './icons'
 import styles from './GroupContextMenu.module.css'
 
 interface GroupContextMenuProps {
   multiplier: number
   onDuplicate: () => void
   onDelete: () => void
-  onAddItem: () => void
   onMultiplierChange: (value: number) => void
   ariaLabel: string
 }
@@ -15,7 +14,6 @@ export function GroupContextMenu({
   multiplier,
   onDuplicate,
   onDelete,
-  onAddItem,
   onMultiplierChange,
   ariaLabel,
 }: GroupContextMenuProps) {
@@ -68,16 +66,6 @@ export function GroupContextMenu({
 
       {open && (
         <div ref={menuRef} className={styles.popover} role="toolbar" aria-label="Group actions">
-          <button
-            onClick={() => { onAddItem(); close() }}
-            className={styles.actionButton}
-            aria-label="Add item to group"
-            title="Add item"
-            type="button"
-          >
-            <PlusIcon />
-          </button>
-
           <button
             onClick={() => { onDuplicate(); close() }}
             className={styles.actionButton}

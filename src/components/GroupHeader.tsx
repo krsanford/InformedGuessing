@@ -93,7 +93,6 @@ export function GroupHeader({
 
       <GroupContextMenu
         multiplier={group.multiplier ?? 1}
-        onAddItem={onAddItem}
         onDuplicate={onDuplicate}
         onDelete={onRemove}
         onMultiplierChange={onMultiplierChange}
@@ -115,8 +114,19 @@ export function GroupHeader({
         />
       </div>
 
-      <span className={styles.itemCount}>
-        {subtotals.item_count} item{subtotals.item_count !== 1 ? 's' : ''}
+      <span className={styles.itemCountGroup}>
+        <span className={styles.itemCount}>
+          {subtotals.item_count} item{subtotals.item_count !== 1 ? 's' : ''}
+        </span>
+        <button
+          className={styles.addItemButton}
+          onClick={onAddItem}
+          type="button"
+          aria-label={`Add item to ${group.name}`}
+          title="Add item"
+        >
+          +
+        </button>
       </span>
 
       <span className={styles.divider} aria-hidden="true" />
