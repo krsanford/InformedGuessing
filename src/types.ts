@@ -80,3 +80,5 @@ export type AppAction =
   | { type: 'ADD_WORK_ITEM_TO_GROUP'; groupId: number }
   | { type: 'MOVE_GROUP_BLOCK'; groupId: number; targetItemId: number }
   | { type: 'DUPLICATE_GROUP'; groupId: number }
+  | { type: 'AI_IMPORT_ITEMS'; items: Array<{ title: string; notes: string; best_case_hours: number; worst_case_hours: number; groupName: string }> }
+  | { type: 'AI_IMPORT_STAFFING'; roles: Array<{ discipline: string; hourly_rate: number; count: number }>; weekCount: number }

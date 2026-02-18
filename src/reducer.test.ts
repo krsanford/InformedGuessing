@@ -1195,6 +1195,222 @@ describe('appReducer', () => {
     })
   })
 
+  // -------------------------------------------------------------------------
+  // AI Import Actions
+  // -------------------------------------------------------------------------
+
+  describe('AI_IMPORT_ITEMS', () => {
+    const sampleItems = [
+      { title: 'Auth flow', notes: 'Login/logout', best_case_hours: 8, worst_case_hours: 24, groupName: 'Backend' },
+      { title: 'API endpoints', notes: 'REST', best_case_hours: 16, worst_case_hours: 40, groupName: 'Backend' },
+      { title: 'Dashboard UI', notes: 'React', best_case_hours: 12, worst_case_hours: 32, groupName: 'Frontend' },
+      { title: 'Unit tests', notes: 'Vitest', best_case_hours: 6, worst_case_hours: 16, groupName: 'Testing' },
+    ]
+
+    it('creates groups from unique groupNames', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      expect(state.groups).toHaveLength(3)
+      expect(state.groups.map((g) => g.name)).toEqual(['Backend', 'Frontend', 'Testing'])
+    })
+
+    it('assigns cycling colors to new groups', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      expect(state.groups[0].color).toBe('indigo')
+      expect(state.groups[1].color).toBe('amber')
+      expect(state.groups[2].color).toBe('teal')
+    })
+
+    it('skips colors already used by existing groups', () => {
+      const base: AppState = {
+        ...initialState,
+        groups: [{ id: 1, name: 'Existing', color: 'indigo', enabled: true, collapsed: false, multiplier: 1 }],
+        nextGroupId: 2,
+      }
+      const state = appReducer(base, { type: 'AI_IMPORT_ITEMS', items: [
+        { title: 'Item', notes: '', best_case_hours: 1, worst_case_hours: 2, groupName: 'New' },
+      ]})
+      // Should pick amber (next unused color), not indigo
+      expect(state.groups[1].color).toBe('amber')
+    })
+
+    it('creates work items with correct groupId assignments', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      const backendGroupId = state.groups.find((g) => g.name === 'Backend')!.id
+      const frontendGroupId = state.groups.find((g) => g.name === 'Frontend')!.id
+      const testingGroupId = state.groups.find((g) => g.name === 'Testing')!.id
+
+      const imported = state.workItems.slice(1) // skip initial empty item
+      expect(imported).toHaveLength(4)
+      expect(imported[0].groupId).toBe(backendGroupId)
+      expect(imported[1].groupId).toBe(backendGroupId)
+      expect(imported[2].groupId).toBe(frontendGroupId)
+      expect(imported[3].groupId).toBe(testingGroupId)
+    })
+
+    it('preserves item data (title, notes, hours)', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      const imported = state.workItems.slice(1)
+      expect(imported[0].title).toBe('Auth flow')
+      expect(imported[0].notes).toBe('Login/logout')
+      expect(imported[0].best_case_hours).toBe(8)
+      expect(imported[0].worst_case_hours).toBe(24)
+    })
+
+    it('items are enabled with multiplier 1', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      for (const item of state.workItems.slice(1)) {
+        expect(item.enabled).toBe(true)
+        expect(item.multiplier).toBe(1)
+      }
+    })
+
+    it('assigns sequential IDs starting from nextId', () => {
+      const base: AppState = { ...initialState, nextId: 10 }
+      const state = appReducer(base, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      const imported = state.workItems.slice(1)
+      expect(imported.map((w) => w.id)).toEqual([10, 11, 12, 13])
+      expect(state.nextId).toBe(14)
+    })
+
+    it('assigns sequential group IDs starting from nextGroupId', () => {
+      const base: AppState = { ...initialState, nextGroupId: 5 }
+      const state = appReducer(base, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      expect(state.groups.map((g) => g.id)).toEqual([5, 6, 7])
+      expect(state.nextGroupId).toBe(8)
+    })
+
+    it('appends to existing work items and groups', () => {
+      const base = stateWithTwoItems()
+      const state = appReducer(base, { type: 'AI_IMPORT_ITEMS', items: [
+        { title: 'New item', notes: '', best_case_hours: 4, worst_case_hours: 8, groupName: 'AI' },
+      ]})
+      expect(state.workItems).toHaveLength(3) // 2 existing + 1 new
+      expect(state.groups).toHaveLength(1)
+      expect(state.workItems[0].title).toBe('Item A') // existing preserved
+      expect(state.workItems[1].title).toBe('Item B') // existing preserved
+      expect(state.workItems[2].title).toBe('New item')
+    })
+
+    it('groups items contiguously by groupName', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      const imported = state.workItems.slice(1)
+      // Backend items should be consecutive, then Frontend, then Testing
+      expect(imported[0].title).toBe('Auth flow')
+      expect(imported[1].title).toBe('API endpoints')
+      expect(imported[2].title).toBe('Dashboard UI')
+      expect(imported[3].title).toBe('Unit tests')
+    })
+
+    it('new groups have enabled=true, collapsed=false, multiplier=1', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      for (const group of state.groups) {
+        expect(group.enabled).toBe(true)
+        expect(group.collapsed).toBe(false)
+        expect(group.multiplier).toBe(1)
+      }
+    })
+
+    it('is a no-op for empty items array', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: [] })
+      expect(state).toBe(initialState)
+    })
+
+    it('does not modify constants or staffing', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_ITEMS', items: sampleItems })
+      expect(state.constants).toBe(initialState.constants)
+      expect(state.staffing).toBe(initialState.staffing)
+    })
+  })
+
+  describe('AI_IMPORT_STAFFING', () => {
+    const sampleRoles = [
+      { discipline: 'Senior Developer', hourly_rate: 150, count: 2 },
+      { discipline: 'QA Engineer', hourly_rate: 100, count: 1 },
+      { discipline: 'Tech Lead', hourly_rate: 180, count: 1 },
+    ]
+
+    it('creates one row per person (expanding count)', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 4 })
+      expect(state.staffing.rows).toHaveLength(4) // 2 + 1 + 1
+    })
+
+    it('sets discipline and hourly_rate from role', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 4 })
+      expect(state.staffing.rows[0].discipline).toBe('Senior Developer')
+      expect(state.staffing.rows[0].hourly_rate).toBe(150)
+      expect(state.staffing.rows[1].discipline).toBe('Senior Developer')
+      expect(state.staffing.rows[1].hourly_rate).toBe(150)
+      expect(state.staffing.rows[2].discipline).toBe('QA Engineer')
+      expect(state.staffing.rows[2].hourly_rate).toBe(100)
+      expect(state.staffing.rows[3].discipline).toBe('Tech Lead')
+      expect(state.staffing.rows[3].hourly_rate).toBe(180)
+    })
+
+    it('sets week_count from action', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 6 })
+      expect(state.staffing.week_count).toBe(6)
+    })
+
+    it('creates empty cells matching weekCount', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 3 })
+      for (const row of state.staffing.rows) {
+        expect(row.cells).toEqual(['', '', ''])
+      }
+    })
+
+    it('all rows are enabled with multiplier 1', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 4 })
+      for (const row of state.staffing.rows) {
+        expect(row.enabled).toBe(true)
+        expect(row.multiplier).toBe(1)
+      }
+    })
+
+    it('assigns sequential IDs starting from nextRowId', () => {
+      const base: AppState = {
+        ...initialState,
+        staffing: { rows: [], week_count: 0, nextRowId: 10 },
+      }
+      const state = appReducer(base, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 4 })
+      expect(state.staffing.rows.map((r) => r.id)).toEqual([10, 11, 12, 13])
+      expect(state.staffing.nextRowId).toBe(14)
+    })
+
+    it('replaces existing staffing rows', () => {
+      const base = stateWithTwoItems() // has 2 existing staffing rows
+      const state = appReducer(base, { type: 'AI_IMPORT_STAFFING', roles: [
+        { discipline: 'Designer', hourly_rate: 120, count: 1 },
+      ], weekCount: 3 })
+      expect(state.staffing.rows).toHaveLength(1)
+      expect(state.staffing.rows[0].discipline).toBe('Designer')
+    })
+
+    it('is a no-op for empty roles array', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: [], weekCount: 4 })
+      expect(state).toBe(initialState)
+    })
+
+    it('does not modify workItems, constants, or groups', () => {
+      const base = stateWithTwoItems()
+      const state = appReducer(base, { type: 'AI_IMPORT_STAFFING', roles: sampleRoles, weekCount: 4 })
+      expect(state.workItems).toBe(base.workItems)
+      expect(state.constants).toBe(base.constants)
+      expect(state.groups).toBe(base.groups)
+    })
+
+    it('handles role with count > 1 correctly', () => {
+      const state = appReducer(initialState, { type: 'AI_IMPORT_STAFFING', roles: [
+        { discipline: 'Developer', hourly_rate: 130, count: 3 },
+      ], weekCount: 2 })
+      expect(state.staffing.rows).toHaveLength(3)
+      for (const row of state.staffing.rows) {
+        expect(row.discipline).toBe('Developer')
+        expect(row.hourly_rate).toBe(130)
+        expect(row.cells).toEqual(['', ''])
+      }
+    })
+  })
+
   describe('LOAD_SESSION with groups', () => {
     it('backfills missing groups to empty array', () => {
       const sessionWithoutGroups = {

@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 docs/MeetingInvite.md
 docs/Transcript.md
+
+# Azure Functions local settings
+api/local.settings.json
