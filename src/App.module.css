@@ -76,10 +76,48 @@
   flex: 1;
 }
 
+/* AI Assist button (amber gradient) */
+.aiButton {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space) * 0.5);
+  padding: calc(var(--space) * 0.625) calc(var(--space) * 1.5);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  background: var(--gradient-hot);
+  border: none;
+  border-radius: calc(var(--radius-sm) * 0.75);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  font-family: inherit;
+  white-space: nowrap;
+  height: 100%;
+  box-shadow: var(--glow-hot);
+  margin-left: calc(var(--space) * 0.5);
+}
+
+.aiButton:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+}
+
+.aiButton:active {
+  transform: scale(0.98);
+}
+
+.aiButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 /* Hide toolbar items when section is collapsed */
 .section:not([open]) .toolbarSpacer,
 .section:not([open]) .addButton,
-.section:not([open]) .addGroupButton {
+.section:not([open]) .addGroupButton,
+.section:not([open]) .aiButton {
   display: none;
 }
 

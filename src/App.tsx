@@ -11,6 +11,8 @@ import { AdvancedVariables } from './components/AdvancedVariables'
 import { OutputsSection } from './components/OutputsSection'
 import { InsightsPanel } from './components/insights/InsightsPanel'
 import { StaffingSection } from './components/staffing/StaffingSection'
+import { AIAssistPanel } from './components/ai/AIAssistPanel'
+import { SparkleIcon } from './components/icons'
 import type { WorkItem } from './domain/estimation'
 import styles from './App.module.css'
 
@@ -18,6 +20,7 @@ function App() {
   const [state, dispatch] = useReducer(appReducer, initialState, () => loadFromStorage() ?? initialState)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [aiPanelOpen, setAiPanelOpen] = useState(false)
 
   useEffect(() => {
     saveToStorage(state)
@@ -173,6 +176,14 @@ function App() {
             >
               + Add Group
             </button>
+            <button
+              onClick={(e) => { e.preventDefault(); setAiPanelOpen(true) }}
+              className={styles.aiButton}
+              data-tip="Use AI to generate work items from a project description"
+            >
+              <SparkleIcon width={14} height={14} />
+              AI Assist
+            </button>
           </summary>
 
           <WorkItemList
@@ -223,6 +234,7 @@ function App() {
       />
 
       <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
+      <AIAssistPanel open={aiPanelOpen} onClose={() => setAiPanelOpen(false)} dispatch={dispatch} />
     </div>
   )
 }

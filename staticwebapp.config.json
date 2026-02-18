@@ -17,6 +17,6 @@
     }
   ],
   "globalHeaders": {
-    "content-security-policy": "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+    "content-security-policy": "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self';"
   }
 }

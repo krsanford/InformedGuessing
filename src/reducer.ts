@@ -1,7 +1,7 @@
 import { DEFAULT_CONSTANTS, GROUP_COLOR_PALETTE } from './domain/estimation'
-import type { GroupColorKey, WorkItemGroup } from './domain/estimation'
+import type { GroupColorKey, WorkItem, WorkItemGroup } from './domain/estimation'
 import { createStaffingRow, createPrepopulatedRows, resizeRowCells } from './domain/staffing'
-import type { AppState, AppAction, StaffingState } from './types'
+import type { AppState, AppAction, StaffingRow, StaffingState } from './types'
 
 function arrayMove<T>(array: T[], fromIndex: number, toIndex: number): T[] {
   const result = [...array]
@@ -425,6 +425,101 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         nextGroupId: state.nextGroupId + 1,
         workItems: newWorkItems,
         nextId: state.nextId + clonedItems.length,
+      }
+    }
+
+    // ========================================================================
+    // AI Import Actions
+    // ========================================================================
+
+    case 'AI_IMPORT_ITEMS': {
+      if (action.items.length === 0) return state
+
+      // Collect unique group names in order of first appearance
+      const seenGroups = new Map<string, number>()
+      const newGroups: WorkItemGroup[] = []
+      let gId = state.nextGroupId
+
+      for (const item of action.items) {
+        if (!seenGroups.has(item.groupName)) {
+          const allGroups = [...state.groups, ...newGroups]
+          newGroups.push({
+            id: gId,
+            name: item.groupName,
+            color: nextGroupColor(allGroups),
+            enabled: true,
+            collapsed: false,
+            multiplier: 1,
+          })
+          seenGroups.set(item.groupName, gId)
+          gId++
+        }
+      }
+
+      // Create work items, grouped contiguously by groupName
+      const itemsByGroup = new Map<string, typeof action.items>()
+      for (const item of action.items) {
+        const list = itemsByGroup.get(item.groupName)
+        if (list) {
+          list.push(item)
+        } else {
+          itemsByGroup.set(item.groupName, [item])
+        }
+      }
+
+      let itemId = state.nextId
+      const newWorkItems: WorkItem[] = []
+      for (const [groupName, items] of itemsByGroup) {
+        const groupId = seenGroups.get(groupName)!
+        for (const item of items) {
+          newWorkItems.push({
+            id: itemId++,
+            title: item.title,
+            notes: item.notes,
+            best_case_hours: item.best_case_hours,
+            worst_case_hours: item.worst_case_hours,
+            enabled: true,
+            multiplier: 1,
+            groupId,
+          })
+        }
+      }
+
+      return {
+        ...state,
+        workItems: [...state.workItems, ...newWorkItems],
+        nextId: itemId,
+        groups: [...state.groups, ...newGroups],
+        nextGroupId: gId,
+      }
+    }
+
+    case 'AI_IMPORT_STAFFING': {
+      if (action.roles.length === 0) return state
+
+      let rowId = state.staffing.nextRowId
+      const newRows: StaffingRow[] = []
+      for (const role of action.roles) {
+        for (let i = 0; i < role.count; i++) {
+          newRows.push({
+            id: rowId++,
+            discipline: role.discipline,
+            hourly_rate: role.hourly_rate,
+            cells: new Array(action.weekCount).fill(''),
+            enabled: true,
+            multiplier: 1,
+          })
+        }
+      }
+
+      return {
+        ...state,
+        staffing: {
+          ...state.staffing,
+          week_count: action.weekCount,
+          rows: newRows,
+          nextRowId: rowId,
+        },
       }
     }
 
