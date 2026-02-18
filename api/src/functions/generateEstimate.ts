@@ -11,14 +11,30 @@ async function generateEstimate(
   _context: InvocationContext,
 ): Promise<HttpResponseInit> {
   try {
-    const body = (await request.json()) as { prompt: string }
+    let body: unknown
+    try {
+      body = await request.json()
+    } catch {
+      return {
+        status: 400,
+        jsonBody: { error: 'Invalid JSON body' },
+      }
+    }
 
-    if (!body.prompt || typeof body.prompt !== 'string') {
+    if (
+      !body ||
+      typeof body !== 'object' ||
+      !('prompt' in body) ||
+      typeof (body as { prompt?: unknown }).prompt !== 'string' ||
+      !(body as { prompt: string }).prompt.trim()
+    ) {
       return {
         status: 400,
         jsonBody: { error: 'Missing or invalid "prompt" field' },
       }
     }
+
+    const prompt = (body as { prompt: string }).prompt
 
     const deploymentName = process.env.AZURE_OPENAI_GPT4O_MINI_DEPLOYMENT ?? 'gpt-4o-mini'
 
@@ -26,7 +42,7 @@ async function generateEstimate(
       model: azure(deploymentName),
       experimental_output: Output.object({ schema: GenerateEstimateResponseSchema }),
       system: GENERATE_ESTIMATE_PROMPT,
-      prompt: body.prompt,
+      prompt,
     })
 
     const response = result.toTextStreamResponse()

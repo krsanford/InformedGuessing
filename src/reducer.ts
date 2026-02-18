@@ -512,12 +512,14 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         }
       }
 
+      const newRowsResized = resizeRowCells(newRows, action.weekCount)
+
       return {
         ...state,
         staffing: {
           ...state.staffing,
           week_count: action.weekCount,
-          rows: newRows,
+          rows: newRowsResized,
           nextRowId: rowId,
         },
       }
